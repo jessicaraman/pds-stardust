@@ -1,0 +1,29 @@
+version: "2.1"
+services:
+  app:
+    image: "pypoc"
+    container_name: "pypoc"
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: "postgres:11"
+    container_name: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: pds
+      POSTGRES_PASSWORD: pds
+      POSTGRES_DB: pds
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pds"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    #volumes:
+     # - pg_data:/var/lib/postgresql/data
+#volumes:
+  #pg_data:

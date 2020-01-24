@@ -1,0 +1,35 @@
+docker-build-master:
+
+  stage: build
+  
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    CACHE_IMAGE: $CI_REGISTRY_IMAGE:latest
+  
+  services:
+    - name: docker:dind
+      command: ["--insecure-registry=172.31.249.114:5005"]
+
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker pull $CACHE_IMAGE || true
+  script:
+    - docker build --cache-from $CACHE_IMAGE --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master
+
+docker-build:
+  stage: build
+  services:
+    - name: docker:dind
+      command: ["--insecure-registry=172.31.249.114:5005"]
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker pull $CACHE_IMAGE || true
+  script:
+    - docker build --cache-from $CACHE_IMAGE --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  except:
+    - master
