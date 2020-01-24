@@ -27,6 +27,16 @@
                 android:text="Start guiding"
                 android:textColor="#394192"
                 android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/buttonGeolocalisation"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#E1F5FE"
+                android:text="Start geoloc"
+                android:textColor="#394192"
+                android:textSize="24sp" />
         </LinearLayout>
     </LinearLayout>
 
