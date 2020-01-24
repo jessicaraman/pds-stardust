@@ -1,0 +1,130 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Swagger customer path API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "faddaoui.i@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "172.31.249.114:8080"
+basePath: "/v2"
+tags:
+- name: "journey"
+  description: "endpoints regarding the customer journey"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+    
+- name: "map"
+  description: "endpoints regarding the logic map of the mall"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+schemes:
+- "https"
+- "http"
+paths:
+  /customerPath:
+    get:
+      tags:
+      - "journey"
+      summary: "Get the customer optimized path "
+      operationId: "addPet"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Customer location + stores list"
+        required: true
+        schema:
+          $ref: "#/definitions/Path"
+      responses:
+        200:
+          description: "successful operation: return the ordered path of node the customer is about to follow"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CustomerPath"
+        403:
+          description: "Access forbidden"
+        405:
+          description: "Invalid input"
+        500:
+          description: "internal server error"
+  
+  /map:
+    get:
+      tags:
+      - "map"
+      summary: "Returns the logical map of the mall"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/LogicalMap"
+definitions:
+  Path:
+    type: "object"
+    properties:
+      customerId:
+        type: "string"
+      customerLocation:
+        type: "array"
+        items:
+          type: "string"
+      listOfStore:
+        type: "array"
+        items:
+          $ref: "#/definitions/Node"
+  CustomerPath:
+    type: "object"
+    properties:
+      customerPathId:
+        type: "string"
+      ordereredPath:
+        type: "array"
+        items:
+          $ref: "#/definitions/Node"
+  LogicalMap:
+    type: "object"
+    properties:
+      listOfNodes:
+        type: "array"
+        items:
+          $ref: "#/definitions/Node"
+      listOfAdjacentNodes:
+        type: "array"
+        items:
+          $ref: "#/definitions/AdjacentNode"
+  Node:
+    type: "object"
+    properties:
+      Nodeid:
+        type: "string"
+      label:
+        type: "string"
+      category:
+        type: "string"
+        enum:
+        - "store"
+        - "aisle"
+        - "wall"
+  AdjacentNode:
+    type: "object"
+    properties:
+      mainNodeId:
+        type: "string"
+      adjacentNodeId:
+        type: "string"
+      distance:
+        type: "integer"
