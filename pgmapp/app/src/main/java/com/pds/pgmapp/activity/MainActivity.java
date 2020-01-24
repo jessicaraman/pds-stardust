@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         buttonUserGuideStoreAction();
+        startGeolocatisation();
     }
 
     /**
@@ -27,5 +28,11 @@ public class MainActivity extends AppCompatActivity {
         Button buttonCountriesList;
         buttonCountriesList = findViewById(R.id.buttonGuideUserStore);
         buttonCountriesList.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(),GuideUserStoreActivity.class)));
+    }
+
+    protected void startGeolocatisation() {
+        Button startGeolocalisationBtn;
+        startGeolocalisationBtn = findViewById(R.id.buttonGeolocalisation);
+        startGeolocalisationBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), GeolocalisationActivity.class)));
     }
 }
