@@ -11,13 +11,33 @@ app.listen(port, function(){
     console.log('App run on port '+ port);
 });
 
-app.get('/', (req, res) => res.send('Hello World with Express'));
+app.get('/', (req, res) => res.send('hello'));
 app.get('/map', (req, res, next) => {
-    mapController.getMallMap;
+    try{
+        console.log("this service is not working yet, please stay tuned");
+        return res.status(200).json({
+            text: "to be implemented soon... :)"
+        });
+    }
+    catch(error){
+        return res.status(500).json({
+            error
+        });
+    }
 });
 
 app.get('/customerPath', (req, res, next) => {
-    customerPathController.getCustomerPath;
+    try{
+        console.log("this service is not working yet, please stay tuned");
+        return res.status(200).json({
+            text: "to be implemented soon... :)"
+        });
+    }
+    catch(error){
+        return res.status(500).json({
+            error
+        });
+    }
 });
 
 mongoose.connect('mongodb://localhost/db').then(() => {
