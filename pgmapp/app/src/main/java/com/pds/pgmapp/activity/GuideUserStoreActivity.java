@@ -23,7 +23,7 @@ public class GuideUserStoreActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_direction_store);
+        setContentView(R.layout.activity_user_direction_store);
 
         Button down = findViewById(R.id.goBack);
         Button left = findViewById(R.id.left);
