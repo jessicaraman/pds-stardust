@@ -1,13 +1,13 @@
 package com.pds.pgmapp.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.pds.pgmapp.R;
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void buttonUserGuideStoreAction() {
         Button buttonCountriesList;
         buttonCountriesList = findViewById(R.id.buttonGuideUserStore);
-        buttonCountriesList.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(),GuideUserStoreActivity.class)));
+        buttonCountriesList.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), GuideUserStoreActivity.class)));
     }
 
     protected void startGeolocatisation() {
