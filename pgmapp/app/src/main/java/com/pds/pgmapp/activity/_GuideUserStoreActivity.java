@@ -8,14 +8,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.pds.pgmapp.R;
-import com.pds.pgmapp.model.Node;
+import com.pds.pgmapp.model._Node;
 
 /**
  * Activity : Guide User Store
  */
 public class GuideUserStoreActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Node[] pathMocked = new Node[5];
+    _Node[] pathMocked = new _Node[5];
     int xMocked = 0;
     int yMocked = 0;
     int currentNode = 0;
@@ -40,11 +40,11 @@ public class GuideUserStoreActivity extends AppCompatActivity implements View.On
     }
 
     public void mockPath() {
-        pathMocked[0] = new Node(0, 0, "straight ahead");
-        pathMocked[1] = new Node(0, 10, "right");
-        pathMocked[2] = new Node(10, 10, "straight ahead");
-        pathMocked[3] = new Node(10, 20, "left");
-        pathMocked[4] = new Node(0, 20, "arrived");
+        pathMocked[0] = new _Node(0, 0, "straight ahead");
+        pathMocked[1] = new _Node(0, 10, "right");
+        pathMocked[2] = new _Node(10, 10, "straight ahead");
+        pathMocked[3] = new _Node(10, 20, "left");
+        pathMocked[4] = new _Node(0, 20, "arrived");
     }
 
     @Override
