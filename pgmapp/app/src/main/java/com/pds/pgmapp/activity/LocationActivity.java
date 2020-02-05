@@ -39,7 +39,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geolocalisation);
 
-        dbHandler = new DBHandler(this);
+        dbHandler = DBHandler.getInstance(this);
         workManager = WorkManager.getInstance(this);
 
         Constraints networkAvailableConstraint = new Constraints.Builder()
@@ -70,7 +70,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
                 )
         );
 
-        locationTextView = findViewById(R.id.location);
+        locationTextView = findViewById(R.id.locationTextView);
 
         String str = String.format("X = %s , Y = %s", location.getX(), location.getY()) ;
 
