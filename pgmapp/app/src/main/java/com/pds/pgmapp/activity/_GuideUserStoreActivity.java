@@ -13,7 +13,7 @@ import com.pds.pgmapp.model._Node;
 /**
  * Activity : Guide User Store
  */
-public class GuideUserStoreActivity extends AppCompatActivity implements View.OnClickListener {
+public class _GuideUserStoreActivity extends AppCompatActivity implements View.OnClickListener {
 
     _Node[] pathMocked = new _Node[5];
     int xMocked = 0;
@@ -23,7 +23,7 @@ public class GuideUserStoreActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_direction_store);
+        setContentView(R.layout._activity_user_direction_store);
 
         Button down = findViewById(R.id.goBack);
         Button left = findViewById(R.id.left);
