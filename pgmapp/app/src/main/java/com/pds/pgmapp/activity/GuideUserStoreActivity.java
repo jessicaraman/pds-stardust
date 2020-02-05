@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -25,6 +24,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Guide User Store Activity
+ */
 public class GuideUserStoreActivity extends AppCompatActivity {
 
     private Timer timer;
