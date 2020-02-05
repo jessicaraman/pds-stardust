@@ -24,6 +24,7 @@ public class Path {
     }
 
     public Path(JSONObject raw, DBHandler dbh) {
+        this.nodes = new ArrayList<>();
         try {
             this.dbHandler = dbh;
             this.id = (int) raw.get("id");

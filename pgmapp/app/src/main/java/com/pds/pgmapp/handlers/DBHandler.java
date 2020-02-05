@@ -33,7 +33,9 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return
      */
     public static synchronized DBHandler getInstance(Context context) {
+        System.out.println("Getting INSTANCE");
         if (DBInstance == null) {
+            System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWww");
             DBInstance = new DBHandler(context.getApplicationContext());
         }
         return DBInstance;
@@ -45,7 +47,8 @@ public class DBHandler extends SQLiteOpenHelper {
      */
     private DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.db = this.getWritableDatabase();
+        this.db = getWritableDatabase();
+        System.out.println("Getting HANDLER");
     }
 
     SQLiteDatabase db ;
@@ -98,35 +101,36 @@ public class DBHandler extends SQLiteOpenHelper {
     // create table node category
     private String CREATE_NODE_CATEGORY_TABLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NODE_CATEGORY + "("
-            + KEY_NODE_CATEGORY_ID + "INTEGER PRIMARY KEY, "
-            + KEY_NODE_CATEGORY_LABEL + "TEXT " + ")";
+            + KEY_NODE_CATEGORY_ID + " INTEGER PRIMARY KEY, "
+            + KEY_NODE_CATEGORY_LABEL + " TEXT " + ")";
 
     // create table node
     private String CREATE_NODE_TABLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NODE + "("
-            + KEY_NODE_ID + "INTEGER PRIMARY KEY, "
-            + KEY_NODE_LABEL + "TEXT, "
-            + KEY_NODE_CATEGORY + "INTEGER" + ")";
+            + KEY_NODE_ID + " INTEGER PRIMARY KEY, "
+            + KEY_NODE_LABEL + " TEXT, "
+            + KEY_NODE_CATEGORY + " INTEGER" + ")";
 
     // create table adjacent node
     private String CREATE_ADJACENT_NODE_TABLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_ADJACENT_NODE + "("
-            + KEY_NODE_ADJACENT_MAIN_NODE_ID + "INTEGER PRIMARY KEY, "
-            + KEY_NODE_ADJACENT_ADJACENT_NODE_ID + "TEXT, "
-            + KEY_NODE_ADJACENT_DISTANCE + "INTEGER" + ")";
+            + KEY_NODE_ADJACENT_MAIN_NODE_ID + " INTEGER, "
+            + KEY_NODE_ADJACENT_ADJACENT_NODE_ID + " TEXT, "
+            + KEY_NODE_ADJACENT_DISTANCE + " INTEGER" + ")";
 
     // create table door
     private String CREATE_DOOR_TABLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_DOOR + "("
-            + KEY_DOOR_ID + "INTEGER PRIMARY KEY, "
-            + KEY_DOOR_X + "TEXT, "
-            + KEY_DOOR_Y + "TEXT, "
-            + KEY_DOOR_ID_NODE + "INTEGER" + ")";
+            + KEY_DOOR_ID + " INTEGER PRIMARY KEY, "
+            + KEY_DOOR_X + " TEXT, "
+            + KEY_DOOR_Y + " TEXT, "
+            + KEY_DOOR_ID_NODE + " INTEGER" + ")";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.e("", "DB onCreate beginning");
         //Query to create table
+        System.out.println("CREATING TABLES");
         db.execSQL(CREATE_LOCATIONS_TABLE);
         db.execSQL(CREATE_NODE_CATEGORY_TABLE);
         db.execSQL(CREATE_NODE_TABLE);
@@ -235,8 +239,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public Node getNodeById (int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectNodesQuery = "SELECT * FROM " + TABLE_NODE + " WHERE id = " + id + ";";
-        String selectDoorsQuery = "SELECT * FROM " + TABLE_DOOR + " WHERE id_node = " + id ;
+        String selectNodesQuery = "SELECT * FROM " + TABLE_NODE + " WHERE " + KEY_NODE_ID + " = " + id + ";";
+        String selectDoorsQuery = "SELECT * FROM " + TABLE_DOOR + " WHERE " + KEY_DOOR_ID_NODE + " = " + id ;
         Log.e("","get Writable Database");
         //SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorNodes = db.rawQuery(selectNodesQuery, null);
@@ -261,7 +265,8 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursorNodes.moveToFirst()) {
             String selectNodeCategoryQuery = " SELECT * FROM " + TABLE_NODE_CATEGORY + " WHERE id = " + cursorNodes.getInt(2) ;
             Cursor cursorNodeCategory = db.rawQuery(selectNodeCategoryQuery, null);
-            nodeCategory = new NodeCategory(cursorNodeCategory.getInt(0), cursorNodeCategory.getString(1));
+            //nodeCategory = new NodeCategory(cursorNodeCategory.getInt(0), cursorNodeCategory.getString(1));
+            nodeCategory = new NodeCategory(1,"test");
             node = new Node(
                 cursorNodes.getInt(0),
                 cursorNodes.getString(1),
@@ -304,13 +309,13 @@ public class DBHandler extends SQLiteOpenHelper {
      */
     public void insertAdjacentNode(SQLiteDatabase db) {
         Log.e("log", "insertAdjacentNode");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (1,2);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (5,6);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (3,2);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (4,6);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (3,5);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (1,3);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (4,5);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (1,2, 132);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (5,6, 242);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (3,2,1343);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (4,6,21);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (3,5,324);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (1,3,3242);");
+        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (4,5,321);");
     }
 
     /**
@@ -321,11 +326,11 @@ public class DBHandler extends SQLiteOpenHelper {
     public void insertDoor(SQLiteDatabase db) {
         Log.e("log", "insertDoor");
         db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.2921868823996539, 0.7736856476831694, 1)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.5438542339380292, 0.1838274390274859, 2)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.4748390248790389, 0.6430892890328030, 3)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.3294045893024090, 0.4890308709382090, 4)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.0986384749839080, 0.1234890329480437, 5)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.7270480935784303, 0.9084938274784929, 6)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.7270472404809320, 0.9084837208930437, 6)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (2, 0.5438542339380292, 0.1838274390274859, 2)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (3, 0.4748390248790389, 0.6430892890328030, 3)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (4, 0.3294045893024090, 0.4890308709382090, 4)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (5, 0.0986384749839080, 0.1234890329480437, 5)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (6, 0.7270480935784303, 0.9084938274784929, 6)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (7, 0.7270472404809320, 0.9084837208930437, 6)");
     }
 }
