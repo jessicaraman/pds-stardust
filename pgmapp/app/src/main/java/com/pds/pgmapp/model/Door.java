@@ -1,14 +1,17 @@
 package com.pds.pgmapp.model;
 
+/**
+ * Door entity
+ */
 public class Door {
     private int id;
-    private double latitude;
-    private double longitude;
+    private double x;
+    private double y;
 
-    public Door(int id, double latitude, double longitude) {
+    public Door(int id, double x, double y) {
         this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.x = x;
+        this.y = y;
     }
 
     public int getId() {
@@ -19,19 +22,19 @@ public class Door {
         this.id = id;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getX() {
+        return x;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setX(double x) {
+        this.x = x;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public double getY() {
+        return y;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setY(double y) {
+        this.y = y;
     }
 }
