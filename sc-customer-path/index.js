@@ -4,7 +4,7 @@ var express = require("express"),
 var fs = require("fs");
 var mongoose = require('mongoose');
 var bodyParser = require("body-parser");
-var customerPathController = require('./customerPathController');
+var customerPathController = require('./controllers/customerPathController');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
