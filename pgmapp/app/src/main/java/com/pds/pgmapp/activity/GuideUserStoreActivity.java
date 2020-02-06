@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +15,6 @@ import com.pds.pgmapp.R;
 import com.pds.pgmapp.geolocation.LocationEntity;
 import com.pds.pgmapp.handlers.DBHandler;
 import com.pds.pgmapp.handlers.GuidanceHandler;
-import com.pds.pgmapp.model.Door;
 import com.pds.pgmapp.model.Node;
 import com.pds.pgmapp.model.Path;
 
@@ -24,10 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
 
 /**
  * Guide User Store Activity
@@ -37,11 +34,17 @@ public class GuideUserStoreActivity extends AppCompatActivity {
     private GuidanceHandler guidanceHandler;
     private TextView locationTextView;
     private TextView vectorDirectionTextView;
-    private Timer timer;
-
+    private TextView visitedNodesTextView;
+    private boolean guidanceActive;
     private int nodesCount;
     private int visitedNodesCount;
-    private double minimalSignificantDistance = 0.00000000010;
+    // almost all location match
+    //private double minimalSignificantDistance = 1;
+    // mid precision
+    private double minimalSignificantDistance = 0.5;
+    // very precise location match
+    //private double minimalSignificantDistance = 0.00000000010;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,10 +55,17 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         bindLayout();
 
         // Fetching regularly user's location
-        positionCron();
-
-        // Load Path (mock for now)
         loadPath();
+        this.guidanceActive = true;
+        Button startButton;
+        startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(v -> guide());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.guidanceActive = false;
     }
 
     /**
@@ -64,60 +74,88 @@ public class GuideUserStoreActivity extends AppCompatActivity {
     public void bindLayout() {
         locationTextView = findViewById(R.id.locationTextView);
         vectorDirectionTextView = findViewById(R.id.vectorDirectiontextView);
+        visitedNodesTextView = findViewById(R.id.visitedNodesTextView);
     }
 
     /**
      * Guide user
      */
     public void guide() {
-        // While every node hasn't been reached by user, guidance is not over
-        while(this.visitedNodesCount != this.nodesCount) {
-            // Finding closed node still to visit
-            Node n = this.guidanceHandler.findClosestNode();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                clearVisitedNodesTextView();
+                // While every node hasn't been reached by user, guidance is not over
+                while (visitedNodesCount != nodesCount && guidanceActive) {
+                    // read from db
+                    //LocationEntity location = dbHandler.getLastLocation();
+                    // mock
+                    double x = (Math.random() * 2) - 1;
+                    double y = (Math.random() * 2) - 1;
+                    LocationEntity location = new LocationEntity(x, y, LocalDateTime.now());
 
-            // Indicate the user the closest node and waiting
-            showDirection();
-            System.out.println("teeeeeeeeeeeeeeeeeeeeeeeeest");
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                Toast.makeText(getApplicationContext(), "Interrupted", Toast.LENGTH_SHORT).show();
-            }
+                    if (location != null) {
+                        setLocationForGuidance(location);
+                        setLocationTextView("location = " + location.toString());
+                        Log.e("", "location = " + location.toString());
 
-            // If the user reach the node
-            if (isNodeReached(n)) {
-                // Add the node to reached nodes and counting it
-                this.visitedNodesCount++;
-                this.guidanceHandler.addReachedNode(n);
-            }
+                        // Finding closest node still to visit
+                        Node n = guidanceHandler.findClosestNode();
 
-            // Waiting
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                Toast.makeText(getApplicationContext(), "Interrupted", Toast.LENGTH_SHORT).show();
+                        // Indicate the user the closest node and waiting
+                        showDirection(n);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            toast("Interrupted");
+                        }
+
+                        // If the user reach the node
+                        if (isNodeReached(n)) {
+                            // Add the node to reached nodes and counting it
+                            visitedNodesCount++;
+                            guidanceHandler.addReachedNode(n);
+                            appendVisitedNode("Node reached : " + n.getLabel() + "\n");
+                            toast("Node reached : " + n.getLabel());
+                        }
+
+                        // Waiting
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            toast("Interrupted");
+                        }
+                    } else {
+                        toast("No location registered yet");
+                        setLocationTextView("No location registered yet");
+                    }
+                }
+                toast("Path is terminated have a nice day !");
             }
-        }
+        };
+        thread.start();
+
     }
 
     /**
      * Show direction to the next point to reach
      */
-    public void showDirection() {
+    public void showDirection(Node n) {
         double[] directionVector = this.guidanceHandler.computeDirection();
-
+        String directionMsg = "Next node to reach : " + n.getLabel() + " \n" + "Direction vector : (" + directionVector[0] + " x ; " + directionVector[1] + " y)";
         // Showing a message (for now)
-        setVectorDirectionTextView("direction vector : (" + directionVector[0] + " x ; " + directionVector[1] + ")");
-        Log.e("log", "direction vector : (" + directionVector[0] + " x ; " + directionVector[1] + ")");
+        setVectorDirectionTextView(directionMsg);
+        Log.e("log", directionMsg);
     }
 
     /**
      * A node is considered to be reached if the distance from it is under a minimal significant distance
+     *
      * @param n node to test
      * @return true or false wether the node is close enough or not
      */
     private boolean isNodeReached(Node n) {
-        return (this.guidanceHandler.computeDistance(n, false) < this.minimalSignificantDistance) ;
+        return (this.guidanceHandler.computeDistance(n, false) < this.minimalSignificantDistance);
     }
 
     /**
@@ -129,63 +167,43 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         Log.e("", s);
         this.guidanceHandler.setPath(new Path(jsonPath, dbHandler));
         this.nodesCount = this.guidanceHandler.getPath().getNodes().size();
-        this.visitedNodesCount = 0 ;
+        this.visitedNodesCount = 0;
     }
 
     /**
-     * Scheduling recurring task (location)
-     */
-    public void positionCron() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            synchronized public void run() {
-                LocationEntity location = dbHandler.getLastLocation();
-                if (location != null) {
-                    setLocationForGuidance(location);
-                    setLocationTextView("location = " + location.toString());
-                    Log.e("", "location = " + location.toString());
-                    guide();
-                } else {
-                    Log.e("", "No location registered yet");
-                    setLocationTextView("No location registered yet");
-                }
-            }
-        }, TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     *
      * @param location
      */
     public void setLocationForGuidance(LocationEntity location) {
+        System.out.println("SetLocationForGuidance : " + location.toString());
         this.guidanceHandler.setCurrentLocation(location);
     }
+
     /**
      * Display location string
+     *
      * @param stringLocation
      */
     public void setLocationTextView(String stringLocation) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                locationTextView.setText(stringLocation);
-            }
-        });
+        runOnUiThread(() -> locationTextView.setText(stringLocation));
     }
 
     public void setVectorDirectionTextView(String stringVectorDirection) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                vectorDirectionTextView.setText(stringVectorDirection);
-            }
-        });
+        runOnUiThread(() -> vectorDirectionTextView.setText(stringVectorDirection));
+    }
+
+    public void clearVisitedNodesTextView() {
+        runOnUiThread(() -> visitedNodesTextView.setText(""));
+    }
+
+    public void appendVisitedNode(String text) {
+        runOnUiThread(() -> visitedNodesTextView.append(text));
+    }
+
+    public void toast(String msg) {
+        runOnUiThread((() -> {
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            Log.i("INFO", msg);
+        }));
     }
 
     /**
@@ -236,5 +254,6 @@ public class GuideUserStoreActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        this.guidanceActive = true;
     }
 }
