@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- *
+ * Path
  */
 public class Path {
     private int id;

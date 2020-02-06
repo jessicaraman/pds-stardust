@@ -1,5 +1,8 @@
 package com.pds.pgmapp.model;
 
+/**
+ * Node Category entity
+ */
 public class NodeCategory {
     private int id;
     private String label;

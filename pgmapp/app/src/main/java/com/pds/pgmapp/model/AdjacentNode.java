@@ -1,5 +1,8 @@
 package com.pds.pgmapp.model;
 
+/**
+ * Adjacent Node entity
+ */
 public class AdjacentNode {
 
     private int mainNodeId;

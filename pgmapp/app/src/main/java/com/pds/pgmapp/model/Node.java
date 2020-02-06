@@ -2,6 +2,9 @@ package com.pds.pgmapp.model;
 
 import java.util.ArrayList;
 
+/**
+ * Node entity
+ */
 public class Node {
     private int id;
     private String label;
