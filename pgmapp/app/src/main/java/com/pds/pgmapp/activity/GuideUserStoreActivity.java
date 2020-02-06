@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.pds.pgmapp.R;
 import com.pds.pgmapp.geolocation.LocationEntity;
 import com.pds.pgmapp.handlers.DBHandler;
+import com.pds.pgmapp.handlers.GuidanceHandler;
+import com.pds.pgmapp.model.Door;
+import com.pds.pgmapp.model.Node;
 import com.pds.pgmapp.model.Path;
 
 import org.json.JSONException;
@@ -20,6 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -28,33 +33,103 @@ import java.util.concurrent.TimeUnit;
  * Guide User Store Activity
  */
 public class GuideUserStoreActivity extends AppCompatActivity {
-
-    private Timer timer;
     private DBHandler dbHandler;
-    private LocationEntity locationEntity;
+    private GuidanceHandler guidanceHandler;
     private TextView locationTextView;
-    private Path path;
+    private TextView vectorDirectionTextView;
+    private Timer timer;
+
+    private int nodesCount;
+    private int visitedNodesCount;
+    private double minimalSignificantDistance = 0.00000000010;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_direction_store);
         dbHandler = DBHandler.getInstance(this);
+        guidanceHandler = new GuidanceHandler();
         bindLayout();
+
+        // Fetching regularly user's location
         positionCron();
+
+        // Load Path (mock for now)
         loadPath();
     }
 
+    /**
+     * Bind layout res to class variables
+     */
     public void bindLayout() {
         locationTextView = findViewById(R.id.locationTextView);
+        vectorDirectionTextView = findViewById(R.id.vectorDirectiontextView);
     }
 
+    /**
+     * Guide user
+     */
+    public void guide() {
+        // While every node hasn't been reached by user, guidance is not over
+        while(this.visitedNodesCount != this.nodesCount) {
+            // Finding closed node still to visit
+            Node n = this.guidanceHandler.findClosestNode();
+
+            // Indicate the user the closest node and waiting
+            showDirection();
+            System.out.println("teeeeeeeeeeeeeeeeeeeeeeeeest");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Toast.makeText(getApplicationContext(), "Interrupted", Toast.LENGTH_SHORT).show();
+            }
+
+            // If the user reach the node
+            if (isNodeReached(n)) {
+                // Add the node to reached nodes and counting it
+                this.visitedNodesCount++;
+                this.guidanceHandler.addReachedNode(n);
+            }
+
+            // Waiting
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Toast.makeText(getApplicationContext(), "Interrupted", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Show direction to the next point to reach
+     */
+    public void showDirection() {
+        double[] directionVector = this.guidanceHandler.computeDirection();
+
+        // Showing a message (for now)
+        setVectorDirectionTextView("direction vector : (" + directionVector[0] + " x ; " + directionVector[1] + ")");
+        Log.e("log", "direction vector : (" + directionVector[0] + " x ; " + directionVector[1] + ")");
+    }
+
+    /**
+     * A node is considered to be reached if the distance from it is under a minimal significant distance
+     * @param n node to test
+     * @return true or false wether the node is close enough or not
+     */
+    private boolean isNodeReached(Node n) {
+        return (this.guidanceHandler.computeDistance(n, false) < this.minimalSignificantDistance) ;
+    }
+
+    /**
+     * Loading the user path (currently a mock from a static json)
+     */
     public void loadPath() {
         String s = this.getJSONString(this);
         JSONObject jsonPath = this.parseJSON(s);
         Log.e("", s);
-        this.path = new Path(jsonPath, dbHandler);
-        this.path.getNodes();
+        this.guidanceHandler.setPath(new Path(jsonPath, dbHandler));
+        this.nodesCount = this.guidanceHandler.getPath().getNodes().size();
+        this.visitedNodesCount = 0 ;
     }
 
     /**
@@ -64,21 +139,35 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             synchronized public void run() {
-                locationEntity = dbHandler.getLastLocation();
-                if (locationEntity != null) {
-                    setLocationTextView("location = " + locationEntity.toString());
-                    Log.e("", "location = " + locationEntity.toString());
+                LocationEntity location = dbHandler.getLastLocation();
+                if (location != null) {
+                    setLocationForGuidance(location);
+                    setLocationTextView("location = " + location.toString());
+                    Log.e("", "location = " + location.toString());
+                    guide();
                 } else {
                     Log.e("", "No location registered yet");
                     setLocationTextView("No location registered yet");
                 }
             }
         }, TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
-     * Display string location
      *
+     * @param location
+     */
+    public void setLocationForGuidance(LocationEntity location) {
+        this.guidanceHandler.setCurrentLocation(location);
+    }
+    /**
+     * Display location string
      * @param stringLocation
      */
     public void setLocationTextView(String stringLocation) {
@@ -86,6 +175,15 @@ public class GuideUserStoreActivity extends AppCompatActivity {
             @Override
             public void run() {
                 locationTextView.setText(stringLocation);
+            }
+        });
+    }
+
+    public void setVectorDirectionTextView(String stringVectorDirection) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                vectorDirectionTextView.setText(stringVectorDirection);
             }
         });
     }
