@@ -25,7 +25,7 @@ public class LocationWorker extends Worker {
         super(context, workerParams);
 
         this.context = context;
-        dbHandler = new DBHandler(context);
+        dbHandler = DBHandler.getInstance(context);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

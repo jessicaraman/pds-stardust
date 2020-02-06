@@ -1,38 +1,55 @@
 package com.pds.pgmapp.model;
 
+import java.util.ArrayList;
+
 /**
  * Node entity
  */
 public class Node {
+    private int id;
+    private String label;
+    private NodeCategory nodeCategory;
+    private ArrayList<Door> doors ;
 
-    /**
-     * Properties
-     */
-    int x, y;
-    String direction;
-
-    /**
-     * Constructor
-     *
-     * @param x
-     * @param y
-     * @param direction
-     */
-    public Node(int x, int y, String direction) {
-        this.x = x;
-        this.y = y;
-        this.direction = direction;
+    public Node(int id, String label, NodeCategory nodeCategory, ArrayList<Door> doors) {
+        this.id = id;
+        this.label = label;
+        this.nodeCategory = nodeCategory;
+        this.doors = doors;
     }
 
-    public int getX() {
-        return x;
+    public Node() {
     }
 
-    public int getY() {
-        return y;
+    public int getId() {
+        return id;
     }
 
-    public String getDirection() {
-        return direction;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public NodeCategory getNodeCategory() {
+        return nodeCategory;
+    }
+
+    public void setNodeCategory(NodeCategory nodeCategory) {
+        this.nodeCategory = nodeCategory;
+    }
+
+    public ArrayList<Door> getDoors() {
+        return doors;
+    }
+
+    public void setDoor(ArrayList<Door> doors) {
+        this.doors = doors;
     }
 }
