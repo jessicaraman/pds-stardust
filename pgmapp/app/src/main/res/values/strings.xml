@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">pgmapp</string>
+    <string name="title">Notifications</string>
 </resources>

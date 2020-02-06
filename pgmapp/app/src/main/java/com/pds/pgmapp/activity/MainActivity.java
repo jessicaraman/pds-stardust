@@ -1,6 +1,7 @@
 package com.pds.pgmapp.activity;
 
 import android.Manifest;
+import android.app.Notification;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttonUserGuideStoreAction();
         startGeolocatisation();
+        notifications();
     }
 
     /**
@@ -46,5 +48,10 @@ public class MainActivity extends AppCompatActivity {
         Button startGeolocalisationBtn;
         startGeolocalisationBtn = findViewById(R.id.buttonGeolocalisation);
         startGeolocalisationBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LocationActivity.class)));
+    }
+    protected void notifications() {
+        Button notifications;
+        notifications = findViewById(R.id.buttonNotifications);
+        notifications.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), NotificationActivity.class)));
     }
 }
