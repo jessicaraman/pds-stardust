@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "mocha": "^7.0.0",
-    "mongoose": "^5.8.9"
+    "mongoose": "^5.8.9",
+    "node-dijkstra": "^2.5.0"
   }
 }
