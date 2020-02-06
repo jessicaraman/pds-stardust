@@ -17,7 +17,7 @@ import android.widget.Toast;
 import android.webkit.WebView;
 import android.app.ActionBar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     WebView webView;
 
@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button button1 = findViewById(R.id.button1);
+        button1.setOnClickListener(this);
+
         webView = findViewById(R.id.wv);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new MyBrowser());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("file:///android_asset/SVGtest/index.html");
+
     }
 
     private class MyBrowser extends WebViewClient{
@@ -40,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean shouldOverrideUrlLoading(WebView view, String url){
             view.loadUrl(url);
             return true;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button1:
+                Toast.makeText(this, "Button 1 clicked", Toast.LENGTH_SHORT).show();
+                webView.loadUrl("javascript:updateFromAndroid(['entrance','c1','c4','td3door','td3'])");
+                break;
         }
     }
 

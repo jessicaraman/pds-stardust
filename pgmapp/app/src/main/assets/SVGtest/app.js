@@ -1,7 +1,7 @@
 var floor = document.querySelector('#floor');
 var paths= floor.querySelectorAll('.floor_image a');
 var links = floor.querySelectorAll('.floor_list a');
-
+var arrayPath = [];
 
 
 if(NodeList.prototype.forEach ===undefined){
@@ -10,30 +10,52 @@ if(NodeList.prototype.forEach ===undefined){
     }
 }
 
+updateFromAndroid = function(array){
+   floor.querySelectorAll('.is-active').forEach(function(item){
+      item.classList.remove('is-active');
+   })
+    x=document.getElementById("whichpart");
+    x.innerHTML ="";
+    array.forEach(function(item){
+        activeAreaPath(item);
+    })
+}
+
 
 paths.forEach(function(path){
     path.addEventListener('click',function(e){
         var id = this.id;
         console.log(id);
-        activeArea(id);
+        activeAreaClick(id);
     })
 })
 
 links.forEach(function(link){
     link.addEventListener('click',function(){
         var id = this.id.replace('list-','');
-        activeArea(id);
+        activeAreaClick(id);
     })
 })
 
-var activeArea = function (id){
-    floor.querySelectorAll('.is-active').forEach(function(item){
-        item.classList.remove('is-active');
-    })
+var activeAreaClick = function (id){
+   floor.querySelectorAll('.is-active').forEach(function(item){
+      item.classList.remove('is-active');
+  })
 
     if(id!==undefined){
-        document.querySelector('#list-'+id).classList.add('is-active');
+       // document.querySelector('#list-'+id).classList.add('is-active');
         document.querySelector('#'+id).classList.add('is-active');
+       x=document.getElementById("whichpart");
+       x.innerHTML = id;
+    }
+
+}
+
+var activeAreaPath = function (id){
+    if(id!==undefined){
+        document.querySelector('#'+id).classList.add('is-active');
+        x=document.getElementById("whichpart");
+        x.innerHTML = x.innerHTML+" --> "+id;
     }
 
 }
