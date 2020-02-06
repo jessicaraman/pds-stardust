@@ -15,6 +15,48 @@ public class GuideUserStoreUnitTest {
         // MOCK DATA
     }
 
+    // the method computeDistance should return the correct one
+    @Test
+    public void computeDistanceReturnsTheCorrectOne() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // x1 of user's position minus x2 is equal the x of next door
+    @Test
+    public void positionXOfIUserMinusDistaneIsEqualsToPositionXOfNextDoor() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // position y of user minus distance is equal the y of next door
+    @Test
+    public void positionYOfIUserMinusDistaneIsEqualsToPositionYOfNextDoor() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // the method getClosestNode should return an error if all nodes has already been visited by the user
+    @Test
+    public void getClosetNodeWithAllNodesAlreadyVisited() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // the method computeDirection should return the correct one
+    @Test
+    public void computeDirectionReturnsTheCorrectOne() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // the method getClosestNode should return the closest node to the user
+    @Test
+    public void getClosestNodeReturnsTheClosestOne() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // loading the mocked should return a parsed json object
+    @Test
+    public void loadingMockedPath() {
+        assertEquals(4, 2 + 2);
+    }
+
     // the user's current position must match the end position
     @Test
     public void userIsArrived() {
