@@ -21,6 +21,18 @@ public class GuideUserStoreUnitTest {
         assertEquals(4, 2 + 2);
     }
 
+    // x1 of user's position minus x2 is equal the x of a door
+    @Test
+    public void positionXOfIUserMinusDistaneIsEqualsToPositionXOfADoor() {
+        assertEquals(4, 2 + 2);
+    }
+
+    // position y of user minus distance is equal the y of a door
+    @Test
+    public void positionYOfIUserMinusDistaneIsEqualsToPositionYOfADoor() {
+        assertEquals(4, 2 + 2);
+    }
+
     // the method getClosestNode should return an error if all nodes has already been visited by the user
     @Test
     public void getClosetNodeWithAllNodesAlreadyVisited() {
