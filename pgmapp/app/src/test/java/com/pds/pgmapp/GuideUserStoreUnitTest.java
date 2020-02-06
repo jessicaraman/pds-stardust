@@ -21,15 +21,15 @@ public class GuideUserStoreUnitTest {
         assertEquals(4, 2 + 2);
     }
 
-    // x1 of user's position minus x2 is equal the x of a door
+    // x1 of user's position minus x2 is equal the x of next door
     @Test
-    public void positionXOfIUserMinusDistaneIsEqualsToPositionXOfADoor() {
+    public void positionXOfIUserMinusDistaneIsEqualsToPositionXOfNextDoor() {
         assertEquals(4, 2 + 2);
     }
 
-    // position y of user minus distance is equal the y of a door
+    // position y of user minus distance is equal the y of next door
     @Test
-    public void positionYOfIUserMinusDistaneIsEqualsToPositionYOfADoor() {
+    public void positionYOfIUserMinusDistaneIsEqualsToPositionYOfNextDoor() {
         assertEquals(4, 2 + 2);
     }
 
