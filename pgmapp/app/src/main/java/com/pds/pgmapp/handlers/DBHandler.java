@@ -269,7 +269,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO node (id,label,node_category) VALUES (3,'JD Sports',2);");
         db.execSQL("INSERT INTO node (id,label,node_category) VALUES (4,'Uniqlo',2);");
         db.execSQL("INSERT INTO node (id,label,node_category) VALUES (5,'Pull&Bear',2);");
-        db.execSQL("INSERT INTO node (id,label,node_category) VALUES (6,'Fnac',2);");
     }
 
     /**
@@ -291,9 +290,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void insertAdjacentNode(SQLiteDatabase db) {
         Log.e("log", "Insert AdjacentNode");
         db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (1,2, 132);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (5,6, 242);");
         db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (3,2,1343);");
-        db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (4,6,21);");
         db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (3,5,324);");
         db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (1,3,3242);");
         db.execSQL("INSERT INTO adjacentnode (main_node_id, adjacent_node_id, main_adjacent_node_distance) VALUES (4,5,321);");
@@ -306,12 +303,12 @@ public class DBHandler extends SQLiteOpenHelper {
      */
     public void insertDoor(SQLiteDatabase db) {
         Log.e("log", "Insert Door");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.2921868823996539, 0.7736856476831694, 1)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (2, 0.5438542339380292, 0.1838274390274859, 2)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (3, 0.4748390248790389, 0.6430892890328030, 3)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (4, 0.3294045893024090, 0.4890308709382090, 4)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (5, 0.0986384749839080, 0.1234890329480437, 5)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (6, 0.7270480935784303, 0.9084938274784929, 6)");
-        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (7, 0.7270472404809320, 0.9084837208930437, 6)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (1, 0.292186882399653, 0.773685647683169, 1)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (2, 0.543854233938029, 0.183827439027485, 2)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (3, 0.474839024879038, 0.643089289032803, 3)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (4, 0.329404589302409, 0.489030870938209, 4)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (5, 0.098638474983908, 0.123489032948043, 4)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (6, 0.727048093578430, 0.908493827478492, 5)");
+        db.execSQL("INSERT INTO door (id,x,y,id_node) VALUES (7, 0.727047240480932, 0.908483720893043, 5)");
     }
 }
