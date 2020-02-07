@@ -3,6 +3,7 @@ package com.pds.pgmapp.activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
+import java.util.Timer;
 
 /**
  * Guide User Store Activity
@@ -35,16 +37,20 @@ public class GuideUserStoreActivity extends AppCompatActivity {
     private TextView locationTextView;
     private TextView vectorDirectionTextView;
     private TextView visitedNodesTextView;
-    private boolean guidanceActive;
+    private Timer timer;
+
     private int nodesCount;
     private int visitedNodesCount;
+    private double millisecondsPassed = 0;
+    private double currentMilli = 0;
     // almost all location match
-    //private double minimalSignificantDistance = 1;
+    //private double minimalSignificantDistance = 1 ; //0.00000000010;
     // mid precision
-    private double minimalSignificantDistance = 0.5;
+    private double minimalSignificantDistance = 0.5; //0.00000000010;
     // very precise location match
     //private double minimalSignificantDistance = 0.00000000010;
 
+    private boolean guidanceActive;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +63,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         // Fetching regularly user's location
         loadPath();
         this.guidanceActive = true;
+
         Button startButton;
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> guide());
@@ -84,6 +91,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         Thread thread = new Thread() {
             @Override
             public void run() {
+                currentMilli = SystemClock.elapsedRealtime();
                 clearVisitedNodesTextView();
                 // While every node hasn't been reached by user, guidance is not over
                 while (visitedNodesCount != nodesCount && guidanceActive) {
@@ -101,6 +109,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
 
                         // Finding closest node still to visit
                         Node n = guidanceHandler.findClosestNode();
+                        Log.e("log", "affiche le n" + n);
 
                         // Indicate the user the closest node and waiting
                         showDirection(n);
@@ -130,11 +139,12 @@ public class GuideUserStoreActivity extends AppCompatActivity {
                         setLocationTextView("No location registered yet");
                     }
                 }
-                toast("Path is terminated have a nice day !");
+                millisecondsPassed = SystemClock.elapsedRealtime();
+                System.out.println("Seconds passed : " + (millisecondsPassed - currentMilli)/1000);
+                toast("Path is terminated have a nice day ! Path lasted " + (millisecondsPassed - currentMilli)/1000 + " seconds");
             }
         };
         thread.start();
-
     }
 
     /**
@@ -228,7 +238,6 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-
         return str;
     }
 
@@ -245,9 +254,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return json;
-        //implement logic with JSON here
     }
 
 
