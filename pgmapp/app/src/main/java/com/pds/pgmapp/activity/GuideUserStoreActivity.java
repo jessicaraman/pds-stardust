@@ -42,7 +42,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
     private int nodesCount;
     private int visitedNodesCount;
     private double millisecondsPassed = 0;
-    private double currentMilli = 0;
+    private double startMilli = 0;
     // almost all location match
     //private double minimalSignificantDistance = 1 ; //0.00000000010;
     // mid precision
@@ -91,7 +91,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                currentMilli = SystemClock.elapsedRealtime();
+                startMilli = SystemClock.elapsedRealtime();
                 clearVisitedNodesTextView();
                 // While every node hasn't been reached by user, guidance is not over
                 while (visitedNodesCount != nodesCount && guidanceActive) {
@@ -125,8 +125,8 @@ public class GuideUserStoreActivity extends AppCompatActivity {
                             visitedNodesCount++;
                             guidanceHandler.addReachedNode(n);
                             double millisecondPassedForNode = SystemClock.elapsedRealtime();
-                            appendVisitedNode("Node reached : " + n.getLabel() + " in " + (millisecondPassedForNode - currentMilli)/1000 + "seconds " + "\n");
-                            toast("Node reached : " + n.getLabel() + "in " + (millisecondPassedForNode - currentMilli)/1000 + " seconds");
+                            appendVisitedNode("Node reached : " + n.getLabel() + " in " + (millisecondPassedForNode - startMilli)/1000 + "seconds " + "\n");
+                            toast("Node reached : " + n.getLabel() + "in " + (millisecondPassedForNode - startMilli)/1000 + " seconds");
                         }
 
                         // Waiting
@@ -141,8 +141,8 @@ public class GuideUserStoreActivity extends AppCompatActivity {
                     }
                 }
                 millisecondsPassed = SystemClock.elapsedRealtime();
-                System.out.println("Seconds passed : " + (millisecondsPassed - currentMilli)/1000);
-                toast("Path is terminated have a nice day ! Path lasted " + (millisecondsPassed - currentMilli)/1000 + " seconds");
+                System.out.println("Seconds passed : " + (millisecondsPassed - startMilli)/1000);
+                toast("Path is terminated have a nice day ! Path lasted " + (millisecondsPassed - startMilli)/1000 + " seconds");
             }
         };
         thread.start();
