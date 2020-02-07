@@ -47,7 +47,7 @@ public class GuidanceHandler {
     }
 
     /**
-     * Calcul distance
+     * Compute distance
      * @param node
      * @param saveNextDoor
      * @return distance
@@ -75,12 +75,12 @@ public class GuidanceHandler {
                 }
             }
         }
-
         return dist;
     }
 
     /**
      * Compute a direction vector from current location to next point to reach
+     *
      * @return
      */
     public double[] computeDirection() {

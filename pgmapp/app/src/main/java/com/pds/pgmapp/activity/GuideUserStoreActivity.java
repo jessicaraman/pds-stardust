@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
+import java.util.Timer;
 
 /**
  * Guide User Store Activity
@@ -35,16 +36,18 @@ public class GuideUserStoreActivity extends AppCompatActivity {
     private TextView locationTextView;
     private TextView vectorDirectionTextView;
     private TextView visitedNodesTextView;
-    private boolean guidanceActive;
+    private Timer timer;
+
     private int nodesCount;
     private int visitedNodesCount;
     // almost all location match
-    //private double minimalSignificantDistance = 1;
+    //private double minimalSignificantDistance = 1 ; //0.00000000010;
     // mid precision
-    private double minimalSignificantDistance = 0.5;
+    private double minimalSignificantDistance = 0.5; //0.00000000010;
     // very precise location match
     //private double minimalSignificantDistance = 0.00000000010;
 
+    private boolean guidanceActive;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         // Fetching regularly user's location
         loadPath();
         this.guidanceActive = true;
+
         Button startButton;
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> guide());
@@ -101,6 +105,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
 
                         // Finding closest node still to visit
                         Node n = guidanceHandler.findClosestNode();
+                        Log.e("log", "affiche le n" + n);
 
                         // Indicate the user the closest node and waiting
                         showDirection(n);
@@ -134,7 +139,6 @@ public class GuideUserStoreActivity extends AppCompatActivity {
             }
         };
         thread.start();
-
     }
 
     /**
@@ -228,7 +232,6 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-
         return str;
     }
 
@@ -245,9 +248,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return json;
-        //implement logic with JSON here
     }
 
 
