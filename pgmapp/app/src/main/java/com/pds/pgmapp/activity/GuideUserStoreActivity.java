@@ -3,6 +3,7 @@ package com.pds.pgmapp.activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,6 +41,8 @@ public class GuideUserStoreActivity extends AppCompatActivity {
 
     private int nodesCount;
     private int visitedNodesCount;
+    private double millisecondsPassed = 0;
+    private double currentMilli = 0;
     // almost all location match
     //private double minimalSignificantDistance = 1 ; //0.00000000010;
     // mid precision
@@ -88,6 +91,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
         Thread thread = new Thread() {
             @Override
             public void run() {
+                currentMilli = SystemClock.elapsedRealtime();
                 clearVisitedNodesTextView();
                 // While every node hasn't been reached by user, guidance is not over
                 while (visitedNodesCount != nodesCount && guidanceActive) {
@@ -135,7 +139,9 @@ public class GuideUserStoreActivity extends AppCompatActivity {
                         setLocationTextView("No location registered yet");
                     }
                 }
-                toast("Path is terminated have a nice day !");
+                millisecondsPassed = SystemClock.elapsedRealtime();
+                System.out.println("Seconds passed : " + (millisecondsPassed - currentMilli)/1000);
+                toast("Path is terminated have a nice day ! Path lasted " + (millisecondsPassed - currentMilli)/1000 + " seconds");
             }
         };
         thread.start();
