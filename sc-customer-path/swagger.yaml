@@ -2,6 +2,7 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Swagger customer path API"
+  termsOfService: "http://swagger.io/terms/"
   contact:
     email: "faddaoui.i@gmail.com"
   license:
@@ -12,9 +13,15 @@ basePath: "/v2"
 tags:
 - name: "journey"
   description: "endpoints regarding the customer journey"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
     
 - name: "map"
   description: "endpoints regarding the logic map of the mall"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
 schemes:
 - "https"
 - "http"
@@ -72,9 +79,7 @@ definitions:
       customerId:
         type: "string"
       customerLocation:
-        type: "array"
-        items:
-          type: "string"
+        type: "string"
       listOfStore:
         type: "array"
         items:
@@ -87,7 +92,7 @@ definitions:
       ordereredPath:
         type: "array"
         items:
-          $ref: "#/definitions/Node"
+          type: "string"
   LogicalMap:
     type: "object"
     properties:

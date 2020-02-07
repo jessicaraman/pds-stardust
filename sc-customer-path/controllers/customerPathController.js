@@ -3,37 +3,58 @@ var Graph = require('node-dijkstra');
 var route = new Graph();
 var AdjacentNode = require("../src/controllers/schemas/adjacentNodeSchema");
 
-function initiateMap(){
-    const route = new Graph();
-        route.addNode('A', { 'B':1, 'C':1 });
-        route.addNode('B', { 'A':1, 'D':1, 'E': 1 });
-        route.addNode('C', { 'A':1, 'D':1 });
-        route.addNode('D', { 'C':1, 'B':1, 'F':1 });
-        route.addNode('E', { 'B':1, 'F':1});
-        route.addNode('F', { 'D':1, 'E':1});
-}
 function getNodePath(a, b){
     const route = new Graph();
-        route.addNode('A', { 'B':1, 'C':1 });
-        route.addNode('B', { 'A':1, 'D':1, 'E': 1 });
-        route.addNode('C', { 'A':1, 'D':1 });
-        route.addNode('D', { 'C':1, 'B':1, 'F':1 });
-        route.addNode('E', { 'B':1, 'F':1});
-        route.addNode('F', { 'D':1, 'E':1});
-    var nodeA =a;
-    var nodeB =b;
+        route.addNode("reception2", {"entrance": 1});
+        route.addNode("entrance", {"reception2":1, "stairs":1, "c1": 1});
+        route.addNode("stairs", {"c1":1});
+        route.addNode("c1", {"entrance":1, "c2": 1, "stairs":1, "c4":1});
+        route.addNode("reception", {"entrance":1});
+        route.addNode("c2", {"c1":1, "p1":1, "p2":1, "c3":1, "bde":1});
+        route.addNode("p1", {"c2":1});
+        route.addNode("p2", {"c2":1});
+        route.addNode("c3", {"c2":1, "p2":1, "td5":1, "p3":1});
+        route.addNode("bde",{"c2":1});
+        route.addNode("p3",{"c3":1});
+        route.addNode("td5", {"c3":1});
+        route.addNode("c4", {"c1":1,"x3":1,"r1":1,"r2":1,"r3":1,"p8":1,"p11":1,"p9":1,"td3":1});
+        route.addNode("x3",{"c4":1});
+        route.addNode("r1",{"c4":1});
+        route.addNode("r2",{"c4":1});
+        route.addNode("r3",{"c4":1});
+        route.addNode("p8", {"c4":1});
+        route.addNode("p11", {"c4":1});
+        route.addNode("p9", {"c4":1});
+        route.addNode("td3", {"c4":1});
+        var nodeA =a;
+        var nodeB =b;
     return route.path(nodeA, nodeB);
 }
 function getClosestNodeFromList(startingNode, nodesList) {
     try{
         console.log("enter into method");
         const route = new Graph();
-        route.addNode('A', { 'B':1, 'C':1 });
-        route.addNode('B', { 'A':1, 'D':1, 'E': 1 });
-        route.addNode('C', { 'A':1, 'D':1 });
-        route.addNode('D', { 'C':1, 'B':1, 'F':1 });
-        route.addNode('E', { 'B':1, 'F':1});
-        route.addNode('F', { 'D':1, 'E':1});
+        route.addNode("reception2", {"entrance": 1});
+        route.addNode("entrance", {"reception2":1, "stairs":1, "c1": 1});
+        route.addNode("stairs", {"c1":1});
+        route.addNode("c1", {"entrance":1, "c2": 1, "stairs":1, "c4":1});
+        route.addNode("reception", {"entrance":1});
+        route.addNode("c2", {"c1":1, "p1":1, "p2":1, "c3":1, "bde":1});
+        route.addNode("p1", {"c2":1});
+        route.addNode("p2", {"c2":1});
+        route.addNode("c3", {"c2":1, "p2":1, "td5":1, "p3":1});
+        route.addNode("bde",{"c2":1});
+        route.addNode("p3",{"c3":1});
+        route.addNode("td5", {"c3":1});
+        route.addNode("c4", {"c1":1,"x3":1,"r1":1,"r2":1,"r3":1,"p8":1,"p11":1,"p9":1,"td3":1});
+        route.addNode("x3",{"c4":1});
+        route.addNode("r1",{"c4":1});
+        route.addNode("r2",{"c4":1});
+        route.addNode("r3",{"c4":1});
+        route.addNode("p8", {"c4":1});
+        route.addNode("p11", {"c4":1});
+        route.addNode("p9", {"c4":1});
+        route.addNode("td3", {"c4":1});
         for(node of nodesList){
             console.log(node);
         }

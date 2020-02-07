@@ -8,6 +8,7 @@ var customerPathController = require('./controllers/customerPathController');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
 app.listen(port, function(){
     console.log('App run on port '+ port);
 });
@@ -31,7 +32,8 @@ app.get('/customerPath', (req, res, next) => {
     var optimizedPath =customerPathController.getOptimizedPath(startingNode, nodesList);
     console.log("result on indexjs: " + optimizedPath);
     res.status(200).json({
-        'optimizedPath': optimizedPath
+        'path': optimizedPath,
+        'pathId': null
     })
     
 });
