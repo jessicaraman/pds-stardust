@@ -1,6 +1,17 @@
-const toggleClass = require('./util');
+const mod = require('./util');
+const activeAreaPath = mod.activeAreaPath;
+const toggleClass = mod.toggleClass;
 
-describe('toggleClass', () => {
+
+describe('Add class is-active', () => {
+  const mockedElementDOM = { classList: { contains: jest.fn(), remove: jest.fn(), add: jest.fn() } };
+  it('should add the class is-active', () => {
+    activeAreaPath(mockedElementDOM);
+    expect(mockedElementDOM.classList.add).toBeCalledWith('is-active');
+  });
+});
+
+describe('Add class', () => {
   const mockedElementDOM = { classList: { contains: jest.fn(), remove: jest.fn(), add: jest.fn() } };
 
   it('should remove the class', () => {

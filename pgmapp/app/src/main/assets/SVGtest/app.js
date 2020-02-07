@@ -58,7 +58,7 @@ var activeAreaPath = function(DOMid){
          x=document.getElementById("whichpart");
          x.innerHTML = x.innerHTML+" --> "+id;
      }
- 
+
  }
 
 

@@ -5,4 +5,14 @@ function toggleClass (elementDOM, className) {
       elementDOM.classList.add(className);
     }
   };
-  module.exports = toggleClass;
+
+
+  var activeAreaPath = function(DOMid){
+        DOMid.classList.add('is-active');
+}
+
+module.exports = {
+  activeAreaPath:activeAreaPath,
+  toggleClass:toggleClass}
+  ;
+
