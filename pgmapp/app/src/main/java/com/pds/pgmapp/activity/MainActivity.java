@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         buttonUserGuideStoreAction();
+        buttonPath();
         startGeolocatisation();
         notifications();
     }
@@ -42,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
         Button buttonCountriesList;
         buttonCountriesList = findViewById(R.id.buttonGuideUserStore);
         buttonCountriesList.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), GuideUserStoreActivity.class)));
+    }
+
+    protected void buttonPath() {
+        Button btn;
+        btn = findViewById(R.id.buttonPath);
+        btn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PathActivity.class)));
     }
 
     protected void startGeolocatisation() {
