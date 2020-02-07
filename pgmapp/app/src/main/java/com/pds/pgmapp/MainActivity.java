@@ -16,6 +16,18 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.webkit.WebView;
 import android.app.ActionBar;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -55,6 +67,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 webView.loadUrl("javascript:updateFromAndroid(['entrance','c1','c4','td3door','td3'])");
                 break;
         }
+    }
+
+    private void getPath() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
+                .build();
+        Api api = retrofit.create(Api.class);
+        Call<PathNode> call = api.getNodes();
+        call.enqueue(new Callback<PathNode>() {
+            @Override
+            public void onResponse(Call<PathNode> call, Response<PathNode> response) {
+                PathNode nodeList = response.body();
+
+               // String[] heroes = new String[nodeList.getPath().size()];
+                List<String> nodes = nodeList.getPath();
+            }
+            @Override
+            public void onFailure(Call<PathNode> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

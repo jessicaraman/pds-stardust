@@ -17,7 +17,8 @@ updateFromAndroid = function(array){
     x=document.getElementById("whichpart");
     x.innerHTML ="";
     array.forEach(function(item){
-        activeAreaPath(item);
+        DOMid=document.querySelector('#'+item);
+        activeAreaPath(DOMid);
     })
 }
 
@@ -44,21 +45,23 @@ var activeAreaClick = function (id){
 
     if(id!==undefined){
        // document.querySelector('#list-'+id).classList.add('is-active');
-        document.querySelector('#'+id).classList.add('is-active');
+       document.querySelector('#'+id).classList.add('is-active');
        x=document.getElementById("whichpart");
        x.innerHTML = id;
     }
 
 }
 
-var activeAreaPath = function (id){
-    if(id!==undefined){
-        document.querySelector('#'+id).classList.add('is-active');
-        x=document.getElementById("whichpart");
-        x.innerHTML = x.innerHTML+" --> "+id;
-    }
+var activeAreaPath = function(DOMid){
+     if(id!==undefined){
+         DOMid.classList.add('is-active');
+         x=document.getElementById("whichpart");
+         x.innerHTML = x.innerHTML+" --> "+id;
+     }
+ 
+ }
 
-}
+
 
 /*
 floor.addEventListener('mouseover',function(){
