@@ -124,8 +124,9 @@ public class GuideUserStoreActivity extends AppCompatActivity {
                             // Add the node to reached nodes and counting it
                             visitedNodesCount++;
                             guidanceHandler.addReachedNode(n);
-                            appendVisitedNode("Node reached : " + n.getLabel() + "\n");
-                            toast("Node reached : " + n.getLabel());
+                            double millisecondPassedForNode = SystemClock.elapsedRealtime();
+                            appendVisitedNode("Node reached : " + n.getLabel() + " in " + (millisecondPassedForNode - currentMilli)/1000 + "seconds " + "\n");
+                            toast("Node reached : " + n.getLabel() + "in " + (millisecondPassedForNode - currentMilli)/1000 + " seconds");
                         }
 
                         // Waiting
