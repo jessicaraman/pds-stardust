@@ -26,16 +26,29 @@ app.get('/map', (req, res, next) => {
 });
 
 app.get('/customerPath', (req, res, next) => {
+    try{
     var startingNode = req.body.startingNode;
     var nodesList = req.body.listOfNode;
     console.log(" starting node: " + startingNode + " list of nodes: " +nodesList);
     var optimizedPath =customerPathController.getOptimizedPath(startingNode, nodesList);
     console.log("result on indexjs: " + optimizedPath);
-    res.status(200).json({
-        'path': optimizedPath,
-        'pathId': null
-    })
-    
+    if(optimizedPath == null){
+        res.status(400).json({
+            text: "can't generate path: There is an issue with the nodes selected. Please try again"
+        });
+    }
+    else{
+        res.status(200).json({
+            'path': optimizedPath,
+            'pathId': null
+        })
+    }
+    }
+    catch(error){
+        res.status(500).json({
+            error
+        });
+    }
 });
 
 mongoose.connect('mongodb://localhost/db').then(() => {

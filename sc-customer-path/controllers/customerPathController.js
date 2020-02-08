@@ -65,12 +65,15 @@ function getClosestNodeFromList(startingNode, nodesList) {
             var tempsDistance = route.path(startingNode, node);
             if(tempsDistance != null){
                 console.log("chemin entre " + startingNode + " et " + node + ": " + tempsDistance +" soit " + tempsDistance.length);
-            if(closestNodeName ==  null || closestNodeDistance > tempsDistance.length){
-                if(node != startingNode){
-                    closestNodeDistance = tempsDistance.length;
-                    closestNodeName = node;
+                if(closestNodeName ==  null || closestNodeDistance > tempsDistance.length){
+                    if(node != startingNode){
+                        closestNodeDistance = tempsDistance.length;
+                        closestNodeName = node;
+                    }
                 }
             }
+            else{
+                return null;
             }
         }
          return closestNodeName;
@@ -87,7 +90,9 @@ module.exports = {
 
         var newStartingPoint = a;
         var finalOrderedList = []; 
-        finalOrderedList.push(a);
+        if(a != null){
+            finalOrderedList.push(a);
+        }
         while(typeof nodesList != 'undefined' && nodesList.length >= 1){
             var tempClosestNode = getClosestNodeFromList(newStartingPoint, nodesList);
             console.log("tempClosestNode: " + tempClosestNode);
@@ -100,6 +105,9 @@ module.exports = {
                     finalOrderedList.push(node);
                 }
                 newStartingPoint = tempClosestNode;
+            }
+            else{
+                return null;
             }
             console.log("Liste initial: " + nodesList);
             console.log("Liste finale: " + finalOrderedList);
