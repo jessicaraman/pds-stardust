@@ -4,37 +4,49 @@ var express = require("express"),
 var fs = require("fs");
 var mongoose = require('mongoose');
 var bodyParser = require("body-parser");
-var customerPathController = require('./controllers/customerPathController.js')
-var mapController = require('./controllers/mapController.js')
+var customerPathController = require('./controllers/customerPathController');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 
 app.listen(port, function(){
     console.log('App run on port '+ port);
 });
 
-app.get('/', (req, res) => res.send('hello'));
+app.get('/', (req, res) => res.status(200).json({
+    text: 'customer path API for the SC Mall :)'
+}));
 app.get('/map', (req, res, next) => {
-    try{
-        console.log("this service is not working yet, please stay tuned");
-        return res.status(200).json({
-            text: "to be implemented soon... :)"
+        console.log("oui");
+        var message = customerPathController.testFunction();
+        console.log(message);
+        res.status(200).json({
+            text: message
         });
-    }
-    catch(error){
-        return res.status(500).json({
-            error
-        });
-    }
 });
 
 app.get('/customerPath', (req, res, next) => {
     try{
-        console.log("this service is not working yet, please stay tuned");
-        return res.status(200).json({
-            text: "to be implemented soon... :)"
+
+    var startingNode = req.body.startingNode;
+    var nodesList = req.body.listOfNode;
+    console.log(" starting node: " + startingNode + " list of nodes: " +nodesList);
+    var optimizedPath =customerPathController.getOptimizedPath(startingNode, nodesList);
+    console.log("result on indexjs: " + optimizedPath);
+    if(optimizedPath == null){
+        res.status(400).json({
+            text: "can't generate path: There is an issue with the nodes selected. Please try again"
         });
     }
+    else{
+        res.status(200).json({
+            'path': optimizedPath,
+            'pathId': null
+        })
+    }
+    }
     catch(error){
-        return res.status(500).json({
+        res.status(500).json({
             error
         });
     }
