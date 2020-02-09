@@ -5,20 +5,11 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp"
     android:orientation="vertical"
-    tools:context=".activity.GeolocalisationActivity">
+    tools:context=".activity.LocationActivity">
 
-    <ListView
-        android:id="@+id/wifiList"
+    <TextView
+        android:id="@+id/locationTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/scanBtn" />
-
-    <Button
-        android:id="@+id/scanBtn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_margin="15dp"
-        android:text="Scan Wifi" />
+        android:text="TextView" />
 </RelativeLayout>

@@ -1,92 +1,267 @@
 package com.pds.pgmapp.activity;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.view.View;
+import android.os.SystemClock;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.pds.pgmapp.R;
+import com.pds.pgmapp.geolocation.LocationEntity;
+import com.pds.pgmapp.handlers.DBHandler;
+import com.pds.pgmapp.handlers.GuidanceHandler;
 import com.pds.pgmapp.model.Node;
+import com.pds.pgmapp.model.Path;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.util.Timer;
 
 /**
- * Activity : Guide User Store
+ * Guide User Store Activity
  */
-public class GuideUserStoreActivity extends AppCompatActivity implements View.OnClickListener {
+public class GuideUserStoreActivity extends AppCompatActivity {
+    private DBHandler dbHandler;
+    private GuidanceHandler guidanceHandler;
+    private TextView locationTextView;
+    private TextView vectorDirectionTextView;
+    private TextView visitedNodesTextView;
+    private Timer timer;
 
-    Node[] pathMocked = new Node[5];
-    int xMocked = 0;
-    int yMocked = 0;
-    int currentNode = 0;
+    private int nodesCount;
+    private int visitedNodesCount;
+    private double millisecondsPassed = 0;
+    private double startMilli = 0;
+    // almost all location match
+    //private double minimalSignificantDistance = 1 ; //0.00000000010;
+    // mid precision
+    private double minimalSignificantDistance = 0.5; //0.00000000010;
+    // very precise location match
+    //private double minimalSignificantDistance = 0.00000000010;
+
+    private boolean guidanceActive;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_direction_store);
+        dbHandler = DBHandler.getInstance(this);
+        guidanceHandler = new GuidanceHandler();
+        bindLayout();
 
-        Button down = findViewById(R.id.goBack);
-        Button left = findViewById(R.id.left);
-        Button right = findViewById(R.id.right);
-        Button high = findViewById(R.id.high);
-        down.setOnClickListener(this);
-        left.setOnClickListener(this);
-        high.setOnClickListener(this);
-        right.setOnClickListener(this);
+        // Fetching regularly user's location
+        loadPath();
+        this.guidanceActive = true;
 
-        mockPath();
-        TextView direction = findViewById(R.id.direction);
-        direction.setText(pathMocked[currentNode].getDirection());
-    }
-
-    public void mockPath() {
-        pathMocked[0] = new Node(0, 0, "straight ahead");
-        pathMocked[1] = new Node(0, 10, "right");
-        pathMocked[2] = new Node(10, 10, "straight ahead");
-        pathMocked[3] = new Node(10, 20, "left");
-        pathMocked[4] = new Node(0, 20, "arrived");
+        Button startButton;
+        startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(v -> guide());
     }
 
     @Override
-    public void onClick(View view) {
-        System.out.println(view.getId());
-        String directionTaken = null;
-        switch (view.getId()) {
-            case R.id.goBack:
-                yMocked = yMocked - 5;
-                directionTaken = "back";
-                break;
-            case R.id.left:
-                xMocked = xMocked - 5;
-                directionTaken = "left";
-                break;
-            case R.id.right:
-                xMocked = xMocked + 5;
-                directionTaken = "right";
-                break;
-            case R.id.high:
-                yMocked = yMocked + 5;
-                directionTaken = "straight ahead";
-                break;
-        }
+    protected void onStop() {
+        super.onStop();
+        this.guidanceActive = false;
+    }
 
-        if (currentNode < 3) {
-            if (yMocked == pathMocked[currentNode + 1].getY() && xMocked == pathMocked[currentNode + 1].getX()) {
-                TextView direction = findViewById(R.id.direction);
-                direction.setText(pathMocked[currentNode + 1].getDirection());
-                currentNode++;
+    /**
+     * Bind layout res to class variables
+     */
+    public void bindLayout() {
+        locationTextView = findViewById(R.id.locationTextView);
+        vectorDirectionTextView = findViewById(R.id.vectorDirectiontextView);
+        visitedNodesTextView = findViewById(R.id.visitedNodesTextView);
+    }
+
+    /**
+     * Guide user
+     */
+    public void guide() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                startMilli = SystemClock.elapsedRealtime();
+                clearVisitedNodesTextView();
+                // While every node hasn't been reached by user, guidance is not over
+                while (visitedNodesCount != nodesCount && guidanceActive) {
+                    // read from db
+                    //LocationEntity location = dbHandler.getLastLocation();
+                    // mock
+                    double x = (Math.random() * 2) - 1;
+                    double y = (Math.random() * 2) - 1;
+                    LocationEntity location = new LocationEntity(x, y, LocalDateTime.now());
+
+                    if (location != null) {
+                        setLocationForGuidance(location);
+                        setLocationTextView("location = " + location.toString());
+                        Log.e("", "location = " + location.toString());
+
+                        // Finding closest node still to visit
+                        Node n = guidanceHandler.findClosestNode();
+                        Log.e("log", "affiche le n" + n);
+
+                        // Indicate the user the closest node and waiting
+                        showDirection(n);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            toast("Interrupted");
+                        }
+
+                        // If the user reach the node
+                        if (isNodeReached(n)) {
+                            // Add the node to reached nodes and counting it
+                            visitedNodesCount++;
+                            guidanceHandler.addReachedNode(n);
+                            double millisecondPassedForNode = SystemClock.elapsedRealtime();
+                            appendVisitedNode("Node reached : " + n.getLabel() + " in " + (millisecondPassedForNode - startMilli)/1000 + "seconds " + "\n");
+                            toast("Node reached : " + n.getLabel() + "in " + (millisecondPassedForNode - startMilli)/1000 + " seconds");
+                        }
+
+                        // Waiting
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            toast("Interrupted");
+                        }
+                    } else {
+                        toast("No location registered yet");
+                        setLocationTextView("No location registered yet");
+                    }
+                }
+                millisecondsPassed = SystemClock.elapsedRealtime();
+                System.out.println("Seconds passed : " + (millisecondsPassed - startMilli)/1000);
+                toast("Path is terminated have a nice day ! Path lasted " + (millisecondsPassed - startMilli)/1000 + " seconds");
             }
-        } else if (yMocked == pathMocked[4].getY() && xMocked == pathMocked[4].getX()) {
-            TextView direction = findViewById(R.id.direction);
-            direction.setText("arrived");
-            Button down = findViewById(R.id.goBack);
-            Button left = findViewById(R.id.left);
-            Button right = findViewById(R.id.right);
-            Button high = findViewById(R.id.high);
-            down.setVisibility(View.INVISIBLE);
-            left.setVisibility(View.INVISIBLE);
-            right.setVisibility(View.INVISIBLE);
-            high.setVisibility(View.INVISIBLE);
+        };
+        thread.start();
+    }
+
+    /**
+     * Show direction to the next point to reach
+     */
+    public void showDirection(Node n) {
+        double[] directionVector = this.guidanceHandler.computeDirection();
+        String directionMsg = "Next node to reach : " + n.getLabel() + " \n" + "Direction vector : (" + directionVector[0] + " x ; " + directionVector[1] + " y)";
+        // Showing a message (for now)
+        setVectorDirectionTextView(directionMsg);
+        Log.e("log", directionMsg);
+    }
+
+    /**
+     * A node is considered to be reached if the distance from it is under a minimal significant distance
+     *
+     * @param n node to test
+     * @return true or false wether the node is close enough or not
+     */
+    private boolean isNodeReached(Node n) {
+        return (this.guidanceHandler.computeDistance(n, false) < this.minimalSignificantDistance);
+    }
+
+    /**
+     * Loading the user path (currently a mock from a static json)
+     */
+    public void loadPath() {
+        String s = this.getJSONString(this);
+        JSONObject jsonPath = this.parseJSON(s);
+        Log.e("", s);
+        this.guidanceHandler.setPath(new Path(jsonPath, dbHandler));
+        this.nodesCount = this.guidanceHandler.getPath().getNodes().size();
+        this.visitedNodesCount = 0;
+    }
+
+    /**
+     * @param location
+     */
+    public void setLocationForGuidance(LocationEntity location) {
+        System.out.println("SetLocationForGuidance : " + location.toString());
+        this.guidanceHandler.setCurrentLocation(location);
+    }
+
+    /**
+     * Display location string
+     *
+     * @param stringLocation
+     */
+    public void setLocationTextView(String stringLocation) {
+        runOnUiThread(() -> locationTextView.setText(stringLocation));
+    }
+
+    public void setVectorDirectionTextView(String stringVectorDirection) {
+        runOnUiThread(() -> vectorDirectionTextView.setText(stringVectorDirection));
+    }
+
+    public void clearVisitedNodesTextView() {
+        runOnUiThread(() -> visitedNodesTextView.setText(""));
+    }
+
+    public void appendVisitedNode(String text) {
+        runOnUiThread(() -> visitedNodesTextView.append(text));
+    }
+
+    public void toast(String msg) {
+        runOnUiThread((() -> {
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            Log.i("INFO", msg);
+        }));
+    }
+
+    /**
+     * Read json file
+     *
+     * @param context
+     * @return
+     */
+    private String getJSONString(Context context) {
+        String str = "";
+        try {
+            AssetManager assetManager = context.getAssets();
+            InputStream in = assetManager.open("path1.json");
+            InputStreamReader isr = new InputStreamReader(in);
+            char[] inputBuffer = new char[100];
+
+            int charRead;
+            while ((charRead = isr.read(inputBuffer)) > 0) {
+                String readString = String.copyValueOf(inputBuffer, 0, charRead);
+                str += readString;
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
+        return str;
+    }
+
+    /**
+     * Parse json file
+     *
+     * @param raw
+     * @return
+     */
+    public JSONObject parseJSON(String raw) {
+        JSONObject json = new JSONObject();
+        try {
+            json = new JSONObject(raw);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.guidanceActive = true;
     }
 }

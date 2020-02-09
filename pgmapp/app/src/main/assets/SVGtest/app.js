@@ -45,12 +45,13 @@ var activeAreaClick = function (id){
 
     if(id!==undefined){
        // document.querySelector('#list-'+id).classList.add('is-active');
-       document.querySelector('#'+id).classList.add('is-active');
+        document.querySelector('#'+id).classList.add('is-active');
        x=document.getElementById("whichpart");
        x.innerHTML = id;
     }
 
 }
+
 
 var activeAreaPath = function(DOMid){
      if(id!==undefined){
