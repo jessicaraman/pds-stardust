@@ -6,7 +6,6 @@ plugins {
 }
 
 group = 'com.pds'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
@@ -32,4 +31,31 @@ dependencyManagement {
 
 test {
 	useJUnitPlatform()
+}
+
+release {
+    failOnCommitNeeded = false
+    failOnPublishNeeded = false
+    failOnSnapshotDependencies = false
+    failOnUnversionedFiles = false
+    failOnUpdateNeeded = false
+    revertOnFail = true
+    preCommitText = '[RELEASE]'
+	preTagCommitMessage = 'API GATEWAY with version: '
+    newVersionCommitMessage = 'Updating API GATEWAY version to : '
+    tagTemplate = '${version}'
+    versionPropertyFile = 'gradle.properties'
+    buildTasks = ['build']
+    scmAdapters = [
+        net.researchgate.release.GitAdapter
+    ]
+
+    git {
+        requireBranch = 'master'
+        pushToRemote = 'origin'
+        pushToBranchPrefix = ''
+        commitVersionFileOnly = false
+        signTag = false
+    }
+
 }

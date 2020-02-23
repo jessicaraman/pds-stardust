@@ -6,7 +6,6 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
@@ -17,7 +16,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	compileOnly 		'org.projectlombok:lombok:1.18.8'
-     annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -25,4 +24,31 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+release {
+    failOnCommitNeeded = false
+    failOnPublishNeeded = false
+    failOnSnapshotDependencies = false
+    failOnUnversionedFiles = false
+    failOnUpdateNeeded = false
+    revertOnFail = true
+    preCommitText = '[RELEASE]'
+	preTagCommitMessage = 'GEOLOCATION with version: '
+    newVersionCommitMessage = 'Updating GEOLOCATION version to : '
+    tagTemplate = '${version}'
+    versionPropertyFile = 'gradle.properties'
+    buildTasks = ['build']
+    scmAdapters = [
+        net.researchgate.release.GitAdapter
+    ]
+
+    git {
+        requireBranch = 'master'
+        pushToRemote = 'origin'
+        pushToBranchPrefix = ''
+        commitVersionFileOnly = false
+        signTag = false
+    }
+
 }
