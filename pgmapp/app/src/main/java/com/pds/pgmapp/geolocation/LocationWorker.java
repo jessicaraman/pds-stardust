@@ -11,10 +11,17 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.pds.pgmapp.handlers.DBHandler;
+import com.pds.pgmapp.retrofit.LocationDataService;
+import com.pds.pgmapp.retrofit.RetrofitInstance;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class LocationWorker extends Worker {
 
@@ -33,17 +40,41 @@ public class LocationWorker extends Worker {
     @Override
     public Result doWork() {
 
-        List<LocationEntity> allLocations = dbHandler.getAllLocations();
+        List<LocationEntity> locationHistory = dbHandler.getAllLocations();
 
-        Log.d("LOCATION WORKER", "TOTAL = " + allLocations.size());
-        Log.d("dada", LocalDateTime.now().toString());
+        LocationHistoryEntity locationHistoryEntity = new LocationHistoryEntity();
 
-        Data outputData = new Data.Builder().putString("TOTAL = " + allLocations.size(), "Jobs Finished").build();
+        locationHistoryEntity.setId("1");
+        locationHistoryEntity.setLocations(locationHistory);
 
-        // Send location history to backend
+        LocationDataService locationDataService = RetrofitInstance.getRetrofitInstance().create(LocationDataService.class);
+
+        Call<LocationHistoryEntity> call = locationDataService.saveLocationHistory(locationHistoryEntity);
+
+        call.enqueue(new Callback<LocationHistoryEntity>() {
+            @Override
+            public void onResponse(Call<LocationHistoryEntity> call, Response<LocationHistoryEntity> response) {
+
+                Log.d("RETROFIT", "CALLBACK");
+                dbHandler.truncateLocation();
+            }
+
+            @Override
+            public void onFailure(Call<LocationHistoryEntity> call, Throwable t) {
+
+                Log.e("ERROR", "");
+
+            }
+        });
 
         dbHandler.truncateLocation();
 
+        Log.d("LOCATION WORKER", "TOTAL = " + locationHistory.size());
+        //Log.d("dada", LocalDateTime.now().toString());
+
+        Data outputData = new Data.Builder().putString("TOTAL = " + locationHistory.size(), "Jobs Finished").build();
+
         return Result.success(outputData);
     }
+
 }

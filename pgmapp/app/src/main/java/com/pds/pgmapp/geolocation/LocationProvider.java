@@ -33,11 +33,11 @@ public class LocationProvider implements WifiScanResultListener {
 
     private HashMap<String, Double> accessPoints;
 
-    private final String AP1 = "a2:fa:c4:2c:39:04";
-    private final String AP2 = "4c:d1:a1:30:a0:20";
-    private final String AP3 = "a2:fa:c4:2c:39:06";
+    private final String AP1 = "6c:f3:7f:ef:70:40"; //info2
+    private final String AP2 = "6c:f3:7f:eb:f0:a0"; //info5
+    private final String AP3 = "6c:f3:7f:ef:59:c0"; //info4
 
-    private final double[][] APsPositions = new double[][] { { 0, 0 }, { -3.4, 0 }, { 2.8, -1.6 } };
+    private final double[][] APsPositions = new double[][] { { 0.0, 0.0 }, { 0.0, 17.8 }, { 8.4, 9.4 } };
 
     private final double DEFAULT_DISTANCE = 0.0;
 

@@ -20,8 +20,13 @@ import com.pds.pgmapp.geolocation.LocationProvider;
 import com.pds.pgmapp.geolocation.LocationReceiver;
 import com.pds.pgmapp.geolocation.LocationWorker;
 import com.pds.pgmapp.handlers.DBHandler;
+import com.pds.pgmapp.retrofit.LocationDataService;
+import com.pds.pgmapp.retrofit.RetrofitInstance;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.pds.pgmapp.geolocation.LocationReceiver.DEFAULT_LOCATION_VALUE;
@@ -66,7 +71,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
                 new LocationEntity(
                         location.getX(),
                         location.getY(),
-                        LocalDateTime.now()
+                        Calendar.getInstance().getTime().toString()
                 )
         );
 

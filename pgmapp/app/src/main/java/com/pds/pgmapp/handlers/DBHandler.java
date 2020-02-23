@@ -182,7 +182,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 locationEntity = new LocationEntity(
                         cursor.getDouble(0),
                         cursor.getDouble(1),
-                        LocalDateTime.parse(cursor.getString(2)));
+                        cursor.getString(2) // LocalDateTime.parse(cursor.getString(2)
+                        );
             } while (cursor.moveToNext());
         }
         return locationEntity;
@@ -206,7 +207,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 LocationEntity student = new LocationEntity(
                         cursor.getDouble(0),
                         cursor.getDouble(1),
-                        LocalDateTime.parse(cursor.getString(2)));
+                        cursor.getString(2)); //  LocalDateTime.parse(cursor.getString(2)));
 
                 locations.add(student);
             } while (cursor.moveToNext());

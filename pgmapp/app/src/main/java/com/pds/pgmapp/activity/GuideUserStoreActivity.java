@@ -2,6 +2,7 @@ package com.pds.pgmapp.activity;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.pds.pgmapp.R;
@@ -25,7 +27,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Timer;
 
 /**
@@ -89,6 +93,7 @@ public class GuideUserStoreActivity extends AppCompatActivity {
      */
     public void guide() {
         Thread thread = new Thread() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
                 startMilli = SystemClock.elapsedRealtime();
@@ -98,9 +103,10 @@ public class GuideUserStoreActivity extends AppCompatActivity {
                     // read from db
                     //LocationEntity location = dbHandler.getLastLocation();
                     // mock
+                    // mock
                     double x = (Math.random() * 2) - 1;
                     double y = (Math.random() * 2) - 1;
-                    LocationEntity location = new LocationEntity(x, y, LocalDateTime.now());
+                    LocationEntity location = new LocationEntity(x, y, Calendar.getInstance().getTime().toString());
 
                     if (location != null) {
                         setLocationForGuidance(location);
