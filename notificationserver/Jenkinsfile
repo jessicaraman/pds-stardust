@@ -1,0 +1,51 @@
+pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Continuous Integration') {
+
+            stages {
+
+                stage('Fetch from SCM') {
+
+                    steps {
+                        checkout scm
+                    }
+
+                }
+
+                stage('Build') {
+                    steps {
+                        dir("notificationserver/") {
+                            sh '''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Test') {
+                    steps {
+                        dir("notificationserver/") {
+                            sh '''
+                                ./gradlew test
+                            '''
+                        }
+                    }
+                }
+            }
+
+            post {
+                always {
+                    junit 'notificationserver/build/test-results/**/*.xml'
+                    cleanWs()
+                }
+            }
+
+        }
+
+    }
+}
