@@ -32,3 +32,4 @@ out/
 .vscode/
 .idea/
 .gradle/5.5.1
+.DS_Store
