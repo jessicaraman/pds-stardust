@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Continuous Integration') {
+
+            stages {
+
+                stage('Fetch from SCM') {
+
+                    steps {
+                        checkout scm
+                    }
+
+                }
+
+                stage('Build') {
+                    steps {
+                        dir("pgmapp") {
+                            sh '''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Tests') {
+                    steps {
+                        dir("pgmapp") {
+                            sh '''
+                                ./gradlew test
+                            '''
+                        }
+                    }
+                }
+
+                stage("SonarQube analysis") {
+                    steps{
+                        dir("pgmapp") {
+                            withSonarQubeEnv('sonarqube') {
+                                sh '''
+                                    ./gradlew sonarqube
+                                '''
+                            }
+                        }
+                    }
+                }
+                
+                stage("Quality Gate") {
+                    steps {
+                        sh 'sleep 5'
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+
+            post {
+                always {
+                    junit 'pgmapp/app/build/test-results/**/*.xml'
+                    cleanWs()
+                }
+            }
+
+        }
+
+    }
+}
