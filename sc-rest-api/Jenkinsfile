@@ -1,0 +1,55 @@
+pipeline {
+
+    agent any
+
+    tools {
+        jdk 'java11'
+    }
+
+    stages {
+
+        stage('Continuous Integration') {
+
+            stages {
+
+                stage('Fetch from SCM') {
+
+                    steps {
+                        checkout scm
+                    }
+
+                }
+
+                stage('Build') {
+                    steps {
+                        dir("sc-rest-api") {
+                            sh '''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Test') {
+                    steps {
+                        dir("sc-rest-api") {
+                            sh '''
+                                ./gradlew test
+                            '''
+                        }
+                    }
+                }
+            }
+
+            post {
+                always {
+                    junit 'sc-rest-api/build/test-results/**/*.xml'
+                    cleanWs()
+                }
+            }
+
+        }
+
+    }
+}
