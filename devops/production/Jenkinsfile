@@ -1,0 +1,145 @@
+pipeline {
+    agent any 
+
+    environment {
+        DOCKER_REGISTRY='https://pds.stardust:5005'
+        DOCKER_CREDENTIALS = 'dockerRegistry'
+        GEOLOCATION_CONTAINER='geolocation'
+        CSPATH_CONTAINER='cspath'
+        API_GTW_CONTAINER='apigtw'
+    }    
+
+    stages {
+
+        stage('Continuous Delivery') {
+
+            stages {
+
+                stage('Fetch from SCM') {
+
+                    steps {
+                        checkout scm
+                    }
+
+                }
+
+                stage('Build images') {
+                    parallel {
+
+                        stage('Build geolocation') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("geolocation") {
+
+                                    sh '''
+                                        ./gradlew confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        ./gradlew build -x test
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+
+                                    sh '''
+                                        ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                    '''
+
+                                }
+                            }
+                        }
+
+                        stage('Build sc-rest-api') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-rest-api") {
+
+                                    sh '''
+                                        ./gradlew confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        ./gradlew build -x test
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${API_GTW_CONTAINER}:latest")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+
+                                    sh '''
+                                        ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                    '''
+
+                                }
+                            }
+                        }
+
+                        stage('Build sc-consumer-path') {
+
+                            steps {
+                                dir("sc-customer-path") {
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${CSPATH_CONTAINER}:latest")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                stage('Tag release') {
+                    steps {
+                        dir("devops/production") {
+                            sh '''
+                                git commit -am \"RELEASE VERSION : ${RELEASE_VERSION}\"
+                                git push --set-upstream origin master
+                                git tag -a \"${RELEASE_VERSION}\" -m \"RELEASE VERSION : ${RELEASE_VERSION}\"
+                                git push --tags
+                            '''
+                        }
+                    }
+                }
+
+                stage('Deploy stack') {
+                    steps {
+                        dir("devops/production") {
+                            sh '''
+                                ansible-playbook -u pds deploy-production.yml --extra-vars "VERSION=${RELEASE_VERSION}"
+                            '''
+                        }
+                    }
+                }
+
+            }
+
+            post {
+                always {
+                    cleanWs()
+                }
+            }
+
+        }
+
+    }
+
+}

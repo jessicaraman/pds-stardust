@@ -8,6 +8,13 @@ public class LocationEntity {
     private double y;
     private LocalDateTime date;
 
+    public LocationEntity() { }
+
+    public LocationEntity(double x, double y, LocalDateTime date) {
+        this.x = x;
+        this.y = y;
+        this.date = date;
+    }
     public double getX() {
         return x;
     }

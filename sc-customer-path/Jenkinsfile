@@ -1,0 +1,74 @@
+pipeline {
+    agent any 
+
+    environment {
+        CONTAINER='cspath'
+    }
+
+    stages {
+
+        stage('Continuous Integration') {
+
+            stages {
+
+                stage('Fetch from SCM') {
+
+                    steps {
+                        checkout scm
+                    }
+
+                }
+
+                stage('Build') {
+                    steps {
+                        dir("sc-customer-path") {
+                            sh '''
+                                npm install
+                            '''
+                        }
+                    }
+                }
+
+                stage('Test') {
+                    steps {
+                        dir("sc-customer-path") {
+                            sh '''
+                                npm test
+                            '''
+                        }
+                    }
+                }
+
+
+                stage("SonarQube analysis") {
+                    steps{
+                        dir("sc-customer-path") {
+                            withSonarQubeEnv('sonarqube') {
+                                sh '''
+                                    npm run sonar
+                                '''
+                            }
+                        }
+                    }
+                }
+                
+                stage("Quality Gate") {
+                    steps {
+                        sh 'sleep 5'
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+
+            }
+
+            post {
+                always {
+                    junit 'sc-customer-path/artifacts/test/*.xml'
+                    cleanWs()
+                }
+            }
+
+        }
+
+    }
+}
