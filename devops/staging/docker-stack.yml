@@ -1,0 +1,50 @@
+version: '3.7'
+services:
+
+  geolocation:
+    image: "pds.stardust:5005/geolocation:latest"
+    ports:
+      - "8081:8081"
+    networks:
+      - pds
+    extra_hosts:
+      - "node1:192.168.0.21"
+      - "node2:192.168.0.22"
+      - "node3:192.168.0.23"
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  apigtw:
+    image: "pds.stardust:5005/apigtw:latest"
+    ports:
+      - "8080:8080"
+    networks:
+      - pds
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  cspath:
+    image: "pds.stardust:5005/cspath:latest"
+    ports:
+      - "3000:3000"
+    networks:
+      - pds
+    extra_hosts:
+      - "node1:192.168.0.21"
+      - "node2:192.168.0.22"
+      - "node3:192.168.0.23"
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+networks:
+  pds:
+
