@@ -52,7 +52,7 @@ app.get('/customerPath', (req, res, next) => {
     }
 });
 
-mongoose.connect('mongodb://localhost/db').then(() => {
+mongoose.connect('mongodb://pds:pds@node1:27017,node1:27017,node1:27017/cspath?replicaSet=rs0').then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
     console.log('Error while DB connecting');
