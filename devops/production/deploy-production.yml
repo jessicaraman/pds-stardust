@@ -1,0 +1,43 @@
+- hosts: production
+  remote_user: pds
+  become: true
+
+  vars:
+    VERSION: "{{ VERSION }}"
+
+  tasks:
+  - name: Create temporary deploy directory
+    file:
+      path: /tmp/deploy
+      state: directory
+    register: deploy_dir  
+
+  - name: Copy stack file to deploy temp directory
+    copy:
+      src: docker-stack.yml
+      dest: "{{ deploy_dir.path }}/docker-stack.yml"
+
+  - name: Deploy stack
+    shell:
+      cmd: VERSION={{ VERSION }} docker stack deploy -c docker-stack.yml cluster
+      chdir: "{{ deploy_dir.path }}"
+    register: stack_deploy
+
+  - name: Verify stack
+    command: docker stack ps cluster
+    register: docker_stack
+
+  - debug: var={{item}}
+    with_items: docker_stack.stdout_lines
+
+  - name: Verify services
+    command: docker service ls
+    register: service_list
+
+  - debug: var={{item}}
+    with_items: service_list.stdout_lines
+
+  - name: Remove deploy directory
+    file:
+      path: "{{ deploy_dir.path }}"
+      state: absent
