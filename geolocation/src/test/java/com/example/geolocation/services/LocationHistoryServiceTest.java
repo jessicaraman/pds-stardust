@@ -104,4 +104,9 @@ class LocationHistoryServiceTest {
 
     }
 
+    @Test
+    void testSayHello() {
+        assertEquals("Hello", locationHistoryService.sayHello());
+    }
+
 }

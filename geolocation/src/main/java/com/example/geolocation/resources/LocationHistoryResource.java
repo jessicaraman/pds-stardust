@@ -25,4 +25,9 @@ public class LocationHistoryResource {
         return locationHistoryService.save(locationHistoryEntity);
     }
 
+    @GetMapping("/hello")
+    public String hello() {
+        return locationHistoryService.sayHello();
+    }
+
 }

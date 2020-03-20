@@ -38,4 +38,8 @@ public class LocationHistoryService {
     public Optional<LocationHistoryEntity> findById(String id) {
         return locationHistoryRepository.findById(id);
     }
+
+    public String sayHello() {
+        return "Hello";
+    }
 }

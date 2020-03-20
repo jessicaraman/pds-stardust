@@ -34,3 +34,4 @@ node_modules
 *.jar
 **/.DS_Store
 .DS_Store
+**/bin
