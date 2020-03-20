@@ -3,3 +3,6 @@
 
 # Ignore Gradle build output directory
 build
+
+# Do not ignore gradle wrapper jar
+!gradle/wrapper/gradle-wrapper.jar
