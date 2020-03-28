@@ -4,6 +4,7 @@ pipeline {
 
     tools {
         jdk 'java11'
+        gradle 'gradle'
     }
 
     stages {
@@ -23,10 +24,7 @@ pipeline {
                 stage('Build') {
                     steps {
                         dir("cryptolib/") {
-                            sh '''
-                                chmod +x gradlew
-                                ./gradlew clean build
-                            '''
+                            sh 'gradle clean build -x test'
                         }
                     }
                 }
@@ -34,9 +32,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         dir("cryptolib/") {
-                            sh '''
-                                ./gradlew test
-                            '''
+                            sh 'gradle test'
                         }
                     }
                 }
@@ -45,9 +41,7 @@ pipeline {
                     steps{
                         dir("cryptolib") {
                             withSonarQubeEnv('sonarqube') {
-                                sh '''
-                                    ./gradlew sonarqube
-                                '''
+                                sh 'gradle sonarqube'
                             }
                         }
                     }
@@ -63,9 +57,23 @@ pipeline {
 
             post {
                 always {
-                    junit 'cryptolib/build/test-results/**/*.xml'
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'cryptolib/build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: 'Tests report',
+                        reportTitles: 'Tests report'])
+
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'cryptolib/build/reports/jacoco/test/html',
+                        reportFiles: 'index.html',
+                        reportName: 'Jacoco coverage report',
+                        reportTitles: 'Jacoco coverage report'])
+                        
                     recordIssues(tools: [spotBugs(pattern: 'cryptolib/build/reports/spotbugs/*.xml')])
-                    cleanWs()
                 }
             }
 

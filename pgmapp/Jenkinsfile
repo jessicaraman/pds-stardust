@@ -1,4 +1,5 @@
 pipeline {
+    
     agent any
 
     stages {
@@ -20,7 +21,7 @@ pipeline {
                         dir("pgmapp") {
                             sh '''
                                 chmod +x gradlew
-                                ./gradlew clean build
+                                ./gradlew clean build -x test
                             '''
                         }
                     }
@@ -59,7 +60,29 @@ pipeline {
             post {
                 always {
                     junit 'pgmapp/app/build/test-results/**/*.xml'
-                    cleanWs()
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'pgmapp/app/build/reports/tests/testDebugUnitTest',
+                        reportFiles: 'index.html',
+                        reportName: 'Tests report (DEBUG)',
+                        reportTitles: 'Tests report (DEBUG)'])
+                    
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'pgmapp/app/build/reports/tests/testReleaseUnitTest',
+                        reportFiles: 'index.html',
+                        reportName: 'Tests report (RELEASE)',
+                        reportTitles: 'Tests report (RELEASE)'])
+
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'pgmapp/app/build/reports/jacoco/jacocoTestReport/html',
+                        reportFiles: 'index.html',
+                        reportName: 'Jacoco coverage report',
+                        reportTitles: 'Jacoco coverage report'])
                 }
             }
 

@@ -1,5 +1,10 @@
 pipeline {
-    agent any 
+
+    agent any
+
+    tools {
+        gradle 'gradle'
+    }
 
     environment {
         DOCKER_REGISTRY='https://pds.stardust:5005'
@@ -37,13 +42,13 @@ pipeline {
                                 dir("geolocation") {
 
                                     sh '''
-                                        ./gradlew confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        ./gradlew build -x test
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        gradle build -x test
                                     '''
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest-prod", "--build-arg env=prod .")
+                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest-prod")
                                             img.push()
                                             img.push("${RELEASE_VERSION}")
                                             sh "docker rmi ${img.id}"
@@ -51,7 +56,7 @@ pipeline {
                                     }
 
                                     sh '''
-                                        ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
                                 }
@@ -68,17 +73,24 @@ pipeline {
                                 dir("sc-kms") {
 
                                     sh '''
-                                        chmod +x gradlew
-                                        ./gradlew clean build -x test
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        gradle build -x test
                                     '''
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${KMS_CONTAINER}:latest-dev", "--build-arg env=prod .")
+                                            def img = docker.build("${KMS_CONTAINER}:latest-prod")
                                             img.push()
+                                            img.push("${RELEASE_VERSION}")
+
                                             sh "docker rmi ${img.id}"
                                         }
                                     }
+
+                                    sh '''
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                    '''
+
                                 }
                             }
                         }
@@ -93,8 +105,8 @@ pipeline {
                                 dir("sc-rest-api") {
 
                                     sh '''
-                                        ./gradlew confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        ./gradlew build -x test
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        gradle build -x test
                                     '''
 
                                     script {
@@ -107,7 +119,7 @@ pipeline {
                                     }
 
                                     sh '''
-                                        ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                        ./gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
                                 }
@@ -156,12 +168,6 @@ pipeline {
                     }
                 }
 
-            }
-
-            post {
-                always {
-                    cleanWs()
-                }
             }
 
         }

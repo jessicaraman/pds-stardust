@@ -2,6 +2,10 @@ pipeline {
 
     agent any
 
+    tools {
+        gradle 'gradle'
+    }
+
     stages {
 
         stage('Continuous Integration') {
@@ -19,10 +23,7 @@ pipeline {
                 stage('Build') {
                     steps {
                         dir("notificationserver/") {
-                            sh '''
-                                chmod +x gradlew
-                                ./gradlew clean build
-                            '''
+                            sh 'gradle clean build -x test'
                         }
                     }
                 }
@@ -30,9 +31,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         dir("notificationserver/") {
-                            sh '''
-                                ./gradlew test
-                            '''
+                            sh 'gradle test'
                         }
                     }
                 }
@@ -40,8 +39,13 @@ pipeline {
 
             post {
                 always {
-                    junit 'notificationserver/build/test-results/**/*.xml'
-                    cleanWs()
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'notificationserver/build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: 'Tests report',
+                        reportTitles: 'Tests report'])
                 }
             }
 
