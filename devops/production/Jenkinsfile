@@ -5,6 +5,7 @@ pipeline {
         DOCKER_REGISTRY='https://pds.stardust:5005'
         DOCKER_CREDENTIALS = 'dockerRegistry'
         GEOLOCATION_CONTAINER='geolocation'
+        KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         API_GTW_CONTAINER='apigtw'
     }    
@@ -42,7 +43,7 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest")
+                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest-prod", "--build-arg env=prod .")
                                             img.push()
                                             img.push("${RELEASE_VERSION}")
                                             sh "docker rmi ${img.id}"
@@ -53,6 +54,31 @@ pipeline {
                                         ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
+                                }
+                            }
+                        }
+
+                        stage('Build sc-kms') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-kms") {
+
+                                    sh '''
+                                        chmod +x gradlew
+                                        ./gradlew clean build
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${KMS_CONTAINER}:latest-dev", "--build-arg env=prod .")
+                                            img.push()
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -73,7 +99,7 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${API_GTW_CONTAINER}:latest")
+                                            def img = docker.build("${API_GTW_CONTAINER}:latest-prod")
                                             img.push()
                                             img.push("${RELEASE_VERSION}")
                                             sh "docker rmi ${img.id}"
@@ -94,7 +120,7 @@ pipeline {
                                 dir("sc-customer-path") {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${CSPATH_CONTAINER}:latest")
+                                            def img = docker.build("${CSPATH_CONTAINER}:latest-prod")
                                             img.push()
                                             img.push("${RELEASE_VERSION}")
                                             sh "docker rmi ${img.id}"

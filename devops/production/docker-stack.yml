@@ -17,6 +17,18 @@ services:
         condition: on-failure
         max_attempts: 3
 
+  kms:
+    image: "pds.stardust:5005/kms:${VERSION}"
+    ports:
+      - "8082:8082"
+    networks:
+      - pds
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
   apigtw:
     image: "pds.stardust:5005/apigtw:${VERSION}"
     ports:
