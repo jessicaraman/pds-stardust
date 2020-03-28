@@ -43,7 +43,7 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest-dev", "--build-arg env=staging .")
+                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
@@ -68,7 +68,7 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${KMS_CONTAINER}:latest-dev", "--build-arg env=staging .")
+                                            def img = docker.build("${KMS_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
@@ -93,7 +93,7 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${API_GTW_CONTAINER}:latest-dev")
+                                            def img = docker.build("${API_GTW_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
@@ -108,7 +108,7 @@ pipeline {
                                 dir("sc-customer-path") {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${CSPATH_CONTAINER}:latest-dev")
+                                            def img = docker.build("${CSPATH_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
@@ -124,7 +124,7 @@ pipeline {
                     steps {
                         dir("devops/staging") {
                             sh '''
-                                ansible-playbook -u pds deploy-staging.yml
+                                ansible-playbook -u pds deploy-staging.yml --extra-vars "JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}"
                             '''
                         }
                     }
