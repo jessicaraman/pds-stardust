@@ -65,7 +65,7 @@ public abstract class AbstractVaultIT {
                 )
         );
 
-        System.setProperty("vault.url", String.format("http://localhost:%d/v1/", vaultContainer.getFirstMappedPort()));
+        System.setProperty("vault.url", String.format("http://%s:%d/v1/", vaultContainer.getContainerIpAddress(), vaultContainer.getFirstMappedPort()));
     }
 
     /**
