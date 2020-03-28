@@ -5,6 +5,7 @@ pipeline {
         DOCKER_REGISTRY='https://pds.stardust:5005'
         DOCKER_CREDENTIALS = 'dockerRegistry'
         GEOLOCATION_CONTAINER='geolocation'
+        KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         API_GTW_CONTAINER='apigtw'
     }
@@ -42,7 +43,32 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest")
+                                            def img = docker.build("${GEOLOCATION_CONTAINER}:latest-dev", "--build-arg env=staging .")
+                                            img.push()
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build sc-kms') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-kms") {
+
+                                    sh '''
+                                        chmod +x gradlew
+                                        ./gradlew clean build
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${KMS_CONTAINER}:latest-dev", "--build-arg env=staging .")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
@@ -67,7 +93,7 @@ pipeline {
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${API_GTW_CONTAINER}:latest")
+                                            def img = docker.build("${API_GTW_CONTAINER}:latest-dev")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
@@ -82,7 +108,7 @@ pipeline {
                                 dir("sc-customer-path") {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
-                                            def img = docker.build("${CSPATH_CONTAINER}:latest")
+                                            def img = docker.build("${CSPATH_CONTAINER}:latest-dev")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }

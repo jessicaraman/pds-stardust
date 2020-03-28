@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   geolocation:
-    image: "pds.stardust:5005/geolocation:latest"
+    image: "pds.stardust:5005/geolocation:latest-staging"
     ports:
       - "8081:8081"
     networks:
@@ -17,8 +17,20 @@ services:
         condition: on-failure
         max_attempts: 3
 
+  kms:
+    image: "pds.stardust:5005/kms:latest-staging"
+    ports:
+      - "8082:8082"
+    networks:
+      - pds
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
   apigtw:
-    image: "pds.stardust:5005/apigtw:latest"
+    image: "pds.stardust:5005/apigtw:latest-staging"
     ports:
       - "8080:8080"
     networks:
@@ -30,7 +42,7 @@ services:
         max_attempts: 3
 
   cspath:
-    image: "pds.stardust:5005/cspath:latest"
+    image: "pds.stardust:5005/cspath:latest-staging"
     ports:
       - "3000:3000"
     networks:
