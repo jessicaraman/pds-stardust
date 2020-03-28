@@ -1,5 +1,10 @@
 pipeline {
+
     agent any 
+
+    tools {
+        gradle 'gradle'
+    }
 
     environment {
         DOCKER_REGISTRY='https://pds.stardust:5005'
@@ -36,10 +41,7 @@ pipeline {
                             steps {
                                 dir("geolocation") {
 
-                                    sh '''
-                                        chmod +x gradlew
-                                        ./gradlew clean build
-                                    '''
+                                    sh 'gradle clean build -x test'
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
@@ -61,10 +63,7 @@ pipeline {
                             steps {
                                 dir("sc-kms") {
 
-                                    sh '''
-                                        chmod +x gradlew
-                                        ./gradlew clean build
-                                    '''
+                                    sh 'gradle clean build -x test'
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
@@ -86,10 +85,7 @@ pipeline {
                             steps {
                                 dir("sc-rest-api") {
 
-                                    sh '''
-                                        chmod +x gradlew
-                                        ./gradlew clean build
-                                    '''
+                                    sh 'gradle clean build -x test'
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
@@ -130,12 +126,6 @@ pipeline {
                     }
                 }
 
-            }
-
-            post {
-                always {
-                    cleanWs()
-                }
             }
 
         }

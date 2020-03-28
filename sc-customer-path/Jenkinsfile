@@ -1,10 +1,6 @@
 pipeline {
     agent any 
 
-    environment {
-        CONTAINER='cspath'
-    }
-
     stages {
 
         stage('Continuous Integration') {
@@ -22,9 +18,7 @@ pipeline {
                 stage('Build') {
                     steps {
                         dir("sc-customer-path") {
-                            sh '''
-                                npm install
-                            '''
+                            sh 'npm install'
                         }
                     }
                 }
@@ -32,9 +26,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         dir("sc-customer-path") {
-                            sh '''
-                                npm test
-                            '''
+                            sh 'npm test'
                         }
                     }
                 }
@@ -44,9 +36,7 @@ pipeline {
                     steps{
                         dir("sc-customer-path") {
                             withSonarQubeEnv('sonarqube') {
-                                sh '''
-                                    npm run sonar
-                                '''
+                                sh 'npm run sonar'
                             }
                         }
                     }
@@ -64,7 +54,6 @@ pipeline {
             post {
                 always {
                     junit 'sc-customer-path/artifacts/test/*.xml'
-                    cleanWs()
                 }
             }
 

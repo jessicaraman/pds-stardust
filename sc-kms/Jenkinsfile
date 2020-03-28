@@ -4,6 +4,7 @@ pipeline {
 
     tools {
         jdk 'java11'
+        gradle 'gradle'
     }
 
     stages {
@@ -23,10 +24,7 @@ pipeline {
                 stage('Build') {
                     steps {
                         dir("sc-kms/") {
-                            sh '''
-                                chmod +x gradlew
-                                ./gradlew clean build -x test
-                            '''
+                            sh 'gradle clean build -x test'
                         }
                     }
                 }
@@ -34,9 +32,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         dir("sc-kms/") {
-                            sh '''
-                                ./gradlew test
-                            '''
+                            sh 'gradle test'
                         }
                     }
                 }
@@ -45,9 +41,7 @@ pipeline {
                     steps{
                         dir("sc-kms") {
                             withSonarQubeEnv('sonarqube') {
-                                sh '''
-                                    ./gradlew sonarqube
-                                '''
+                                sh 'gradle sonarqube'
                             }
                         }
                     }
@@ -63,9 +57,23 @@ pipeline {
 
             post {
                 always {
-                    junit 'sc-kms/build/test-results/**/*.xml'
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'sc-kms/build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: 'Tests report',
+                        reportTitles: 'Tests report'])
+
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'sc-kms/build/reports/jacoco/test/html',
+                        reportFiles: 'index.html',
+                        reportName: 'Jacoco coverage report',
+                        reportTitles: 'Jacoco coverage report'])
+                        
                     recordIssues(tools: [spotBugs(pattern: 'sc-kms/build/reports/spotbugs/*.xml')])
-                    cleanWs()
                 }
             }
 

@@ -4,6 +4,7 @@ pipeline {
 
     tools {
         jdk 'java11'
+        gradle 'gradle'
     }
 
     stages {
@@ -23,10 +24,7 @@ pipeline {
                 stage('Build') {
                     steps {
                         dir("sc-rest-api") {
-                            sh '''
-                                chmod +x gradlew
-                                ./gradlew clean build -x test
-                            '''
+                            sh 'gradle clean build -x test'
                         }
                     }
                 }
@@ -34,9 +32,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         dir("sc-rest-api") {
-                            sh '''
-                                ./gradlew test
-                            '''
+                            sh 'gradle test'
                         }
                     }
                 }
@@ -44,8 +40,13 @@ pipeline {
 
             post {
                 always {
-                    junit 'sc-rest-api/build/test-results/**/*.xml'
-                    cleanWs()
+                    publishHTML (target : [allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'sc-rest-api/build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: 'Tests report',
+                        reportTitles: 'Tests report'])
                 }
             }
 
