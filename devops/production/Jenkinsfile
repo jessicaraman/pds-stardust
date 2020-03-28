@@ -150,7 +150,7 @@ pipeline {
                     steps {
                         dir("devops/production") {
                             sh '''
-                                ansible-playbook -u pds deploy-production.yml --extra-vars "VERSION=${RELEASE_VERSION}"
+                                ansible-playbook -u pds deploy-production.yml --extra-vars "VERSION=${RELEASE_VERSION} JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}"
                             '''
                         }
                     }

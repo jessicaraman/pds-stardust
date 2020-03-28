@@ -11,6 +11,9 @@ services:
       - "node1:192.168.0.21"
       - "node2:192.168.0.22"
       - "node3:192.168.0.23"
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+      - spring_profiles_active=staging
     deploy:
       replicas: 3
       restart_policy:
@@ -23,6 +26,9 @@ services:
       - "8082:8082"
     networks:
       - pds
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+      - spring_profiles_active=staging
     deploy:
       replicas: 3
       restart_policy:

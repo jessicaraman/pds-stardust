@@ -2,6 +2,9 @@
   remote_user: pds
   become: true
 
+  vars:
+    JASYPT_ENCRYPTOR_PASSWORD: "{{ JASYPT_ENCRYPTOR_PASSWORD }}"
+
   tasks:
   - name: Create temporary deploy directory
     file:
@@ -16,7 +19,7 @@
 
   - name: Deploy stack
     shell:
-      cmd: docker stack deploy -c docker-stack.yml cluster
+      cmd: JASYPT_ENCRYPTOR_PASSWORD={{ JASYPT_ENCRYPTOR_PASSWORD }} docker stack deploy -c docker-stack.yml cluster
       chdir: "{{ deploy_dir.path }}"
     register: stack_deploy
 
