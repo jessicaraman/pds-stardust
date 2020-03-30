@@ -2,6 +2,10 @@ pipeline {
 
     agent any
 
+    environment {
+        NEXUS_CREDENTIALS = credentials('nexus')
+    }
+
     tools {
         jdk 'java11'
         gradle 'gradle'
@@ -24,7 +28,7 @@ pipeline {
                 stage('Build') {
                     steps {
                         dir("cryptolib/") {
-                            sh 'gradle clean build -x test'
+                            sh 'gradle clean build -x test -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR'
                         }
                     }
                 }
@@ -32,7 +36,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         dir("cryptolib/") {
-                            sh 'gradle test'
+                            sh 'gradle test -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR'
                         }
                     }
                 }
@@ -41,7 +45,7 @@ pipeline {
                     steps{
                         dir("cryptolib") {
                             withSonarQubeEnv('sonarqube') {
-                                sh 'gradle sonarqube'
+                                sh 'gradle sonarqube -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR'
                             }
                         }
                     }
