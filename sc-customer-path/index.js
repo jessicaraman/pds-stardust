@@ -2,6 +2,7 @@ var express = require("express"),
   app = express(),
   port = process.env.PORT || 3000;
 var fs = require("fs");
+var https = require('https');
 var mongoose = require('mongoose');
 var bodyParser = require("body-parser");
 var customerPathController = require('./controllers/customerPathController');
@@ -9,9 +10,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.listen(port, function(){
-    console.log('App run on port '+ port);
-});
+https.createServer({
+    key: fs.readFileSync('ssl/server.key'),
+    cert: fs.readFileSync('ssl/server.crt')
+  }, app).listen(port, function () {});
 
 app.get('/', (req, res) => res.status(200).json({
     text: 'customer path API for the SC Mall :)'
@@ -52,7 +54,7 @@ app.get('/customerPath', (req, res, next) => {
     }
 });
 
-mongoose.connect('mongodb://pds:pds@node1:27017,node1:27017,node1:27017/cspath?replicaSet=rs0').then(() => {
+mongoose.connect('mongodb://pds:pds@localhost/cspath').then(() => {
     console.log('Connected to mongoDB')
 }).catch(e => {
     console.log('Error while DB connecting');

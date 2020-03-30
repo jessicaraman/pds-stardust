@@ -41,6 +41,8 @@ services:
       - "8080:8080"
     networks:
       - pds
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
     deploy:
       mode: global
       restart_policy:
@@ -53,6 +55,8 @@ services:
       - "3000:3000"
     networks:
       - pds
+    volumes:
+      - /mnt/cspath/ssl:/usr/src/app/ssl
     extra_hosts:
       - "node1:192.168.0.21"
       - "node2:192.168.0.22"

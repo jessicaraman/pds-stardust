@@ -41,6 +41,8 @@ services:
       - "8080:8080"
     networks:
       - pds
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
     deploy:
       mode: global
       restart_policy:
