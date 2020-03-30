@@ -100,8 +100,8 @@ publishing {
             }
 
             credentials {
-                username project.repoUser
-                password project.repoPassword
+                username getProperty('repoUser')
+                password getProperty('repoPassword')
             }
         }
     }
