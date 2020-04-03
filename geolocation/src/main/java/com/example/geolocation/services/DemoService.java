@@ -1,6 +1,7 @@
 package com.example.geolocation.services;
 
 import com.example.geolocation.beans.DekResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cryptolib.core.CryptoUtils;
 import cryptolib.core.StringUtils;
 import org.slf4j.Logger;
@@ -29,7 +30,8 @@ public class DemoService {
     private final String MESSAGE = "PDS DEMO FOR ENCRYPTION AND DECRYPTION";
     private final String AES_ALGORITHM = "AES";
 
-    Logger logger = LoggerFactory.getLogger(DemoService.class);
+    private Logger logger = LoggerFactory.getLogger(DemoService.class);
+    private ObjectMapper mapper = new ObjectMapper();
 
     public void demo() throws Exception {
 
@@ -42,7 +44,7 @@ public class DemoService {
 
         DekResponse getDekResponseBody = getDekResponse.getBody();
 
-        logger.info("Get response [{}] from KMS", getDekResponseBody);
+        logger.info("Get response [{}] from KMS", mapper.writeValueAsString(getDekResponseBody));
 
         String dek = Objects.requireNonNull(getDekResponseBody).getData();
 
@@ -60,7 +62,7 @@ public class DemoService {
 
         final byte[] ciphertext = CryptoUtils.encryptAesGcm(MESSAGE.getBytes(StandardCharsets.UTF_8), secretKey, randomNonce);
 
-        logger.info("Ciphertext = {}", new String(ciphertext, StandardCharsets.UTF_8));
+        logger.info("Ciphertext in base 64 = {}", StringUtils.toBase64String(ciphertext));
 
         logger.info("Decrypting ciphertext using KEY");
 
@@ -84,7 +86,7 @@ public class DemoService {
 
         getDekResponseBody = getDekResponse.getBody();
 
-        logger.info("Get response [{}] from KMS", getDekResponseBody);
+        logger.info("Get response [{}] from KMS", mapper.writeValueAsString(getDekResponseBody));
 
         dek = Objects.requireNonNull(getDekResponseBody).getData();
 
