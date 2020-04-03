@@ -24,8 +24,8 @@ public class DemoService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String GET_DEK_URL = "https://pds.stardust:9980/api/kms/keys/dek";
-    private final String ROTATE_KEY_URL = "https://pds.stardust:9980/api/kms/keys/rotate";
+    private final String GET_DEK_URL = "https://kms:8082/keys/dek";
+    private final String ROTATE_KEY_URL = "https://kms:8082/keys/rotate";
     private final String MESSAGE = "PDS DEMO FOR ENCRYPTION AND DECRYPTION";
     private final String AES_ALGORITHM = "AES";
 
@@ -73,6 +73,9 @@ public class DemoService {
         logger.info("Rotating keys");
 
         restTemplate.exchange(ROTATE_KEY_URL, HttpMethod.POST, requestEntity, String.class);
+
+        logger.info("Go check the KEK and DEK version on vault !");
+        Thread.sleep(60000);
 
         logger.info("Re send DEK retrieval request to KMS");
         getDekResponse = restTemplate.exchange(GET_DEK_URL, HttpMethod.GET, requestEntity, DekResponse.class);
