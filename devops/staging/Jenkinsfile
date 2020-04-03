@@ -5,9 +5,9 @@ pipeline {
     tools {
         gradle 'gradle'
     }
-
     environment {
         DOCKER_REGISTRY='https://pds.stardust:5005'
+        NEXUS_CREDENTIALS = credentials('nexus')
         DOCKER_CREDENTIALS = 'dockerRegistry'
         GEOLOCATION_CONTAINER='geolocation'
         KMS_CONTAINER='kms'
@@ -41,7 +41,7 @@ pipeline {
                             steps {
                                 dir("geolocation") {
 
-                                    sh 'gradle clean build -x test'
+                                    sh 'gradle clean build -x test -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR'
 
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {

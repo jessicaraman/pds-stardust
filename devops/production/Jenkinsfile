@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY='https://pds.stardust:5005'
+        NEXUS_CREDENTIALS = credentials('nexus')
         DOCKER_CREDENTIALS = 'dockerRegistry'
         GEOLOCATION_CONTAINER='geolocation'
         KMS_CONTAINER='kms'
@@ -42,8 +43,8 @@ pipeline {
                                 dir("geolocation") {
 
                                     sh '''
-                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        gradle build -x test
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION} -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
+                                        gradle build -x test -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
                                     '''
 
                                     script {
@@ -56,7 +57,7 @@ pipeline {
                                     }
 
                                     sh '''
-                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT} -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
                                     '''
 
                                 }
