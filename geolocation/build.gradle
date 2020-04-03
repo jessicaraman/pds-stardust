@@ -13,6 +13,19 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+
+
+	maven {
+
+	    name 'nexus'
+
+	    url 'http://172.31.249.114:8081/repository/maven-releases/'
+
+        credentials {
+            username getProperty('repoUser')
+            password getProperty('repoPassword')
+        }
+	}
 }
 
 dependencies {
@@ -21,6 +34,8 @@ dependencies {
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
 	compile 'org.apache.httpcomponents:httpclient:4.5.12'
+	implementation 'pds.stardust:cryptolib:1.0.0'
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
 	compileOnly 		'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
