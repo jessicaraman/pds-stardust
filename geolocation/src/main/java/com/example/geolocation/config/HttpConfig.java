@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
 
-@Profile("!dev")
 @Configuration
 public class HttpConfig {
 
