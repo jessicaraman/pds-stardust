@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.pds.pgmapp"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -68,6 +68,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+
+    // beacon
+    implementation 'org.altbeacon:android-beacon-library:2+'
 
 }
 

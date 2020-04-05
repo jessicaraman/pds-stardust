@@ -12,6 +12,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.pds.pgmapp.R;
 
+import org.altbeacon.beacon.Beacon;
+
 /**
  * MainActivity : HomePage
  */
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         buttonPath();
         startGeolocatisation();
         notifications();
+        beacon();
     }
 
     /**
@@ -60,5 +63,10 @@ public class MainActivity extends AppCompatActivity {
         Button notifications;
         notifications = findViewById(R.id.buttonNotifications);
         notifications.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), NotificationActivity.class)));
+    }
+    protected void beacon() {
+        Button beacon;
+        beacon = findViewById(R.id.buttonBeacon);
+        beacon.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), BeaconActivity.class)));
     }
 }
