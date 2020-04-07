@@ -13,6 +13,7 @@ pipeline {
         GEOLOCATION_CONTAINER='geolocation'
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
+        SENSOR_CONTAINER='sensor'
         API_GTW_CONTAINER='apigtw'
     }    
 
@@ -58,6 +59,36 @@ pipeline {
 
                                     sh '''
                                         gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT} -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
+                                    '''
+
+                                }
+                            }
+                        }
+
+                        stage('Build sensor') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-sensor-interaction") {
+
+                                    sh '''
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${SENSOR_CONTAINER}:latest-prod")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+
+                                    sh '''
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
                                 }

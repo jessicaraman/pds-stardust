@@ -12,6 +12,7 @@ pipeline {
         GEOLOCATION_CONTAINER='geolocation'
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
+        SENSOR_CONTAINER='sensor'
         API_GTW_CONTAINER='apigtw'
     }
 
@@ -46,6 +47,28 @@ pipeline {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
                                             def img = docker.build("${GEOLOCATION_CONTAINER}:latest-staging")
+                                            img.push()
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build sensor') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-sensor-interaction") {
+
+                                    sh 'gradle clean build -x test'
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${SENSOR_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
