@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "692433110044",
+    "firebase_url": "https://pds-facial-recognition.firebaseio.com",
+    "project_id": "pds-facial-recognition",
+    "storage_bucket": "pds-facial-recognition.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692433110044:android:65812ea69b1d953dd44bd9",
+        "android_client_info": {
+          "package_name": "com.pds.pgmapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692433110044-mulijr6gn6goaklvmrojbvn6t2irp9fs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlzlc4MOJJ95qD-_1Y74Q8qFRIm1M63Mo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "692433110044-mulijr6gn6goaklvmrojbvn6t2irp9fs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

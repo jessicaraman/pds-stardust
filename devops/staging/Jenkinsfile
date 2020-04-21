@@ -13,6 +13,7 @@ pipeline {
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
+        ACCOUNT_CONTAINER='account'
         API_GTW_CONTAINER='apigtw'
     }
 
@@ -69,6 +70,28 @@ pipeline {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
                                             def img = docker.build("${SENSOR_CONTAINER}:latest-staging")
+                                            img.push()
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build account') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-account") {
+
+                                    sh 'gradle clean build -x test'
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${ACCOUNT_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }

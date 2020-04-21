@@ -11,13 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.pds.pgmapp.R;
-
-import org.altbeacon.beacon.Beacon;
+import com.pds.pgmapp.handlers.FirebaseHandler;
 
 /**
  * MainActivity : HomePage
  */
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseHandler firebaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
         buttonUserGuideStoreAction();
         buttonPath();
         startGeolocatisation();
-        notifications();
-        beacon();
+        initFirebase();
     }
 
     /**
@@ -59,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
         startGeolocalisationBtn = findViewById(R.id.buttonGeolocalisation);
         startGeolocalisationBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LocationActivity.class)));
     }
-    protected void notifications() {
+
+    /*protected void notifications() {
         Button notifications;
         notifications = findViewById(R.id.buttonNotifications);
         notifications.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), NotificationActivity.class)));
-    }
-    protected void beacon() {
-        Button beacon;
-        beacon = findViewById(R.id.buttonBeacon);
-        beacon.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), BeaconActivity.class)));
+    }*/
+
+    protected void initFirebase () {
+        firebaseHandler = new FirebaseHandler(this);
     }
 }
