@@ -23,7 +23,6 @@ public class CustomerService implements ICustomerService {
     }
 
     public void initCustomerData () {
-        customerRepository.deleteAll();
         customerRepository.save(new CustomerEntity(1, "Sammandamourthy", "Suriya", "none", "suriya", "toto"));
         customerRepository.save(new CustomerEntity(2, "Nguyen", "Maxime", "none", "maxime", "toto"));
         customerRepository.save(new CustomerEntity(3, "toto", "tata", "none", "toto", "toto"));
