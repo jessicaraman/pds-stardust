@@ -8,11 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import pds.stardust.scaccount.service.CustomerService;
 
+import javax.annotation.PostConstruct;
 import java.security.Security;
 
 @SpringBootApplication
 @EnableEncryptableProperties
-public class ScAccountApplication implements CommandLineRunner {
+public class ScAccountApplication  {
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
@@ -25,8 +26,8 @@ public class ScAccountApplication implements CommandLineRunner {
 		SpringApplication.run(ScAccountApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) {
+	@PostConstruct
+	public void initData () {
 		customerService.initCustomerData();
 	}
 }
