@@ -16,7 +16,6 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-
     @RequestMapping(value = {"/"})
     String index() { return "API account"; }
 
@@ -25,6 +24,17 @@ public class CustomerController {
         CustomerEntity customerEntity = customerService.findByUsername(customer.getUsername());
         if (customerEntity.getPassword().equals(customer.getPassword())) {
             return customerEntity;
+        } else {
+            return null;
+        }
+    }
+
+    @PostMapping(value = "/update/token", consumes = "application/json", produces = "application/json")
+    public CustomerEntity updateToken (@RequestBody CustomerEntity customer) {
+        CustomerEntity customerEntity = customerService.getById(customer.getUsername());
+        if (customerEntity.getUsername().equals(customer.getUsername()) && customerEntity.getPassword().equals(customer.getPassword())) {
+            customerEntity.setToken(customer.getToken());
+            return customerService.saveCustomer(customerEntity);
         } else {
             return null;
         }
