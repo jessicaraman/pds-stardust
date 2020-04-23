@@ -46,9 +46,9 @@ services:
     networks:
       - pds
     extra_hosts:
-      - "node1:192.168.0.31"
-      - "node2:192.168.0.32"
-      - "node3:192.168.0.33"
+      - "node1:192.168.0.21"
+      - "node2:192.168.0.22"
+      - "node3:192.168.0.23"
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=staging
