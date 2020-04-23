@@ -6,4 +6,5 @@ import pds.stardust.scaccount.entity.CustomerEntity;
 public interface CustomerRepository extends MongoRepository<CustomerEntity, String> {
 
     CustomerEntity findByUsername(String username);
+    CustomerEntity getById(String id);
 }
