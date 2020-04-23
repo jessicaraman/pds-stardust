@@ -5,20 +5,22 @@ import org.springframework.data.annotation.Id;
 public class CustomerEntity {
 
     @Id
-    private int id;
+    private String id;
     private String name;
     private String surname;
     private String image;
     private String username;
     private String password;
+    private String token;
 
-    public CustomerEntity(int id, String name, String surname, String image, String username, String password) {
+    public CustomerEntity(String id, String name, String surname, String image, String username, String password, String token) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.image = image;
         this.username = username;
         this.password = password;
+        this.token = token;
     }
 
     @Override
@@ -30,14 +32,15 @@ public class CustomerEntity {
                 ", image='" + image + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", token='" + token + '\'' +
                 '}';
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -79,5 +82,13 @@ public class CustomerEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
