@@ -31,7 +31,7 @@ public class CustomerController {
 
     @PostMapping(value = "/update/token", consumes = "application/json", produces = "application/json")
     public CustomerEntity updateToken (@RequestBody CustomerEntity customer) {
-        CustomerEntity customerEntity = customerService.getById(customer.getUsername());
+        CustomerEntity customerEntity = customerService.getById(customer.getId());
         if (customerEntity.getUsername().equals(customer.getUsername()) && customerEntity.getPassword().equals(customer.getPassword())) {
             customerEntity.setToken(customer.getToken());
             return customerService.saveCustomer(customerEntity);
