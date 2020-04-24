@@ -22,7 +22,7 @@ public class CustomerController {
     @PostMapping(value = "/connect", consumes = "application/json", produces = "application/json")
     public CustomerEntity connect (@RequestBody CustomerEntity customer) {
         CustomerEntity customerEntity = customerService.findByUsername(customer.getUsername());
-        if (customerEntity.getPassword().equals(customer.getPassword())) {
+        if (customerEntity != null && customerEntity.getPassword().equals(customer.getPassword())) {
             return customerEntity;
         } else {
             return null;
