@@ -1,5 +1,6 @@
 package pds.stardust.scaccount.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pds.stardust.scaccount.entity.CustomerEntity;
 import pds.stardust.scaccount.repository.CustomerRepository;
@@ -7,11 +8,8 @@ import pds.stardust.scaccount.repository.CustomerRepository;
 @Service
 public class CustomerService implements ICustomerService {
 
+    @Autowired
     private CustomerRepository customerRepository;
-
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
 
     @Override
     public CustomerEntity findByUsername(String username) {
@@ -23,10 +21,12 @@ public class CustomerService implements ICustomerService {
         return customerRepository.getById(id);
     }
 
+    @Override
     public CustomerEntity saveCustomer (CustomerEntity customerEntity) {
         return customerRepository.save(customerEntity);
     }
 
+    @Override
     public void initCustomerData () {
         customerRepository.deleteAll();
         customerRepository.save(new CustomerEntity("1", "Sammandamourthy", "Suriya", "none", "suriya", "toto", "Undefined"));
