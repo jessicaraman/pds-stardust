@@ -22,10 +22,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
+	testCompile "org.mockito:mockito-core:2.+"
 	compile 'org.apache.httpcomponents:httpclient:4.5.12'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	implementation 'junit:junit:4.12'
 }
 
 test {
