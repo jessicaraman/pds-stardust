@@ -14,6 +14,7 @@ pipeline {
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
+        FREQUENTATION_CONTAINER='frequentation'
         API_GTW_CONTAINER='apigtw'
     }    
 
@@ -81,6 +82,36 @@ pipeline {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
                                             def img = docker.build("${SENSOR_CONTAINER}:latest-prod")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+
+                                    sh '''
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                    '''
+
+                                }
+                            }
+                        }
+
+                        stage('Build frequentation') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("frequentation") {
+
+                                    sh '''
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${FREQUENTATION_CONTAINER}:latest-prod")
                                             img.push()
                                             img.push("${RELEASE_VERSION}")
                                             sh "docker rmi ${img.id}"
