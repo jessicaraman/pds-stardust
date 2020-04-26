@@ -83,6 +83,25 @@ services:
         condition: on-failure
         max_attempts: 3
 
+  frequentation:
+    image: "pds.stardust:5005/frequentation:latest-staging"
+    ports:
+      - "8084:8084"
+    networks:
+      - pds
+    extra_hosts:
+      - "node1:192.168.0.21"
+      - "node2:192.168.0.22"
+      - "node3:192.168.0.23"
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+      - spring_profiles_active=staging
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3      
+
   kms:
     image: "pds.stardust:5005/kms:latest-staging"
     ports:
