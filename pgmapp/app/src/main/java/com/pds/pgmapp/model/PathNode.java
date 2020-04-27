@@ -1,4 +1,4 @@
-package com.pds.pgmapp;
+package com.pds.pgmapp.model;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
