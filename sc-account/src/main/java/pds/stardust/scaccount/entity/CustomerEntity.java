@@ -13,6 +13,10 @@ public class CustomerEntity {
     private String password;
     private String token;
 
+    public CustomerEntity() {
+
+    }
+
     public CustomerEntity(String id, String name, String surname, String image, String username, String password, String token) {
         this.id = id;
         this.name = name;

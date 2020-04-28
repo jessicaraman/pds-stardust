@@ -25,7 +25,7 @@ public class CustomerController {
         if (customerEntity != null && customerEntity.getPassword().equals(customer.getPassword())) {
             return customerEntity;
         } else {
-            return null;
+            return new CustomerEntity();
         }
     }
 
