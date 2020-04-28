@@ -24,7 +24,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccountActivity extends AppCompatActivity {
-    HttpRequestHandler httpRequestHandler;
     EditText usernameEditText;
     EditText passwordEditText;
     Button loginButton;
