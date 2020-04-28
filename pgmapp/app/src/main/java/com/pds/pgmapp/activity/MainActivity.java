@@ -1,7 +1,6 @@
 package com.pds.pgmapp.activity;
 
 import android.Manifest;
-import android.app.Notification;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -60,13 +59,7 @@ public class MainActivity extends AppCompatActivity {
         startGeolocalisationBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LocationActivity.class)));
     }
 
-    /*protected void notifications() {
-        Button notifications;
-        notifications = findViewById(R.id.buttonNotifications);
-        notifications.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), NotificationActivity.class)));
-    }*/
-
-    protected void initFirebase () {
+    protected void initFirebase() {
         firebaseHandler = new FirebaseHandler(this);
     }
 }
