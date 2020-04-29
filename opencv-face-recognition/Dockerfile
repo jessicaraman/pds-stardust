@@ -4,7 +4,7 @@ FROM python:3.8
 WORKDIR /app
 
 # Install app dependencies
-COPY src/requirements.txt ./
+COPY requirement.txt ./
 
 RUN pip install -r requirements.txt
 
