@@ -67,7 +67,7 @@ class CustomerServiceTest {
     @Test
     void testInitCustomerData() {
         this.customerService.initCustomerData();
-        Mockito.verify(this.customerRepository, times(3)).save(Mockito.any());
+        Mockito.verify(this.customerRepository, times(9)).save(Mockito.any());
         Mockito.verify(this.customerRepository, times(1)).deleteAll();
     }
 }
