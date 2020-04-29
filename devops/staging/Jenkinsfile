@@ -14,6 +14,7 @@ pipeline {
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
         ACCOUNT_CONTAINER='account'
+        FREQUENTATION_CONTAINER='frequentation'
         API_GTW_CONTAINER='apigtw'
     }
 
@@ -92,6 +93,28 @@ pipeline {
                                     script {
                                         docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
                                             def img = docker.build("${ACCOUNT_CONTAINER}:latest-staging")
+                                            img.push()
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build frequentation') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("frequentation") {
+
+                                    sh 'gradle clean build -x test'
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${FREQUENTATION_CONTAINER}:latest-staging")
                                             img.push()
                                             sh "docker rmi ${img.id}"
                                         }
