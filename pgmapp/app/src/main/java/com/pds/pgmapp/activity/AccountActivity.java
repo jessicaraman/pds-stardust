@@ -82,7 +82,7 @@ public class AccountActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         log("response.isSuccessful()");
                         loggedCustomer = response.body();
-                        if (loggedCustomer != null && (loggedCustomer.getUsername().equals(username) && loggedCustomer.getPassword().equals(password)))
+                        if (loggedCustomer != null && (loggedCustomer.getUsername() != null && loginCustomer.getUsername().equals(username) && loggedCustomer.getPassword() != null && loginCustomer.getPassword().equals(password)))
                         {
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }
@@ -101,9 +101,9 @@ public class AccountActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CustomerEntity> call, Throwable t) {
-               log("network failure : " + t.getMessage() + " caused by " + t.getCause());
-               log("requested url was : " + call.request().url());
-               log("request body was : " + call.request().toString());
+                log("network failure : " + t.getMessage() + " caused by " + t.getCause());
+                log("requested url was : " + call.request().url());
+                log("request body was : " + call.request().toString());
             }
         }));
     }
@@ -120,7 +120,7 @@ public class AccountActivity extends AppCompatActivity {
     public void log(String msg, boolean toast) {
         Log.e(TAG, msg);
         if(toast) {
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
         }
     }
 }
