@@ -78,9 +78,6 @@ pipeline {
                                 }
                             }
                         }
-
-<<<<<<< HEAD
-=======
                         stage('Build account') {
 
                             tools {
@@ -102,8 +99,6 @@ pipeline {
                                 }
                             }
                         }
-
->>>>>>> c9fcff935f34e05235884746c0b28084343c862d
                         stage('Build frequentation') {
 
                             tools {
