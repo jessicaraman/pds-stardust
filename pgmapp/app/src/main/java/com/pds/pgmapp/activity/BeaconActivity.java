@@ -151,16 +151,16 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     private void sendDataToMicroService(PassageEntity passage) {
         Gson gson = new Gson();
         FrequentationService frequentationService = RetrofitInstance.getRetrofitInstance().create(FrequentationService.class);
-        Call<PassageEntity> postCall = frequentationService.postFrequentationData(passage);
+        Call<ResponseBody> postCall = frequentationService.postFrequentationData(passage);
 
-        postCall.enqueue(((new Callback<PassageEntity>() {
+        postCall.enqueue(((new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<PassageEntity> call, Response<PassageEntity> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Log.d("SUCCESS FREQUENTATION", "response = " + response.toString());
             }
 
             @Override
-            public void onFailure(Call<PassageEntity> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("FAILURE FREQUENTATION", "response = " + t.toString());
             }
         })));
