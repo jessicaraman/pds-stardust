@@ -14,6 +14,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/geolocation-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -27,12 +29,35 @@ services:
     networks:
       - pds
     extra_hosts:
-      - "node1:192.168.0.21"
-      - "node2:192.168.0.22"
-      - "node3:192.168.0.23"
+      - "node1:192.168.0.31"
+      - "node2:192.168.0.32"
+      - "node3:192.168.0.33"
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/sensor-config:/config
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  account:
+    image: "pds.stardust:5005/account:${VERSION}"
+    ports:
+      - "8085:8085"
+    networks:
+      - pds
+    extra_hosts:
+      - "node1:192.168.0.31"
+      - "node2:192.168.0.32"
+      - "node3:192.168.0.33"
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+      - spring_profiles_active=prod
+    volumes:
+      - /mnt/account-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -46,9 +71,9 @@ services:
     networks:
       - pds
     extra_hosts:
-      - "node1:192.168.0.21"
-      - "node2:192.168.0.22"
-      - "node3:192.168.0.23"
+      - "node1:192.168.0.31"
+      - "node2:192.168.0.32"
+      - "node3:192.168.0.33"
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
@@ -67,6 +92,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/kms-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -81,6 +108,8 @@ services:
       - pds
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+    volumes:
+      - /mnt/apigtw-config:/config
     deploy:
       mode: global
       restart_policy:
@@ -93,6 +122,8 @@ services:
       - "3000:3000"
     networks:
       - pds
+    volumes:
+      - /mnt/cspath/ssl:/usr/src/app/ssl
     extra_hosts:
       - "node1:192.168.0.31"
       - "node2:192.168.0.32"

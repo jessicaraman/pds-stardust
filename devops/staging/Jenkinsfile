@@ -13,7 +13,12 @@ pipeline {
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
+<<<<<<< HEAD
         FREQUENTATION_CONTAINER='frequentation' 
+=======
+        ACCOUNT_CONTAINER='account'
+        FREQUENTATION_CONTAINER='frequentation'
+>>>>>>> c9fcff935f34e05235884746c0b28084343c862d
         API_GTW_CONTAINER='apigtw'
     }
 
@@ -78,6 +83,31 @@ pipeline {
                             }
                         }
 
+<<<<<<< HEAD
+=======
+                        stage('Build account') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-account") {
+
+                                    sh 'gradle clean build -x test'
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${ACCOUNT_CONTAINER}:latest-staging")
+                                            img.push()
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+>>>>>>> c9fcff935f34e05235884746c0b28084343c862d
                         stage('Build frequentation') {
 
                             tools {

@@ -14,6 +14,10 @@ pipeline {
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
+<<<<<<< HEAD
+=======
+        ACCOUNT_CONTAINER='account'
+>>>>>>> c9fcff935f34e05235884746c0b28084343c862d
         FREQUENTATION_CONTAINER='frequentation'
         API_GTW_CONTAINER='apigtw'
     }    
@@ -96,6 +100,40 @@ pipeline {
                             }
                         }
 
+<<<<<<< HEAD
+=======
+                        stage('Build account') {
+
+                            tools {
+                                jdk 'java11'
+                            }
+
+                            steps {
+                                dir("sc-account") {
+
+                                    sh '''
+                                        gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        gradle build -x test
+                                    '''
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${ACCOUNT_CONTAINER}:latest-prod")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
+
+                                    sh '''
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                    '''
+
+                                }
+                            }
+                        }
+
+>>>>>>> c9fcff935f34e05235884746c0b28084343c862d
                         stage('Build frequentation') {
 
                             tools {
@@ -107,6 +145,10 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+<<<<<<< HEAD
+=======
+                                        gradle build -x test
+>>>>>>> c9fcff935f34e05235884746c0b28084343c862d
                                     '''
 
                                     script {

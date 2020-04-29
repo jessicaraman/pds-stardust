@@ -6,32 +6,34 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.LocationActivity"></activity>
-        <activity android:name=".activity.NotificationActivity"></activity>
-        <activity android:name=".activity.PathActivity"></activity>
-        <activity android:name=".activity.BeaconActivity"></activity>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.AccountActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.NotificationActivity"></activity>
+        <activity android:name=".activity.PathActivity"></activity>
+        <activity android:name=".activity.MainActivity"></activity>
         <activity
             android:name=".activity.GuideUserStoreActivity"
             android:label="@string/app_name" />
+        <service android:name=".handlers.FirebaseHandler">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
