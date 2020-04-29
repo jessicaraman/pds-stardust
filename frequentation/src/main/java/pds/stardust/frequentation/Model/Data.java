@@ -5,10 +5,10 @@ import org.springframework.data.annotation.Id;
 public class Data {
     @Id
     private int idclient ;
-    private int idbeacon ;
+    private String idbeacon ;
     private String date ;
 
-    public Data(int idclient, int idbeacon, String date) {
+    public Data(int idclient, String idbeacon, String date) {
         this.idclient = idclient;
         this.idbeacon = idbeacon;
         this.date = date;
@@ -25,11 +25,11 @@ public class Data {
         this.idclient = idclient;
     }
 
-    public int getIdbeacon() {
+    public String getIdbeacon() {
         return idbeacon;
     }
 
-    public void setIdbeacon(int idbeacon) {
+    public void setIdbeacon(String idbeacon) {
         this.idbeacon = idbeacon;
     }
 
