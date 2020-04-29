@@ -14,6 +14,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=staging
+    volumes:
+      - /mnt/geolocation-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -33,6 +35,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=staging
+    volumes:
+      - /mnt/sensor-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -43,6 +47,27 @@ services:
     image: "pds.stardust:5005/account:latest-staging"
     ports:
       - "8085:8085"
+    networks:
+      - pds
+    extra_hosts:
+      - "node1:192.168.0.21"
+      - "node2:192.168.0.22"
+      - "node3:192.168.0.23"
+    environment:
+      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+      - spring_profiles_active=staging
+    volumes:
+      - /mnt/account-config:/config
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  frequentation:
+    image: "pds.stardust:5005/frequentation:latest-staging"
+    ports:
+      - "8084:8084"
     networks:
       - pds
     extra_hosts:
@@ -67,6 +92,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=staging
+    volumes:
+      - /mnt/kms-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -81,6 +108,8 @@ services:
       - pds
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+    volumes:
+      - /mnt/apigtw-config:/config
     deploy:
       mode: global
       restart_policy:
