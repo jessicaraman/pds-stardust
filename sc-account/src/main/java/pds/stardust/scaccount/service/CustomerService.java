@@ -29,8 +29,14 @@ public class CustomerService implements ICustomerService {
     @Override
     public void initCustomerData () {
         customerRepository.deleteAll();
-        customerRepository.save(new CustomerEntity("1", "Sammandamourthy", "Suriya", "none", "suriya", "toto", "Undefined"));
-        customerRepository.save(new CustomerEntity("2", "Nguyen", "Maxime", "none", "maxime", "toto", "Undefined"));
-        customerRepository.save(new CustomerEntity("3", "toto", "tata", "none", "toto", "toto", "Undefined"));
+        customerRepository.save(new CustomerEntity("1", "Sammandamourthy", "Suriya", "none", "suriya", "pds", "none"));
+        customerRepository.save(new CustomerEntity("2", "Nguyen", "Maxime", "none", "maxime", "pds", "none"));
+        customerRepository.save(new CustomerEntity("3", "Lebon", "Samuel", "none", "samuel", "pds", "none"));
+        customerRepository.save(new CustomerEntity("4", "Mezned", "Alexandre", "none", "alex", "pds", "none"));
+        customerRepository.save(new CustomerEntity("5", "Ramanantsoa", "Jessica", "none", "jessica", "pds", "none"));
+        customerRepository.save(new CustomerEntity("6", "Faddaoui", "Ilies", "none", "ilies", "pds", "none"));
+        customerRepository.save(new CustomerEntity("7", "Baraton", "Damien", "none", "damien", "pds", "none"));
+        customerRepository.save(new CustomerEntity("8", "Lobiyed", "Karim", "none", "karim", "pds", "none"));
+        customerRepository.save(new CustomerEntity("9", "pds", "pds", "none", "pds", "pds", "none"));
     }
 }
