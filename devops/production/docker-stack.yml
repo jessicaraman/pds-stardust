@@ -14,6 +14,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/geolocation-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -33,6 +35,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/sensor-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -52,6 +56,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/account-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -86,6 +92,8 @@ services:
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
       - spring_profiles_active=prod
+    volumes:
+      - /mnt/kms-config:/config
     deploy:
       replicas: 3
       restart_policy:
@@ -100,6 +108,8 @@ services:
       - pds
     environment:
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+    volumes:
+      - /mnt/apigtw-config:/config
     deploy:
       mode: global
       restart_policy:
@@ -112,6 +122,8 @@ services:
       - "3000:3000"
     networks:
       - pds
+    volumes:
+      - /mnt/cspath/ssl:/usr/src/app/ssl
     extra_hosts:
       - "node1:192.168.0.31"
       - "node2:192.168.0.32"
