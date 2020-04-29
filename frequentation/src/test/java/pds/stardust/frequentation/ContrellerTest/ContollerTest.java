@@ -24,13 +24,12 @@ public class ContollerTest {
     DataController dc ;
     @Mock
     DataRepository dt ;
-    @Test
-    public void testAddData () {
-        Data data = new Data(1,1,"10/10/2020") ;
-        dt.save(data) ;
-        assertEquals("Client ajouté avec l'id : 1", dc.saveDATA(data)); ;
+    //@Test public void testAddData () {
+      //  Data data = new Data(1,1,"10/10/2020") ;
+       // dt.save(data) ;
+       // assertEquals("Client ajouté avec l'id : 1", dc.saveDATA(data)); ;
 
-    }
+   // }
 
 
 }
