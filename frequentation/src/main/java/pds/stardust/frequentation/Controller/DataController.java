@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 public class DataController {
+
 @Autowired
     private DataRepository repository ;
 
