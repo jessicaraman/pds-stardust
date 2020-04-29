@@ -13,12 +13,8 @@ pipeline {
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
-<<<<<<< HEAD
-        FREQUENTATION_CONTAINER='frequentation' 
-=======
         ACCOUNT_CONTAINER='account'
         FREQUENTATION_CONTAINER='frequentation'
->>>>>>> c9fcff935f34e05235884746c0b28084343c862d
         API_GTW_CONTAINER='apigtw'
     }
 
