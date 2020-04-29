@@ -8,6 +8,15 @@ public class Data {
     private int idbeacon ;
     private String date ;
 
+    public Data(int idclient, int idbeacon, String date) {
+        this.idclient = idclient;
+        this.idbeacon = idbeacon;
+        this.date = date;
+    }
+
+    public Data() {
+    }
+
     public int getIdclient() {
         return idclient;
     }
