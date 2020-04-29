@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         buttonUserGuideStoreAction();
         buttonPath();
         startGeolocatisation();
+        startBeaconCapting();
         initFirebase();
     }
 
@@ -57,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
         Button startGeolocalisationBtn;
         startGeolocalisationBtn = findViewById(R.id.buttonGeolocalisation);
         startGeolocalisationBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LocationActivity.class)));
+    }
+
+    protected void startBeaconCapting() {
+        Button startBeaconCaptingButton;
+        startBeaconCaptingButton = findViewById(R.id.buttonBeacon);
+        startBeaconCaptingButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), BeaconActivity.class)));
     }
 
     protected void initFirebase() {
