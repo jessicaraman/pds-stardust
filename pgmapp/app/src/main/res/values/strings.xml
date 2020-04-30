@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">pgmapp</string>
     <string name="title">Notifications</string>
+    <string name="fcm_token">FCM Token: %s</string>
 </resources>
