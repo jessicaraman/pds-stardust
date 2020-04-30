@@ -1,12 +1,10 @@
 # USAGE
-# python recognize_webcam.py --detector face_detection_model \
-#	--embedding-model openface_nn4.small2.v1.t7 \
-#	--recognizer output/recognizer.pickle \
-#	--le output/le.pickle
+# python recognize_webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
 # import the necessary packages
 from imutils.video import VideoStream
 from imutils.video import FPS
+from firebaseService import sendNotificationTo
 import numpy as np
 import argparse
 import imutils
@@ -15,6 +13,9 @@ import time
 import cv2
 import os
 
+
+listUsersNotified = []
+userFile = "listUsersNotified.txt"
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--detector", required=True,
@@ -126,6 +127,17 @@ while True:
             j = np.argmax(preds)
             proba = preds[j]
             name = le.classes_[j]
+            if(name!="unknown"):
+
+                with open(userFile) as f:
+                    lines = f.readlines()
+                f.close()
+
+                if ((name in lines) is False) and ((name+'\n' in lines) is False) and proba > 0.5:
+                    fi = open(userFile, "a")
+                    fi.write("\n"+name)
+                    fi.close()
+                    sendNotificationTo(name)
 
             # draw the bounding box of the face along with the
             # associated probability
