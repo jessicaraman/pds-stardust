@@ -16,6 +16,9 @@ import pds.stardust.scaccount.repository.CustomerRepository;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
+/**
+ * Class CustomerServiceTest
+ */
 @RunWith(MockitoJUnitRunner.class)
 class CustomerServiceTest {
 
