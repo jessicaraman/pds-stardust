@@ -5,29 +5,53 @@ import org.springframework.stereotype.Service;
 import pds.stardust.scaccount.entity.CustomerEntity;
 import pds.stardust.scaccount.repository.CustomerRepository;
 
+/**
+ * CustomerService : handles data persistence manipulation
+ */
 @Service
 public class CustomerService implements ICustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
 
+    /**
+     * Get customer Entity related to the given username
+     *
+     * @param username
+     * @return customerEntity
+     */
     @Override
     public CustomerEntity findByUsername(String username) {
         return customerRepository.findByUsername(username);
     }
 
+    /**
+     * Get customer Entity related to the given id
+     *
+     * @param id
+     * @return customerEntity
+     */
     @Override
     public CustomerEntity getById(String id) {
         return customerRepository.getById(id);
     }
 
+    /**
+     * Save customer
+     *
+     * @param customerEntity
+     * @return customerEntity
+     */
     @Override
-    public CustomerEntity saveCustomer (CustomerEntity customerEntity) {
+    public CustomerEntity saveCustomer(CustomerEntity customerEntity) {
         return customerRepository.save(customerEntity);
     }
 
+    /**
+     * Mock data
+     */
     @Override
-    public void initCustomerData () {
+    public void initCustomerData() {
         customerRepository.deleteAll();
         customerRepository.save(new CustomerEntity("1", "Sammandamourthy", "Suriya", "none", "suriya", "pds", "none"));
         customerRepository.save(new CustomerEntity("2", "Nguyen", "Maxime", "none", "maxime", "pds", "none"));

@@ -1,29 +1,27 @@
 package pds.stardust.scaccount.service;
 
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import pds.stardust.scaccount.entity.CustomerEntity;
 import pds.stardust.scaccount.repository.CustomerRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 
 /**
- * Class CustomerServiceTest
+ * CustomerServiceTest
  */
 @RunWith(MockitoJUnitRunner.class)
 class CustomerServiceTest {
 
     @Mock
-    CustomerRepository customerRepository ;
+    CustomerRepository customerRepository;
 
     @InjectMocks
     CustomerService customerService = new CustomerService();
