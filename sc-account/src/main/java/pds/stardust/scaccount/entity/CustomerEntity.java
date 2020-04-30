@@ -2,6 +2,9 @@ package pds.stardust.scaccount.entity;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * CustomerEntity : represents a logged customer
+ */
 public class CustomerEntity {
 
     @Id
@@ -12,10 +15,6 @@ public class CustomerEntity {
     private String username;
     private String password;
     private String token;
-
-    public CustomerEntity() {
-
-    }
 
     public CustomerEntity(String id, String name, String surname, String image, String username, String password, String token) {
         this.id = id;
