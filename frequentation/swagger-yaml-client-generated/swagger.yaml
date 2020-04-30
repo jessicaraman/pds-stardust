@@ -1,0 +1,144 @@
+---
+swagger: "2.0"
+info:
+  description: "Api sc-frequentation \n"
+  version: 1.0.0
+  title: Swagger Frequentation
+  contact:
+    email: lobiyed.karim@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /lobiyed.karim/Frequentation/1.0.0
+schemes:
+- https
+- http
+paths:
+  /addData:
+    post:
+      tags:
+      - Data
+      summary: Add new data
+      operationId: addData
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: data (idclient,idbeacon,date)
+        required: true
+        schema:
+          $ref: '#/definitions/Data'
+      responses:
+        "405":
+          description: Invalid input
+    put:
+      tags:
+      - Data
+      summary: Update an existing data
+      operationId: updateData
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Data'
+      responses:
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: data not found
+        "405":
+          description: Validation exception
+  /findAllData:
+    get:
+      tags:
+      - Data
+      summary: Finds all data
+      operationId: get data
+      produces:
+      - application/json
+      - application/xml
+      parameters: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Data'
+        "400":
+          description: Invalid status value
+  /findAllData/{ClientId}:
+    get:
+      tags:
+      - Data
+      summary: Find data by ID
+      description: Returns a single data
+      operationId: getDaataById
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: ClientId
+        in: path
+        description: ID of the data to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Data'
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Data not found
+  /DeleteData/{ClientId}:
+    delete:
+      tags:
+      - Data
+      summary: Deletes a data
+      operationId: deleteData
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: ClientId
+        in: path
+        description: Client id to delete
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: data not found
+definitions:
+  Data:
+    type: object
+    required:
+    - BeaconId
+    - ClientId
+    - Date
+    properties:
+      ClientId:
+        type: integer
+        format: int64
+      BeaconId:
+        type: integer
+        format: int64
+      Date:
+        type: string

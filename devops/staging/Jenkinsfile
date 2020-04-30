@@ -78,7 +78,6 @@ pipeline {
                                 }
                             }
                         }
-
                         stage('Build account') {
 
                             tools {
@@ -100,7 +99,6 @@ pipeline {
                                 }
                             }
                         }
-
                         stage('Build frequentation') {
 
                             tools {
