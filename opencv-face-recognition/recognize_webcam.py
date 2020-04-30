@@ -4,7 +4,7 @@
 # import the necessary packages
 from imutils.video import VideoStream
 from imutils.video import FPS
-from firebaseService import sendNotificationTo
+from firebaseService import sendnotificationto
 import numpy as np
 import argparse
 import imutils
@@ -137,7 +137,7 @@ while True:
                     fi = open(userFile, "a")
                     fi.write("\n"+name)
                     fi.close()
-                    sendNotificationTo(name)
+                    sendnotificationto(name)
 
             # draw the bounding box of the face along with the
             # associated probability
