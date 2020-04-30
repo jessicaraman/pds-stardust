@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pds.stardust.scaccount.entity.CustomerEntity;
 import pds.stardust.scaccount.service.CustomerService;
 
+/**
+ * Customer Controller
+ */
 @RestController
 public class CustomerController {
 
@@ -30,13 +33,13 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/update/token", consumes = "application/json", produces = "application/json")
-    public CustomerEntity updateToken (@RequestBody CustomerEntity customer) {
+    public CustomerEntity updateToken (@RequestBody CustomerEntity customer)  {
         CustomerEntity customerEntity = customerService.getById(customer.getId());
         if (customerEntity.getUsername().equals(customer.getUsername()) && customerEntity.getPassword().equals(customer.getPassword())) {
             customerEntity.setToken(customer.getToken());
             return customerService.saveCustomer(customerEntity);
         } else {
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 
