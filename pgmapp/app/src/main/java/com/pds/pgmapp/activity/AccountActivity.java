@@ -7,17 +7,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pds.pgmapp.R;
 import com.pds.pgmapp.model.CustomerEntity;
 import com.pds.pgmapp.retrofit.AccountService;
 import com.pds.pgmapp.retrofit.RetrofitInstance;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 
@@ -28,6 +24,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ *
+ */
 public class AccountActivity extends AppCompatActivity {
     AccountService apiAccountService;
     EditText usernameEditText;
