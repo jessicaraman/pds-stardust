@@ -2,6 +2,9 @@ package pds.stardust.scaccount.service;
 
 import pds.stardust.scaccount.entity.CustomerEntity;
 
+/**
+ * ICustomerService
+ */
 public interface ICustomerService {
 
     CustomerEntity findByUsername(String username);
