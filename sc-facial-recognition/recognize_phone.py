@@ -1,7 +1,7 @@
 # USAGE
-# python recognize_video.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
+# python recognize_phone.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
-from imutils.video import VideoStream
+#from imutils.video import VideoStream
 from imutils.video import FPS
 import numpy as np
 import argparse
@@ -10,7 +10,12 @@ import pickle
 import time
 import cv2
 import os
+import requests
 
+from firebaseService import sendnotificationto
+
+listUsersNotified = []
+userFile = "listUsersNotified.txt"
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--detector", required=True,
@@ -43,23 +48,27 @@ le = pickle.loads(open(args["le"], "rb").read())
 # initialize the video stream, then allow the camera sensor to warm up
 print("[INFO] starting video stream...")
 #vs = VideoStream(src=0).start()
-vs = cv2.VideoCapture('video/vidmax.mp4')
+#vs = cv2.VideoCapture('video/vidmax.mp4')
 
-if (vs.isOpened()== False):
-    print("Error opening video stream or file")
+#if (vs.isOpened()== False):
+#    print("Error opening video stream or file")
 
 time.sleep(2.0)
-
+url="http://192.168.1.44:8080/shot.jpg"
 # start the FPS throughput estimator
 fps = FPS().start()
 
 # loop over frames from the video file stream
-#while True:
-while(vs.isOpened()):
+while True:
     # grab the frame from the threaded video stream
-    ret, frame = vs.read()
-    if not ret:
-        break
+    #ret, frame = vs.read()
+
+    #if not ret:
+    #    break
+    img_resp = requests.get(url)
+    img_arr = np.array(bytearray(img_resp.content),dtype=np.uint8)
+    img = cv2.imdecode(img_arr,-1)
+    frame = img
 
     # (ww, hh, cc) = frame.shape
     # resize the frame to have a width of 600 pixels (while
@@ -121,6 +130,18 @@ while(vs.isOpened()):
             j = np.argmax(preds)
             proba = preds[j]
             name = le.classes_[j]
+
+            if(name!="unknown"):
+
+                with open(userFile) as f:
+                    lines = f.readlines()
+                f.close()
+
+                if ((name in lines) is False) and ((name+'\n' in lines) is False) and proba > 0.5:
+                    fi = open(userFile, "a")
+                    fi.write("\n"+name)
+                    fi.close()
+                    sendnotificationto(name)
 
             # draw the bounding box of the face along with the
             # associated probability
