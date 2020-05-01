@@ -10,3 +10,4 @@ def clean():
     contents = f.read()
     print(contents)
     f.close()
+clean()

@@ -7,12 +7,11 @@ firebase_admin.initialize_app(cred)
 
 def sendnotificationto(token):
   print(token)
-
-  registration_token = 'egjkDCNbQValexTOKEC5k6:APA91bGU3E0bSmuHR5GvC-a9dRPtAulG1-lbJU9BP-Y-QarLQc24em6Ab7s4oJtXp5jS2OLtnob0hDOqA6epsujm7Ra31TsN6T17lvg8M5eQc4tXEvH6fucFkdailIeEYLnKMlWw1AtD'
+  registration_token = 'dtyAPHQcsXDSXLzC_1N_4z:APA91bGJsCXrcW_St3fpw_-GAnfVUIgKSxuXZUF4d47DHbe7eLDvLRLJCtoY6Mday15yyjXxjnag0xptKDib_KBtiYFmubrPdZG2FtjvZ-iIcG4Q7HahZmubpVu2cIB3CmRArNRV5AiU'
   message = messaging.Message(
     notification=messaging.Notification(
-      title='Esipe',
-      body='New courses!',
+      title='JENAIMARRRRE',
+      body='JENAIMARRRRE',
     ),
     data={
       'subject': 'IT',
