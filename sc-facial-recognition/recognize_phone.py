@@ -131,12 +131,15 @@ while True:
             proba = preds[j]
             name = le.classes_[j]
 
+            # send a notification if face is recognized at more than 50%
             if(name!="unknown"):
 
+                # read the cache of the user to know if a notification has been already sent
                 with open(userFile) as f:
                     lines = f.readlines()
                 f.close()
 
+                # if the cache doesn't have the name of the user, proceed to send the notification
                 if ((name in lines) is False) and ((name+'\n' in lines) is False) and proba > 0.5:
                     fi = open(userFile, "a")
                     fi.write("\n"+name)
@@ -167,7 +170,7 @@ while True:
 fps.stop()
 print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
 print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-vs.release()
+#vs.release()
 # do a bit of cleanup
 cv2.destroyAllWindows()
 #vs.stop()
