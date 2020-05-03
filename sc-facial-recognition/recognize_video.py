@@ -11,23 +11,14 @@ import time
 import cv2
 import os
 
+from argument.argumentsettings import ArgumentSettings
 from firebaseService import sendnotificationto
 
 listUsersNotified = []
 userFile = "listUsersNotified.txt"
 # construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--detector", required=True,
-                help="path to OpenCV's deep learning face detector")
-ap.add_argument("-m", "--embedding-model", required=True,
-                help="path to OpenCV's deep learning face embedding model")
-ap.add_argument("-r", "--recognizer", required=True,
-                help="path to model trained to recognize faces")
-ap.add_argument("-l", "--le", required=True,
-                help="path to label encoder")
-ap.add_argument("-c", "--confidence", type=float, default=0.5,
-                help="minimum probability to filter weak detections")
-args = vars(ap.parse_args())
+argument = ArgumentSettings()
+args = argument.args
 
 # load our serialized face detector from disk
 print("[INFO] loading face detector...")
