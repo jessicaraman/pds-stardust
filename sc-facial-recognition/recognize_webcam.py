@@ -6,18 +6,14 @@ from imutils.video import VideoStream
 from imutils.video import FPS
 
 from argument.argumentsettings import ArgumentSettings
-from firebaseService import sendnotificationto
+from cache_manager.cache_check import checking_cache
 import numpy as np
-import argparse
 import imutils
 import pickle
 import time
 import cv2
 import os
 
-
-listUsersNotified = []
-userFile = "listUsersNotified.txt"
 # construct the argument parser and parse the arguments
 argument = ArgumentSettings()
 args = argument.args
@@ -52,30 +48,17 @@ fps = FPS().start()
 
 # loop over frames from the video file stream
 while True:
-#while(vs.isOpened()):
+
     # grab the frame from the threaded video stream
-    #ret, frame = vs.read()
-    #if not ret:
-    #    break
     frame = vs.read()
 
-    # (ww, hh, cc) = frame.shape
-    # resize the frame to have a width of 600 pixels (while
-    # maintaining the aspect ratio), and then grab the image
+    # resize the frame to have a width of 600 pixels while
+    # maintaining the aspect ratio and grab the image
     # dimensions
     frame = imutils.resize(frame, width=600)
     (h, w) = frame.shape[:2]
-    # cv2.resize(frame, (600, hh))
-    # (h, w, c) = frame.shape
-    # width = vs.get(3)  # float
-    # height = vs.get(4)  # float
-    # h = int(height)
-    # w = int(width)
 
     # construct a blob from the image
-    # imageBlob = cv2.dnn.blobFromImage(
-    #	cv2.resize(frame, (300, 300)), 1.0, (300, 300),
-    #	(104.0, 177.0, 123.0), swapRB=False, crop=False)
     imageBlob = cv2.dnn.blobFromImage(
         cv2.resize(frame, (300, 300)), 1.0, (300, 300),
         (104.0, 177.0, 123.0), swapRB=False, crop=False)
@@ -120,16 +103,7 @@ while True:
             proba = preds[j]
             name = le.classes_[j]
             if(name!="unknown"):
-
-                with open(userFile) as f:
-                    lines = f.readlines()
-                f.close()
-
-                if ((name in lines) is False) and ((name+'\n' in lines) is False) and proba > 0.5:
-                    fi = open(userFile, "a")
-                    fi.write("\n"+name)
-                    fi.close()
-                    sendnotificationto(name)
+                checking_cache(name,proba)
 
             # draw the bounding box of the face along with the
             # associated probability

@@ -1,8 +1,9 @@
 from firebase_admin import messaging
 from firebase_admin import credentials
+from configuration import globalconfig as cfg
 import firebase_admin
 
-cred = credentials.Certificate("firebasePrivateKey/pds-facial-recognition-firebase-adminsdk-s9pux-948e530c8c.json")
+cred = credentials.Certificate(cfg.firebasekey)
 firebase_admin.initialize_app(cred)
 
 def sendnotificationto(token):
