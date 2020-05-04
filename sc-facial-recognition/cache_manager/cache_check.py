@@ -1,4 +1,4 @@
-from firebase.firebase_manager.firebaseService import sendnotificationto
+from firebase.firebase_manager.firebase_service import sendnotificationto
 from configuration import globalconfig as cfg
 
 

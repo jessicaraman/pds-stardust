@@ -10,6 +10,7 @@ import imutils
 import logging
 import time
 import cv2
+import requests
 
 # construct the argument parser and parse the arguments
 logging.debug('Construct arguments')
@@ -23,7 +24,7 @@ modeler = Modeler(args)
 # initialize the video stream, then allow the camera sensor to warm up
 
 logging.debug('Starting video stream')
-vs = VideoStream(src=0).start()
+url="http://192.168.1.44:8080/shot.jpg"
 time.sleep(2.0)
 
 # loop over frames from the video file stream
@@ -31,7 +32,10 @@ while True:
 
     # grab the frame from the threaded video stream
     logging.debug('Read stream')
-    frame = vs.read()
+    img_resp = requests.get(url)
+    img_arr = np.array(bytearray(img_resp.content),dtype=np.uint8)
+    img = cv2.imdecode(img_arr,-1)
+    frame = img
 
     # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
     frame = imutils.resize(frame, width=600)
@@ -100,4 +104,4 @@ while True:
         break
 
 cv2.destroyAllWindows()
-vs.stop()
+

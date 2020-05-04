@@ -1,6 +1,6 @@
 #USAGE
-#python cacheFill.py
-from cache_manager.cacheClean import *
+#python cache_fill.py
+from cache_manager.cache_clean import *
 from configuration import globalconfig as cfg
 
 

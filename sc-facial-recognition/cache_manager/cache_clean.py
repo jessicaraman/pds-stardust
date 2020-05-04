@@ -1,5 +1,5 @@
 #USAGE
-#python cacheClean.py
+#python cache_clean.py
 from configuration import globalconfig as cfg
 
 def clean():

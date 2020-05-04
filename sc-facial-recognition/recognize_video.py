@@ -23,15 +23,18 @@ modeler = Modeler(args)
 # initialize the video stream, then allow the camera sensor to warm up
 
 logging.debug('Starting video stream')
-vs = VideoStream(src=0).start()
+vs = cv2.VideoCapture('video/vidmax.mp4')
 time.sleep(2.0)
 
 # loop over frames from the video file stream
-while True:
+while (vs.isOpened()):
 
     # grab the frame from the threaded video stream
     logging.debug('Read stream')
-    frame = vs.read()
+    ret, frame = vs.read()
+
+    if not ret:
+        break
 
     # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
     frame = imutils.resize(frame, width=600)
@@ -98,6 +101,5 @@ while True:
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
         break
-
+vs.release()
 cv2.destroyAllWindows()
-vs.stop()
