@@ -114,7 +114,7 @@ class CustomerServiceTest {
 
     @Test
     void updateTokenBadPasswordTest() {
-        CustomerEntity badPasswordEntity = new CustomerEntity(1, "suriya", "suriya", "not defined", "lol", "bad_password", "no token");
+        CustomerEntity badPasswordEntity = new CustomerEntity(1, "suriya", "suriya", "not defined", "suriya", "bad_password", "no token");
         try {
             this.customerService.updateToken(badPasswordEntity);
         } catch (CustomException exception) {
@@ -138,6 +138,7 @@ class CustomerServiceTest {
         assertEquals(customerEntity, this.customerService.findByUsername("suriya"));
         Mockito.verify(this.customerRepository, times(1)).findByUsername("suriya");
     }
+
 
     @Test
     void testGetById() {
