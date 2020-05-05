@@ -67,6 +67,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void initFirebase() {
-        firebaseHandler = new FirebaseHandler(this);
+        firebaseHandler = new FirebaseHandler();
     }
 }
