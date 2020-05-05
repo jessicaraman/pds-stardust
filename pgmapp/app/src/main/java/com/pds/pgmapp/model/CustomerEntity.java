@@ -5,7 +5,7 @@ package com.pds.pgmapp.model;
  */
 public class CustomerEntity {
 
-    private String id;
+    private Integer id;
     private String name;
     private String surname;
     private String image;
@@ -13,11 +13,11 @@ public class CustomerEntity {
     private String password;
     private String token;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public class CustomerEntity {
 
     }
 
-    public CustomerEntity(String id, String name, String surname, String image, String username, String password, String token) {
+    public CustomerEntity(Integer id, String name, String surname, String image, String username, String password, String token) {
         this.id = id;
         this.name = name;
         this.surname = surname;
