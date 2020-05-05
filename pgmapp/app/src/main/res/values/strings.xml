@@ -2,4 +2,7 @@
     <string name="app_name">pgmapp</string>
     <string name="title">Notifications</string>
     <string name="fcm_token">FCM Token: %s</string>
+    <string name="TAG_ACCOUNT_ACTIVITY">AccountActivity</string>
+    <string name="TAG_FIREBASE_HANDLER">FirebaseHandler</string>
+    <string name="CHANNEL_ID">CHANNEL_ID</string>
 </resources>

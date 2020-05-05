@@ -22,8 +22,8 @@ public class FirebaseHandler extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.i(Constant.TAG_FIREBASE_HANDLER, remoteMessage.getMessageId());
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Constant.CHANNEL_ID)
+        Log.i(getString(R.string.TAG_FIREBASE_HANDLER), remoteMessage.getMessageId());
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID))
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
