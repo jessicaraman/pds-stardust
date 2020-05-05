@@ -28,7 +28,7 @@ public class CustomerService implements ICustomerService {
      * @return customer Entity if authentication is successful
      * @throws CustomException if authentication fails
      */
-    public CustomerEntity connect(CustomerEntity customer) throws CustomException {
+    public CustomerEntity connect(CustomerEntity customer) {
         CustomerEntity customerEntity = findByUsername(customer.getUsername());
         if (customerEntity == null) {
             logger.error("/connect - Bad username.");
@@ -49,7 +49,7 @@ public class CustomerService implements ICustomerService {
      * @return updated customerEntity
      * @throws CustomException if pre authentication fails
      */
-    public CustomerEntity updateToken(CustomerEntity customer) throws CustomException {
+    public CustomerEntity updateToken(CustomerEntity customer) {
         CustomerEntity customerEntity = getById(customer.getId());
         if (customerEntity == null) {
             logger.error("/update/token - Bad customer ID.");

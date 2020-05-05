@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,18 +12,21 @@ import androidx.core.app.ActivityCompat;
 
 import com.pds.pgmapp.R;
 import com.pds.pgmapp.handlers.FirebaseHandler;
+import com.pds.pgmapp.model.CustomerEntity;
 
 /**
  * MainActivity : HomePage
  */
 public class MainActivity extends AppCompatActivity {
+    private CustomerEntity loggedCustomer;
 
-    private FirebaseHandler firebaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        loggedCustomer = getIntent().getParcelableExtra("logged_customer");
+        Log.i(getString(R.string.TAG_MAIN_ACTIVITY), "Logged customer : " + loggedCustomer.getUsername());
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             int MY_PERMISSIONS_ACCESS_COARSE_LOCATION = 1;
@@ -67,6 +71,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void initFirebase() {
-        firebaseHandler = new FirebaseHandler();
+        FirebaseHandler firebaseHandler = new FirebaseHandler();
     }
 }

@@ -9,31 +9,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.pds.pgmapp.R;
+import com.pds.pgmapp.handlers.AccountHandler;
 import com.pds.pgmapp.model.CustomerEntity;
-import com.pds.pgmapp.retrofit.AccountService;
-import com.pds.pgmapp.retrofit.RetrofitInstance;
-
-import java.io.IOException;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Account Activity : Authentication activity (launcher activity)
  */
 public class AccountActivity extends AppCompatActivity {
-
-    AccountService apiAccountService;
+    AccountHandler accountHandler;
     EditText usernameEditText;
     EditText passwordEditText;
     Button loginButton;
-    CustomerEntity loggedCustomer;
 
     /**
      * Activity startup : init widgets and event listener
@@ -44,6 +31,7 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
         this.initWidgets();
         this.loginButton.setOnClickListener(v -> login());
+        accountHandler = new AccountHandler(this);
     }
 
     /**
@@ -54,7 +42,7 @@ public class AccountActivity extends AppCompatActivity {
         String password = this.passwordEditText.getText().toString().trim();
 
         if (username != null && !username.trim().equals("") && password != null && !password.trim().equals("")) {
-            this.connect(username, password);
+            this.accountHandler.connect(username, password);
         } else {
             Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Wrong username or password");
             Toast.makeText(getApplicationContext(), "Wrong username or password! Try again.", Toast.LENGTH_SHORT).show();
@@ -62,61 +50,16 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     /**
-     * connection function, call remote API and try to authenticate with given credentials
+     * Start main activity when user is successfully authenticated
+     *
+     * @param loggedCustomer
      */
-    private void connect(String username, String password) {
-        apiAccountService = RetrofitInstance.getRetrofitInstance().create(AccountService.class);
-        CustomerEntity loginCustomer = new CustomerEntity();
-        loginCustomer.setUsername(username);
-        loginCustomer.setPassword(password);
-        Call<ResponseBody> heartbeatCall = apiAccountService.heartbeat();
-        Call<CustomerEntity> connectCall = apiAccountService.connect(RequestBody.create(MediaType.parse("json"), "{ \"username\": \"" + username + "\", \"password\": \"" + password + "\" }"));
-
-        // hearbeat app
-        heartbeatCall.enqueue(((new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Heartbeat response = " + response.toString());
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Exception while network heartbeat :" + t.getMessage() + " caused by " + t.getCause());
-            }
-        })));
-
-        // connection app
-        connectCall.enqueue((new Callback<CustomerEntity>() {
-            @Override
-            public void onResponse(Call<CustomerEntity> call, Response<CustomerEntity> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), response.message());
-                        loggedCustomer = response.body();
-                        if (loggedCustomer != null && (loggedCustomer.getUsername() != null && loginCustomer.getUsername().equals(username) && loggedCustomer.getPassword() != null && loginCustomer.getPassword().equals(password))) {
-                            firebaseInstanceTokenId();
-                        } else {
-                            Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Authentication failed : " + response.errorBody().string());
-                            Toast.makeText(getApplicationContext(), "Authentication failed! Please retry later. 1", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Authentication failed : " + response.errorBody().string());
-                        Toast.makeText(getApplicationContext(), "Wrong username or password! Try again.", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException ex) {
-                    Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Connection response error " + ex.getMessage());
-                    Toast.makeText(getApplicationContext(), "Connection error, please retry later. 3", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CustomerEntity> call, Throwable t) {
-                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Network failure : " + t.getMessage() + " caused by " + t.getCause());
-                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Requested URL was : " + call.request().url());
-                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Request body was : " + call.request().toString());
-            }
-        }));
+    public void startMainActivity(CustomerEntity loggedCustomer) {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("logged_customer", loggedCustomer);
+        startActivity(intent);
     }
+
 
     /**
      * Store widgets in class
@@ -125,45 +68,5 @@ public class AccountActivity extends AppCompatActivity {
         this.loginButton = findViewById(R.id.loginButton);
         this.usernameEditText = findViewById(R.id.usernameEditText);
         this.passwordEditText = findViewById(R.id.passwordEditText);
-    }
-
-    /**
-     * Generate a unique Firebase Cloud Messaging Token ID
-     * Get the Instance ID token
-     */
-    public void firebaseInstanceTokenId() {
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(task -> {
-                    String token = task.getResult().getToken();
-                    String msg = getString(R.string.fcm_token, token);
-                    Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), msg);
-                    if (!task.isSuccessful()) {
-                        Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), msg);
-                    } else {
-                        this.updateToken(token);
-                        Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Updated token successfully");
-                    }
-                });
-    }
-
-    /**
-     * Update the user's Firebase Cloud Messaging Token
-     */
-    private void updateToken(String token) {
-        loggedCustomer.setToken(token);
-        Call<CustomerEntity> updateCall = apiAccountService.updateToken(loggedCustomer);
-        updateCall.enqueue(new Callback<CustomerEntity>() {
-            @Override
-            public void onResponse(Call<CustomerEntity> call, Response<CustomerEntity> response) {
-                Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Updated token successfully, lauching MainActivity");
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onFailure(Call<CustomerEntity> call, Throwable t) {
-                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Update token failure : " + t.getMessage() + " caused by " + t.getCause());
-            }
-        });
     }
 }

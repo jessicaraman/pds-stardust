@@ -10,6 +10,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
+/**
+ * Account Service : Retrofit consumer
+ */
 public interface AccountService {
 
     @GET("account/")
