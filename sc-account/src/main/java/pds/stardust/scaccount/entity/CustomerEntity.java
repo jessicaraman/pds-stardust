@@ -1,22 +1,32 @@
 package pds.stardust.scaccount.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 
 /**
  * CustomerEntity : represents a logged customer
  */
+@ApiModel(description = "Details about customer")
 public class CustomerEntity {
 
     @Id
-    private String id;
+    @ApiModelProperty(notes = "The unique id of customer")
+    private Integer id;
+    @ApiModelProperty(notes = "The customer's name")
     private String name;
+    @ApiModelProperty(notes = "The customer's surname")
     private String surname;
+    @ApiModelProperty(notes = "The customer's image")
     private String image;
+    @ApiModelProperty(notes = "The customer's username")
     private String username;
+    @ApiModelProperty(notes = "The customer's password")
     private String password;
+    @ApiModelProperty(notes = "The customer's token")
     private String token;
 
-    public CustomerEntity(String id, String name, String surname, String image, String username, String password, String token) {
+    public CustomerEntity(Integer id, String name, String surname, String image, String username, String password, String token) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -39,11 +49,11 @@ public class CustomerEntity {
                 '}';
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

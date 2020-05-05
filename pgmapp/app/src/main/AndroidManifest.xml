@@ -26,7 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.NotificationActivity"></activity>
         <activity android:name=".activity.PathActivity"></activity>
         <activity android:name=".activity.MainActivity"></activity>
         <activity android:name=".activity.BeaconActivity"></activity>

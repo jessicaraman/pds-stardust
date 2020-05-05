@@ -18,12 +18,15 @@ public class PassageEntity {
     public int getIdClient() {
         return this.idclient;
     }
+
     public String getIdBeacon() {
         return this.idbeacon;
     }
+
     public double getDistance() {
         return this.distance;
     }
+
     public Date getDate() {
         return this.date;
     }

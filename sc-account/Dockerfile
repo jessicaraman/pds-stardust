@@ -6,6 +6,6 @@ COPY build/libs/*.jar app.jar
 
 RUN keytool -import -alias stardustCA -keystore $JAVA_HOME/lib/security/cacerts -file stardustCA.pem -storepass changeit -noprompt
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","/sc-account.jar"]
 
 EXPOSE 8085
