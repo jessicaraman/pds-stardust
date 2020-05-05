@@ -16,6 +16,10 @@ repositories {
 	mavenCentral()
 }
 
+configurations.all {
+	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -23,12 +27,21 @@ dependencies {
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
 	compile 'org.apache.httpcomponents:httpclient:4.5.12'
-	testCompile "org.mockito:mockito-core:2.+"
-	testCompile group: 'com.shazam', name: 'shazamcrest', version: '0.1'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+	// log4j2
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	// junit
 	implementation 'junit:junit:4.12'
+	// swagger
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	// mockito TU
+	testCompile "org.mockito:mockito-core:2.+"
+	// spring boot TU
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	// exception TU
+	testCompile group: 'com.shazam', name: 'shazamcrest', version: '0.1'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 test {
