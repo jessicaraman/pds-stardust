@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.pds.pgmapp.R;
-import com.pds.pgmapp.handlers.Constant;
 import com.pds.pgmapp.model.CustomerEntity;
 import com.pds.pgmapp.retrofit.AccountService;
 import com.pds.pgmapp.retrofit.RetrofitInstance;
@@ -57,7 +56,7 @@ public class AccountActivity extends AppCompatActivity {
         if (username != null && !username.trim().equals("") && password != null && !password.trim().equals("")) {
             this.connect(username, password);
         } else {
-            Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Wrong username or password");
+            Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Wrong username or password");
             Toast.makeText(getApplicationContext(), "Wrong username or password! Try again.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -77,12 +76,12 @@ public class AccountActivity extends AppCompatActivity {
         heartbeatCall.enqueue(((new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i(Constant.TAG_ACCOUNT_ACTIVITY, "Heartbeat response = " + response.toString());
+                Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Heartbeat response = " + response.toString());
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Exception while network heartbeat :" + t.getMessage() + " caused by " + t.getCause());
+                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Exception while network heartbeat :" + t.getMessage() + " caused by " + t.getCause());
             }
         })));
 
@@ -92,28 +91,29 @@ public class AccountActivity extends AppCompatActivity {
             public void onResponse(Call<CustomerEntity> call, Response<CustomerEntity> response) {
                 try {
                     if (response.isSuccessful()) {
-                        Log.i(Constant.TAG_ACCOUNT_ACTIVITY, response.message());
+                        Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), response.message());
                         loggedCustomer = response.body();
                         if (loggedCustomer != null && (loggedCustomer.getUsername() != null && loginCustomer.getUsername().equals(username) && loggedCustomer.getPassword() != null && loginCustomer.getPassword().equals(password))) {
                             firebaseInstanceTokenId();
                         } else {
-                            Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Authentication failed : " + response.errorBody().string());
+                            Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Authentication failed : " + response.errorBody().string());
                             Toast.makeText(getApplicationContext(), "Authentication failed! Please retry later. 1", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Authentication failed : " + response.errorBody().string());
+                        Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Authentication failed : " + response.errorBody().string());
                         Toast.makeText(getApplicationContext(), "Wrong username or password! Try again.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException ex) {
-                    Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Connection response error " + ex.getMessage());
+                    Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Connection response error " + ex.getMessage());
                     Toast.makeText(getApplicationContext(), "Connection error, please retry later. 3", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailure(Call<CustomerEntity> call, Throwable t) {
-                Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Network failure : " + t.getMessage() + " caused by " + t.getCause());
-                Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Requested URL was : " + call.request().url());
-                Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Request body was : " + call.request().toString());
+                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Network failure : " + t.getMessage() + " caused by " + t.getCause());
+                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Requested URL was : " + call.request().url());
+                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Request body was : " + call.request().toString());
             }
         }));
     }
@@ -136,12 +136,12 @@ public class AccountActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     String token = task.getResult().getToken();
                     String msg = getString(R.string.fcm_token, token);
-                    Log.i(Constant.TAG_ACCOUNT_ACTIVITY, msg);
+                    Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), msg);
                     if (!task.isSuccessful()) {
-                        Log.e(Constant.TAG_ACCOUNT_ACTIVITY, msg);
+                        Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), msg);
                     } else {
                         this.updateToken(token);
-                        Log.i(Constant.TAG_ACCOUNT_ACTIVITY, "Updated token successfully");
+                        Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Updated token successfully");
                     }
                 });
     }
@@ -155,13 +155,14 @@ public class AccountActivity extends AppCompatActivity {
         updateCall.enqueue(new Callback<CustomerEntity>() {
             @Override
             public void onResponse(Call<CustomerEntity> call, Response<CustomerEntity> response) {
-                Log.i(Constant.TAG_ACCOUNT_ACTIVITY, "Updated token successfully, lauching MainActivity");
+                Log.i(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Updated token successfully, lauching MainActivity");
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
+
             @Override
             public void onFailure(Call<CustomerEntity> call, Throwable t) {
-                Log.e(Constant.TAG_ACCOUNT_ACTIVITY, "Update token failure : " + t.getMessage() + " caused by " + t.getCause());
+                Log.e(getString(R.string.TAG_ACCOUNT_ACTIVITY), "Update token failure : " + t.getMessage() + " caused by " + t.getCause());
             }
         });
     }
