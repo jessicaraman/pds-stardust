@@ -1,19 +1,19 @@
 #USAGE
-#python cacheFill.py
-from cacheClean import *
-userFile = "listUsersNotified.txt"
+#python cache_fill.py
+from cache_manager.cache_clean import *
+from configuration import globalconfig as cfg
 
 
 
 def fill():
     clean()
-    fi = open(userFile, "a")
+    fi = open(cfg.usercachefile, "a")
     fi.write("Goldorak")
     fi.write("\nRahan")
     fi.write("\nAlbator")
     fi.write("\nCapitaineFlamme")
     fi.close()
-    f = open(userFile, "r")
+    f = open(cfg.usercachefile, "r")
     contents = f.read()
     print(contents)
     f.close()

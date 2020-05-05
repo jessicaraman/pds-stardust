@@ -1,97 +1,51 @@
 # USAGE
 # python recognize_webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
-# import the necessary packages
 from imutils.video import VideoStream
-from imutils.video import FPS
-from firebaseService import sendnotificationto
+from recognition_process.modeler import Modeler
+from argument.argument_settings import ArgumentSettings
+from cache_manager.cache_check import checking_cache
 import numpy as np
-import argparse
 import imutils
-import pickle
+import logging
 import time
 import cv2
-import os
 
-
-listUsersNotified = []
-userFile = "listUsersNotified.txt"
 # construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--detector", required=True,
-                help="path to OpenCV's deep learning face detector")
-ap.add_argument("-m", "--embedding-model", required=True,
-                help="path to OpenCV's deep learning face embedding model")
-ap.add_argument("-r", "--recognizer", required=True,
-                help="path to model trained to recognize faces")
-ap.add_argument("-l", "--le", required=True,
-                help="path to label encoder")
-ap.add_argument("-c", "--confidence", type=float, default=0.5,
-                help="minimum probability to filter weak detections")
-args = vars(ap.parse_args())
+logging.debug('Construct arguments')
+argument = ArgumentSettings()
+args = argument.args
 
-# load our serialized face detector from disk
-print("[INFO] loading face detector...")
-protoPath = os.path.sep.join([args["detector"], "deploy.prototxt"])
-modelPath = os.path.sep.join([args["detector"],
-                              "res10_300x300_ssd_iter_140000.caffemodel"])
-detector = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
-
-# load our serialized face embedding model from disk
-print("[INFO] loading face recognizer...")
-embedder = cv2.dnn.readNetFromTorch(args["embedding_model"])
-
-# load the actual face recognition model along with the label encoder
-recognizer = pickle.loads(open(args["recognizer"], "rb").read())
-le = pickle.loads(open(args["le"], "rb").read())
+# load serialized face detector, embedding and recognition with label encoder
+logging.debug('Modeling detection, embedding and recognition')
+modeler = Modeler(args)
 
 # initialize the video stream, then allow the camera sensor to warm up
-print("[INFO] starting video stream...")
+
+logging.debug('Starting video stream')
 vs = VideoStream(src=0).start()
-#vs = cv2.VideoCapture('video/vidmax.mp4')
-
-#if (vs.isOpened()== False):
- #   print("Error opening video stream or file")
-
 time.sleep(2.0)
-
-# start the FPS throughput estimator
-fps = FPS().start()
 
 # loop over frames from the video file stream
 while True:
-#while(vs.isOpened()):
+
     # grab the frame from the threaded video stream
-    #ret, frame = vs.read()
-    #if not ret:
-    #    break
+    logging.debug('Read stream')
     frame = vs.read()
 
-    # (ww, hh, cc) = frame.shape
-    # resize the frame to have a width of 600 pixels (while
-    # maintaining the aspect ratio), and then grab the image
-    # dimensions
+    # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
     frame = imutils.resize(frame, width=600)
     (h, w) = frame.shape[:2]
-    # cv2.resize(frame, (600, hh))
-    # (h, w, c) = frame.shape
-    # width = vs.get(3)  # float
-    # height = vs.get(4)  # float
-    # h = int(height)
-    # w = int(width)
 
     # construct a blob from the image
-    # imageBlob = cv2.dnn.blobFromImage(
-    #	cv2.resize(frame, (300, 300)), 1.0, (300, 300),
-    #	(104.0, 177.0, 123.0), swapRB=False, crop=False)
     imageBlob = cv2.dnn.blobFromImage(
         cv2.resize(frame, (300, 300)), 1.0, (300, 300),
         (104.0, 177.0, 123.0), swapRB=False, crop=False)
 
     # apply OpenCV's deep learning-based face detector to localize
     # faces in the input image
-    detector.setInput(imageBlob)
-    detections = detector.forward()
+    modeler.detector.setInput(imageBlob)
+    detections = modeler.detector.forward()
 
     # loop over the detections
     for i in range(0, detections.shape[2]):
@@ -114,30 +68,19 @@ while True:
             if fW < 20 or fH < 20:
                 continue
 
-            # construct a blob for the face ROI, then pass the blob
-            # through our face embedding model to obtain the 128-d
-            # quantification of the face
+            # construct a blob and the 128-d vector
             faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255,
                                              (96, 96), (0, 0, 0), swapRB=True, crop=False)
-            embedder.setInput(faceBlob)
-            vec = embedder.forward()
+            modeler.embedder.setInput(faceBlob)
+            vec = modeler.embedder.forward()
 
             # perform classification to recognize the face
-            preds = recognizer.predict_proba(vec)[0]
+            preds = modeler.recognizer.predict_proba(vec)[0]
             j = np.argmax(preds)
             proba = preds[j]
-            name = le.classes_[j]
+            name = modeler.le.classes_[j]
             if(name!="unknown"):
-
-                with open(userFile) as f:
-                    lines = f.readlines()
-                f.close()
-
-                if ((name in lines) is False) and ((name+'\n' in lines) is False) and proba > 0.5:
-                    fi = open(userFile, "a")
-                    fi.write("\n"+name)
-                    fi.close()
-                    sendnotificationto(name)
+                checking_cache(name,proba)
 
             # draw the bounding box of the face along with the
             # associated probability
@@ -148,9 +91,6 @@ while True:
             cv2.putText(frame, text, (startX, y),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 
-    # update the FPS counter
-    fps.update()
-
     # show the output frame
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
@@ -159,11 +99,5 @@ while True:
     if key == ord("q"):
         break
 
-# stop the timer and display FPS information
-fps.stop()
-print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
-print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-#vs.release()
-# do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
