@@ -1,0 +1,27 @@
+version: "2"
+
+services:
+  sonarqube:
+    image: sonarqube:lts
+    expose:
+      - 9000
+    ports:
+      - "9000:9000"
+    environment:
+      - sonar.jdbc.username=xxxx
+      - sonar.jdbc.password=xxxx
+      - sonar.jdbc.url=jdbc:postgresql://postgres/sonar
+    volumes:
+      - /dockervolumes/sonarqube/conf:/opt/sonarqube/conf
+      - /dockervolumes/sonarqube/data:/opt/sonarqube/data
+      - /dockervolumes/sonarqube/extensions:/opt/sonarqube/extensions
+      - /dockervolumes/sonarqube/logs:/opt/sonarqube/logs
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=xxxx
+      - POSTGRES_PASSWORD=xxxx
+    volumes:
+      - /dockervolumes/postgres/postgresql:/var/lib/postgresql
+      - /dockervolumes/postgres/data:/var/lib/postgresql/data

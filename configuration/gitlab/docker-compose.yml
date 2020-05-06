@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  gitlab-ce:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab-ce
+    volumes:
+      - '/dockervolumes/gitlab/config:/etc/gitlab'
+      - '/dockervolumes/gitlab/logs:/var/log/gitlab'
+      - '/dockervolumes/gitlab/data:/var/opt/gitlab'
+    ports:
+      - '2222:22'
+      - '443:8083'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        registry['enable'] = true
+    networks:
+      - gitlab-network
+
+  registry:
+    restart: always
+    image: registry:2
+    ports:
+      - '5005:5000'
+    volumes:
+      - '/dockervolumes/registry:/var/lib/registry'
+      - './certs:/certs'
+    environment:
+      - REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt
+      - REGISTRY_HTTP_TLS_KEY=/certs/registry.key
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
