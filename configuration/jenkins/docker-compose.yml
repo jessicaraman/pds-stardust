@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  jenkins:
+    image: jenkinspds
+    ports:
+      - "8080:8080"
+    environment:
+      JENKINS_OPTS: --httpPort=-1 --httpsPort=8080 --httpsCertificate=/var/jenkins_home/ssl/jenkins.crt --httpsPrivateKey=/var/jenkins_home/ssl/jenkins.key
+    volumes:
+      - '/dockervolumes/jenkins:/var/jenkins_home'
+      - '/dockervolumes/ansible:/etc/ansible/'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/etc/ssl/certs:/etc/ssl/certs'
+      - '/root/.ssh:/root/.ssh'
