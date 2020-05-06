@@ -33,12 +33,12 @@ class LocationHistoryServiceTest {
         locationHistoryEntity.setId("id");
 
         ArrayList<LocationEntity> locations = new ArrayList<>();
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
 
         locationHistoryEntity.setLocations(locations);
 
@@ -63,12 +63,12 @@ class LocationHistoryServiceTest {
         locationHistoryEntity.setId("id");
 
         ArrayList<LocationEntity> locations = new ArrayList<>();
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
 
         locationHistoryEntity.setLocations(locations);
 
@@ -88,12 +88,12 @@ class LocationHistoryServiceTest {
         locationHistoryEntity.setId("id");
 
         ArrayList<LocationEntity> locations = new ArrayList<>();
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
-        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
+        locations.add(new LocationEntity(1.00, 1.00, LocalDateTime.now().toString()));
 
         locationHistoryEntity.setLocations(locations);
 
