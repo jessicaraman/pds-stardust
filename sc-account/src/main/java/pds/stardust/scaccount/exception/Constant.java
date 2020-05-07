@@ -1,12 +1,13 @@
 package pds.stardust.scaccount.exception;
 
-import org.springframework.stereotype.Service;
-import pds.stardust.scaccount.exception.CustomException;
 
 /**
  * ConstantException : Defines all constant exceptions of the API account
  */
-public class ConstantException {
+public class Constant {
+
+    private Constant() {
+    }
 
     // connect
     public static final CustomException CONNECT_AUTH_FAILURE = new CustomException(1, "Authentication failed!", "Wrong username or password, try again.");
