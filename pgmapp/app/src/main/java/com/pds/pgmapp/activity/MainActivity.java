@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -13,6 +14,13 @@ import androidx.core.app.ActivityCompat;
 import com.pds.pgmapp.R;
 import com.pds.pgmapp.handlers.FirebaseHandler;
 import com.pds.pgmapp.model.CustomerEntity;
+import com.pds.pgmapp.sensor.SensorService;
+import com.pds.pgmapp.sensor.MqttService;
+
+import org.altbeacon.beacon.BeaconManager;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 /**
  * MainActivity : HomePage
@@ -20,6 +28,10 @@ import com.pds.pgmapp.model.CustomerEntity;
 public class MainActivity extends AppCompatActivity {
 
     private CustomerEntity loggedCustomer;
+
+    BeaconManager beaconManager;
+    MqttService mqttService;
+    SensorService sensorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +43,27 @@ public class MainActivity extends AppCompatActivity {
         startGeolocatisation();
         startBeaconCapting();
         initFirebase();
+
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        sensorService = new SensorService(beaconManager);
+
+        mqttService = new MqttService(getApplicationContext());
+
+        try {
+            mqttService.connectToMqtt().setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                 MainActivity.this.beaconManager.bind(sensorService);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void loggedCustomer() {
