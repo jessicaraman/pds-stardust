@@ -29,6 +29,8 @@ class CustomerServiceTest {
     CustomerService customerService = new CustomerService();
 
     CustomerEntity customerEntity;
+    CustomerEntity badIdCustomerEntity;
+    CustomerEntity badUsernameCustomerEntity;
     CustomerEntity badPasswordCustomerEntity;
     CustomerEntity updatedTokenEntity;
 
@@ -47,23 +49,28 @@ class CustomerServiceTest {
         Mockito.when(this.customerRepository.getById(1)).thenReturn(customerEntity);
         Mockito.when(this.customerRepository.save(customerEntity)).thenReturn(customerEntity);
         Mockito.when(this.customerRepository.save(updatedTokenEntity)).thenReturn(updatedTokenEntity);
+        // Those are actually useless because returning null is the default Mockito behavior
+        // But we prefer mentioning it anyway for the sick of tests understanding
+        Mockito.when(this.customerRepository.findByUsername("wrong_username")).thenReturn(null);
+        Mockito.when(this.customerRepository.getById(-1)).thenReturn(null);
+
     }
 
     private void initData() {
-        customerEntity = new CustomerEntity(1, "suriya", "suriya", "not defined", "suriya", "tata", "no token");
-        customerEntity = new CustomerEntity(1, "suriya", "suriya", "not defined", "suriya", "tata", "no token");
-        badPasswordCustomerEntity = new CustomerEntity(324, "wrong_password", "wrong_password", "undefined", "myusername", "password", "undefined");
-        updatedTokenEntity = new CustomerEntity(1, "suriya", "suriya", "not defined", "suriya", "tata", "updatedToken");
+        customerEntity = new CustomerEntity(1, "suriya", "suriya", "undefined", "suriya", "tata", "no token");
+        badIdCustomerEntity = new CustomerEntity(-1, "suriya", "suriya", "undefined", "suriya", "tata", "no token");
+        badUsernameCustomerEntity = new CustomerEntity(1, "suriya", "suriya", "undefined", "wrong_username", "tata", "no token");
+        badPasswordCustomerEntity = new CustomerEntity(1, "suriya", "suriya", "undefined", "suriya", "wrong_password", "no token");
+        updatedTokenEntity = new CustomerEntity(1, "suriya", "suriya", "undefined", "suriya", "tata", "updatedToken");
     }
 
     // ***************
     // connect tests :
     // ***************
     @Test
-    void connectNullCredentialsTest() {
-        CustomerEntity wrongCustomer = new CustomerEntity(324, "myname", "mysurname", "myimage", "wrong_username", "wrong_password", "undefined");
+    void connectNullEntityTest() {
         try {
-            this.customerService.connect(wrongCustomer);
+            this.customerService.connect(badUsernameCustomerEntity);
         } catch (CustomException exception) {
             assertEquals(exception, ConstantException.CONNECT_AUTH_FAILURE);
         }
@@ -72,13 +79,12 @@ class CustomerServiceTest {
 
     @Test
     void connectBadPasswordTest() {
-        CustomerEntity wrongCustomer = new CustomerEntity(324, "wrong_password", "wrong_password", "undefined", "wrong_password", "wrong_password", "undefined");
         try {
-            this.customerService.connect(wrongCustomer);
+            this.customerService.connect(badPasswordCustomerEntity);
         } catch (CustomException exception) {
             assertEquals(exception, ConstantException.CONNECT_AUTH_FAILURE);
         }
-        Mockito.verify(this.customerRepository, times(1)).findByUsername("wrong_password");
+        Mockito.verify(this.customerRepository, times(1)).findByUsername("suriya");
     }
 
     @Test
@@ -91,10 +97,9 @@ class CustomerServiceTest {
     // updateTokenTests :
     // ******************
     @Test
-    void updateTokenNullCredentialsTest() {
-        CustomerEntity nullEntity = new CustomerEntity(-1, "undefined", "undefined", "undefined", "undefined", "undefined", "undefined");
+    void updateTokenNullEntityTest() {
         try {
-            this.customerService.updateToken(nullEntity);
+            this.customerService.updateToken(badIdCustomerEntity);
         } catch (CustomException exception) {
             assertEquals(exception, ConstantException.UPDATE_BAD_ID);
         }
@@ -103,9 +108,8 @@ class CustomerServiceTest {
 
     @Test
     void updateTokenBadUsernameTest() {
-        CustomerEntity badUsernameEntity = new CustomerEntity(1, "bad_username", "bad_username", "not defined", "lol", "tata", "no token");
         try {
-            this.customerService.updateToken(badUsernameEntity);
+            this.customerService.updateToken(badUsernameCustomerEntity);
         } catch (CustomException exception) {
             assertEquals(exception, ConstantException.UPDATE_AUTH_FAILURE);
         }
@@ -114,12 +118,11 @@ class CustomerServiceTest {
 
     @Test
     void updateTokenBadPasswordTest() {
-        CustomerEntity badPasswordEntity = new CustomerEntity(1, "suriya", "suriya", "not defined", "suriya", "bad_password", "no token");
         try {
-            this.customerService.updateToken(badPasswordEntity);
+            this.customerService.updateToken(badPasswordCustomerEntity);
         } catch (CustomException exception) {
             assertEquals(exception, ConstantException.UPDATE_AUTH_FAILURE);
-        }
+       }
         Mockito.verify(this.customerRepository, times(1)).getById(1);
     }
 
@@ -130,30 +133,50 @@ class CustomerServiceTest {
         Mockito.verify(this.customerRepository, times(1)).save(customerEntity);
     }
 
+
+    // *****************
+    // get token tests :
+    // *****************
+    @Test
+    void nullEntityGetCustomerTokenByUsernameTest() {
+        try {
+            this.customerService.getCustomerTokenByUsername(badUsernameCustomerEntity);
+        } catch(CustomException exception) {
+            assertEquals(ConstantException.GET_TOKEN_BAD_USERNAME, exception);
+        }
+        Mockito.verify(this.customerRepository, times(1)).findByUsername("wrong_username");
+    }
+
+    @Test
+    void successfulGetCustomerTokenByUsernameTest() {
+        String token = this.customerService.getCustomerTokenByUsername(customerEntity);
+        assertEquals("no token", token);
+        Mockito.verify(this.customerRepository, times(1)).findByUsername("suriya");
+    }
+
     // ************
     // CRUD tests :
     // ************
     @Test
-    void testFindByUsername() {
+    void findByUsernameTest() {
         assertEquals(customerEntity, this.customerService.findByUsername("suriya"));
         Mockito.verify(this.customerRepository, times(1)).findByUsername("suriya");
     }
 
-
     @Test
-    void testGetById() {
+    void getByIdTest() {
         assertEquals(customerEntity, this.customerService.getById(1));
         Mockito.verify(this.customerRepository, times(1)).getById(1);
     }
 
     @Test
-    void testSaveCustomer() {
+    void saveCustomerTest() {
         assertEquals(customerEntity, this.customerService.saveCustomer(customerEntity));
         Mockito.verify(this.customerRepository, times(1)).save(customerEntity);
     }
 
     @Test
-    void testInitCustomerData() {
+    void initCustomerDataTest() {
         this.customerService.initCustomerData();
         Mockito.verify(this.customerRepository, times(9)).save(Mockito.any());
         Mockito.verify(this.customerRepository, times(1)).deleteAll();
