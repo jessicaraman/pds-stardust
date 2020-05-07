@@ -9,7 +9,7 @@ firebase_admin.initialize_app(cred)
 
 def sendnotificationto(token):
   print(token)
-  registration_token = 'dtyAPHQcsXDSXLzC_1N_4z:APA91bGJsCXrcW_St3fpw_-GAnfVUIgKSxuXZUF4d47DHbe7eLDvLRLJCtoY6Mday15yyjXxjnag0xptKDib_KBtiYFmubrPdZG2FtjvZ-iIcG4Q7HahZmubpVu2cIB3CmRArNRV5AiU'
+  #registration_token = 'dtyAPHQcsXDSXLzC_1N_4z:APA91bGJsCXrcW_St3fpw_-GAnfVUIgKSxuXZUF4d47DHbe7eLDvLRLJCtoY6Mday15yyjXxjnag0xptKDib_KBtiYFmubrPdZG2FtjvZ-iIcG4Q7HahZmubpVu2cIB3CmRArNRV5AiU'
   #registration_token = 'dtyAPHQcsXDSXLzC_1N_4z:APA91bGJsCXrcW_St3fpw_-GAnfVUIgKSxuXZUF4d47DHbe7eLDvLRLJCtoY6Mday15yyjXxjnag0xptKDib_KBtiYFmubrPdZG2FtjvZ-iIcG4Q7HahZmubpVu2cIB3CmRArNRV5AiU'
 
   message = messaging.Message(
@@ -21,7 +21,7 @@ def sendnotificationto(token):
       'subject': 'IT',
       'place': '40',
     },
-    token=registration_token,
+    token=token,
   )
   response = messaging.send(message)
   print('Successfully sent message:', response)
