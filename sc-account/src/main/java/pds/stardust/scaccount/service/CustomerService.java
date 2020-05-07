@@ -31,13 +31,13 @@ public class CustomerService implements ICustomerService {
     public CustomerEntity connect(CustomerEntity customer) {
         CustomerEntity customerEntity = findByUsername(customer.getUsername());
         if (customerEntity == null) {
-            logger.error("/connect - Bad username.");
+            logger.error("/connect POST - Bad username.");
             throw ConstantException.CONNECT_AUTH_FAILURE;
         } else if (!customerEntity.getPassword().equals(customer.getPassword())) {
-            logger.error("/connect - Bad password.");
+            logger.error("/connect POST - Bad password.");
             throw ConstantException.CONNECT_AUTH_FAILURE;
         } else {
-            logger.trace("/connect - Correct username and password");
+            logger.trace("/connect POST - Correct username and password");
         }
         return customerEntity;
     }
@@ -52,20 +52,21 @@ public class CustomerService implements ICustomerService {
     public CustomerEntity updateToken(CustomerEntity customer) {
         CustomerEntity customerEntity = getById(customer.getId());
         if (customerEntity == null) {
-            logger.error("/update/token - Bad customer ID.");
+            logger.error("/update/token POST - Bad customer ID.");
             throw ConstantException.UPDATE_BAD_ID;
         } else if (!customerEntity.getUsername().equals(customer.getUsername())) {
-            logger.error("/update/token - Bad username.");
+            logger.error("/update/token POST - Bad username.");
             throw ConstantException.UPDATE_AUTH_FAILURE;
         } else if (!customerEntity.getPassword().equals(customer.getPassword())) {
-            logger.error("/update/token - Bad password.");
+            logger.error("/update/token POST - Bad password.");
             throw ConstantException.UPDATE_AUTH_FAILURE;
         } else {
             customerEntity.setToken(customer.getToken());
-            logger.trace("/update/token - Customer's token updated [user : " + customer.getUsername() + " , token : " + customer.getToken() + "]");
+            logger.trace("/update/token POST - Customer's token updated [user : " + customer.getUsername() + " , token : " + customer.getToken() + "]");
         }
         return saveCustomer(customerEntity);
     }
+
 
     /**
      * Get customer Entity related to the given username
@@ -88,6 +89,7 @@ public class CustomerService implements ICustomerService {
     public CustomerEntity getById(Integer id) {
         return customerRepository.getById(id);
     }
+
 
     /**
      * Save customer
@@ -117,5 +119,15 @@ public class CustomerService implements ICustomerService {
         customerRepository.save(new CustomerEntity(8, "Lobiyed", "Karim", "none", "karim", "pds", "none"));
         customerRepository.save(new CustomerEntity(9, "pds", "pds", "none", "pds", "pds", "none"));
         logger.trace("Save some customers successfully");
+    }
+
+    @Override
+    public String getCustomerTokenByUsername(CustomerEntity customer) {
+        CustomerEntity customerEntity = findByUsername(customer.getUsername());
+        if (customerEntity == null) {
+            logger.error("/token GET - Bad username.");
+            throw ConstantException.GET_TOKEN_BAD_USERNAME;
+        }
+        return customerEntity.getToken();
     }
 }
