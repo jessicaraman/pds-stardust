@@ -4,13 +4,14 @@
 from imutils.video import VideoStream
 from recognition_process.modeler import Modeler
 from argument.argument_settings import ArgumentSettings
-from cache_manager.cache_check import checking_cache
+from cache_manager.cache import Cache
 import numpy as np
 import imutils
 import logging
 import time
 import cv2
 import requests
+import configuration.globalconfig as cfg
 
 # construct the argument parser and parse the arguments
 logging.debug('Construct arguments')
@@ -24,7 +25,7 @@ modeler = Modeler(args)
 # initialize the video stream, then allow the camera sensor to warm up
 
 logging.debug('Starting video stream')
-url="http://192.168.1.44:8080/shot.jpg"
+url=cfg.streamurl
 time.sleep(2.0)
 
 # loop over frames from the video file stream
@@ -83,8 +84,10 @@ while True:
             j = np.argmax(preds)
             proba = preds[j]
             name = modeler.le.classes_[j]
+            
             if(name!="unknown"):
-                checking_cache(name,proba)
+                c = Cache()
+                c.checking_cache(name, proba)
 
             # draw the bounding box of the face along with the
             # associated probability

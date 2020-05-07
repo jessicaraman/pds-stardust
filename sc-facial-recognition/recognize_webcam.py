@@ -2,9 +2,10 @@
 # python recognize_webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
 from imutils.video import VideoStream
+from configuration import globalconfig as cfg
 from recognition_process.modeler import Modeler
 from argument.argument_settings import ArgumentSettings
-from cache_manager.cache_check import checking_cache
+from cache_manager.cache import Cache
 import numpy as np
 import imutils
 import logging
@@ -54,7 +55,7 @@ while True:
         confidence = detections[0, 0, i, 2]
 
         # filter out weak detections
-        if confidence > args["confidence"]:
+        if confidence > cfg.confidence:
             # compute the (x, y)-coordinates of the bounding box for
             # the face
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
@@ -79,8 +80,10 @@ while True:
             j = np.argmax(preds)
             proba = preds[j]
             name = modeler.le.classes_[j]
+
             if(name!="unknown"):
-                checking_cache(name,proba)
+                c = Cache()
+                c.checking_cache(name,proba)
 
             # draw the bounding box of the face along with the
             # associated probability
