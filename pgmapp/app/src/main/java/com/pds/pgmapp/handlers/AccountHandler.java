@@ -63,7 +63,7 @@ public class AccountHandler {
      * Get heartbeat message from remote server to test connectivity
      *
      * @param callback Callback called when server respond
-     * @return
+     * @return heartbeat message
      */
     public Call<ResponseBody> asyncHeartbeat(Callback<ResponseBody> callback) {
         Call<ResponseBody> heartbeatCall = apiAccountService.heartbeat();
@@ -74,8 +74,9 @@ public class AccountHandler {
     /**
      * Get heartbeat message from remote server to test connectivity
      *
-     * @return
+     * @return heartbeat message
      * @throws IOException
+     * @deprecated
      */
     @Deprecated
     public ResponseBody syncHeartbeat() throws IOException {
@@ -88,7 +89,7 @@ public class AccountHandler {
      *
      * @param loginCustomer customer to authenticate
      * @param callback      callback function called when requests' over
-     * @return
+     * @return authenticated customer
      */
     public Call<CustomerEntity> asyncConnect(CustomerEntity loginCustomer, Callback<CustomerEntity> callback) {
         Call<CustomerEntity> connectCall = apiAccountService.connect(RequestBody.create(MediaType.parse("json"), "{ \"username\": \"" + loginCustomer.getUsername() + "\", \"password\": \"" + loginCustomer.getPassword() + "\" }"));
@@ -103,6 +104,7 @@ public class AccountHandler {
      * @param password
      * @return true if connection succeed
      * @throws IOException
+     * @deprecated
      */
     @Deprecated
     public boolean syncConnect(String username, String password) throws IOException {
@@ -135,6 +137,7 @@ public class AccountHandler {
      * @param token FCM unique token to store in DB using REST API
      * @return Updated customer entity
      * @throws IOException
+     * @deprecated
      */
     @Deprecated
     public CustomerEntity syncUpdateToken(String token) throws IOException {

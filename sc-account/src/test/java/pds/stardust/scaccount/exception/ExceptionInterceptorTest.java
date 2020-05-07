@@ -41,4 +41,6 @@ class ExceptionInterceptorTest {
         ResponseEntity<Object> expected = new ResponseEntity<>(expectedResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         assertThat(response.getBody(), sameBeanAs(expected.getBody()));
     }
+
+
 }

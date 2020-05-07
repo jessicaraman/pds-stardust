@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pds.stardust.scaccount.controller.CustomerController;
 import pds.stardust.scaccount.entity.CustomerEntity;
-import pds.stardust.scaccount.exception.ConstantException;
+import pds.stardust.scaccount.exception.Constant;
 import pds.stardust.scaccount.exception.CustomException;
 import pds.stardust.scaccount.repository.CustomerRepository;
 
@@ -32,10 +32,10 @@ public class CustomerService implements ICustomerService {
         CustomerEntity customerEntity = findByUsername(customer.getUsername());
         if (customerEntity == null) {
             logger.error("/connect POST - Bad username.");
-            throw ConstantException.CONNECT_AUTH_FAILURE;
+            throw Constant.CONNECT_AUTH_FAILURE;
         } else if (!customerEntity.getPassword().equals(customer.getPassword())) {
             logger.error("/connect POST - Bad password.");
-            throw ConstantException.CONNECT_AUTH_FAILURE;
+            throw Constant.CONNECT_AUTH_FAILURE;
         } else {
             logger.trace("/connect POST - Correct username and password");
         }
@@ -53,13 +53,13 @@ public class CustomerService implements ICustomerService {
         CustomerEntity customerEntity = getById(customer.getId());
         if (customerEntity == null) {
             logger.error("/update/token POST - Bad customer ID.");
-            throw ConstantException.UPDATE_BAD_ID;
+            throw Constant.UPDATE_BAD_ID;
         } else if (!customerEntity.getUsername().equals(customer.getUsername())) {
             logger.error("/update/token POST - Bad username.");
-            throw ConstantException.UPDATE_AUTH_FAILURE;
+            throw Constant.UPDATE_AUTH_FAILURE;
         } else if (!customerEntity.getPassword().equals(customer.getPassword())) {
             logger.error("/update/token POST - Bad password.");
-            throw ConstantException.UPDATE_AUTH_FAILURE;
+            throw Constant.UPDATE_AUTH_FAILURE;
         } else {
             customerEntity.setToken(customer.getToken());
             logger.trace("/update/token POST - Customer's token updated [user : " + customer.getUsername() + " , token : " + customer.getToken() + "]");
@@ -126,7 +126,7 @@ public class CustomerService implements ICustomerService {
         CustomerEntity customerEntity = findByUsername(customer.getUsername());
         if (customerEntity == null) {
             logger.error("/token GET - Bad username.");
-            throw ConstantException.GET_TOKEN_BAD_USERNAME;
+            throw Constant.GET_TOKEN_BAD_USERNAME;
         }
         return customerEntity.getToken();
     }

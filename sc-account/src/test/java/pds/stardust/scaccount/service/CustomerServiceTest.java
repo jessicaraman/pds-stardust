@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import pds.stardust.scaccount.entity.CustomerEntity;
-import pds.stardust.scaccount.exception.ConstantException;
+import pds.stardust.scaccount.exception.Constant;
 import pds.stardust.scaccount.exception.CustomException;
 import pds.stardust.scaccount.repository.CustomerRepository;
 
@@ -72,7 +72,7 @@ class CustomerServiceTest {
         try {
             this.customerService.connect(badUsernameCustomerEntity);
         } catch (CustomException exception) {
-            assertEquals(exception, ConstantException.CONNECT_AUTH_FAILURE);
+            assertEquals(exception, Constant.CONNECT_AUTH_FAILURE);
         }
         Mockito.verify(this.customerRepository, times(1)).findByUsername("wrong_username");
     }
@@ -82,7 +82,7 @@ class CustomerServiceTest {
         try {
             this.customerService.connect(badPasswordCustomerEntity);
         } catch (CustomException exception) {
-            assertEquals(exception, ConstantException.CONNECT_AUTH_FAILURE);
+            assertEquals(exception, Constant.CONNECT_AUTH_FAILURE);
         }
         Mockito.verify(this.customerRepository, times(1)).findByUsername("suriya");
     }
@@ -101,7 +101,7 @@ class CustomerServiceTest {
         try {
             this.customerService.updateToken(badIdCustomerEntity);
         } catch (CustomException exception) {
-            assertEquals(exception, ConstantException.UPDATE_BAD_ID);
+            assertEquals(exception, Constant.UPDATE_BAD_ID);
         }
         Mockito.verify(this.customerRepository, times(1)).getById(-1);
     }
@@ -111,7 +111,7 @@ class CustomerServiceTest {
         try {
             this.customerService.updateToken(badUsernameCustomerEntity);
         } catch (CustomException exception) {
-            assertEquals(exception, ConstantException.UPDATE_AUTH_FAILURE);
+            assertEquals(exception, Constant.UPDATE_AUTH_FAILURE);
         }
         Mockito.verify(this.customerRepository, times(1)).getById(1);
     }
@@ -121,7 +121,7 @@ class CustomerServiceTest {
         try {
             this.customerService.updateToken(badPasswordCustomerEntity);
         } catch (CustomException exception) {
-            assertEquals(exception, ConstantException.UPDATE_AUTH_FAILURE);
+            assertEquals(exception, Constant.UPDATE_AUTH_FAILURE);
        }
         Mockito.verify(this.customerRepository, times(1)).getById(1);
     }
@@ -142,7 +142,7 @@ class CustomerServiceTest {
         try {
             this.customerService.getCustomerTokenByUsername(badUsernameCustomerEntity);
         } catch(CustomException exception) {
-            assertEquals(ConstantException.GET_TOKEN_BAD_USERNAME, exception);
+            assertEquals(Constant.GET_TOKEN_BAD_USERNAME, exception);
         }
         Mockito.verify(this.customerRepository, times(1)).findByUsername("wrong_username");
     }
