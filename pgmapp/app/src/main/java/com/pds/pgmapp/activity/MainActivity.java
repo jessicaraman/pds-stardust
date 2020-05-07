@@ -4,8 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -18,24 +18,14 @@ import com.pds.pgmapp.model.CustomerEntity;
  * MainActivity : HomePage
  */
 public class MainActivity extends AppCompatActivity {
-    private CustomerEntity loggedCustomer;
 
+    private CustomerEntity loggedCustomer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loggedCustomer();
         setContentView(R.layout.activity_main);
-        loggedCustomer = getIntent().getParcelableExtra("logged_customer");
-        Log.i(getString(R.string.TAG_MAIN_ACTIVITY), "Logged customer : " + loggedCustomer.getUsername());
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            int MY_PERMISSIONS_ACCESS_COARSE_LOCATION = 1;
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_ACCESS_COARSE_LOCATION
-            );
-        }
-
         buttonUserGuideStoreAction();
         buttonPath();
         startGeolocatisation();
@@ -43,9 +33,19 @@ public class MainActivity extends AppCompatActivity {
         initFirebase();
     }
 
-    /**
-     * Access to countries list
-     */
+    protected void loggedCustomer() {
+        Intent intent = getIntent();
+        loggedCustomer = intent.getParcelableExtra("logged_customer");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            int MY_PERMISSIONS_ACCESS_COARSE_LOCATION = 1;
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+            );
+        }
+        Toast.makeText(getApplicationContext(), "Bonjour " + loggedCustomer.getUsername() + "!", Toast.LENGTH_SHORT).show();
+    }
+
     protected void buttonUserGuideStoreAction() {
         Button buttonCountriesList;
         buttonCountriesList = findViewById(R.id.buttonGuideUserStore);
