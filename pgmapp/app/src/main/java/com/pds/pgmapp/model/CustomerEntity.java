@@ -110,14 +110,16 @@ public class CustomerEntity implements Parcelable {
 
     @Override
     public String toString() {
-        return "CustomerEntity{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", image='" + image + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", token='" + token + '\'' +
+        return "{" +
+                "\"id\":\"" + id + "\"" +
+                ", \"name\":\"" + name + "\"" +
+                ", \"surname\":\"" + surname + "\"" +
+                ", \"image\":\"" + image + "\"" +
+                ", \"username\":\"" + username + "\"" +
+                ", \"password\":\"" + password + "\"" +
+                ", \"token\":\"" + token + "\"" +
                 '}';
     }
+
+
 }

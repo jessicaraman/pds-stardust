@@ -14,7 +14,6 @@ import retrofit2.http.POST;
  * Account Service : Retrofit consumer
  */
 public interface AccountService {
-
     @GET("account/")
     Call<ResponseBody> heartbeat();
 
@@ -24,5 +23,4 @@ public interface AccountService {
 
     @POST("account/update/token")
     Call<CustomerEntity> updateToken(@Body CustomerEntity customer);
-
 }

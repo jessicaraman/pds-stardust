@@ -1,10 +1,7 @@
 package pds.stardust.scaccount.controller;
 
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pds.stardust.scaccount.entity.CustomerEntity;
 import pds.stardust.scaccount.exception.CustomException;
 import pds.stardust.scaccount.service.CustomerService;
@@ -59,5 +56,18 @@ public class CustomerController {
     @ApiOperation(value = "Update a customer's token", notes = "Provide id, username and password's customer", response = CustomerEntity.class)
     public CustomerEntity updateToken(@RequestBody CustomerEntity customer) {
        return customerService.updateToken(customer);
+    }
+
+    /**
+     * Get Customer's token by username
+     *
+     * @param customer
+     * @return token
+     * @throws CustomException if no customer found with given username
+     */
+    @PostMapping(value = "/token", consumes = "application/json")
+    @ApiOperation(value = "Get customer's token", notes = "Provide username's customer")
+    public String getTokenByUsername(@RequestBody CustomerEntity customer) {
+        return customerService.getCustomerTokenByUsername(customer);
     }
 }

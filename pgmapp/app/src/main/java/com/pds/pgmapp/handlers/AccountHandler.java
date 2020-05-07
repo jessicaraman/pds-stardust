@@ -1,8 +1,6 @@
 package com.pds.pgmapp.handlers;
 
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.pds.pgmapp.R;
@@ -18,18 +16,19 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * AccountHandler : handles account management : connection and token update
  */
 public class AccountHandler {
+    Callback<CustomerEntity> updateTokenCallback;
     private AccountActivity activity;
     private AccountService apiAccountService;
     private CustomerEntity loggedCustomer;
 
     /**
      * Init retrofit consumer API
+     *
      * @param a
      */
     public AccountHandler(AccountActivity a) {
@@ -38,61 +37,110 @@ public class AccountHandler {
     }
 
     /**
-     * Connection function, call remote API and try to authenticate with given credentials
-     * @param username customer login
-     * @param password customer password
+     * Use a given retrofit consumer API (mainly for test purpose)
+     *
+     * @param a
+     * @param ap
      */
-    public void connect(String username, String password) {
-        CustomerEntity loginCustomer = new CustomerEntity();
-        loginCustomer.setUsername(username);
-        loginCustomer.setPassword(password);
+    public AccountHandler(AccountActivity a, AccountService ap) {
+        activity = a;
+        apiAccountService = ap;
+    }
+
+    public CustomerEntity getLoggedCustomer() {
+        return this.loggedCustomer;
+    }
+
+    public void setLoggedCustomer(CustomerEntity customer) {
+        this.loggedCustomer = customer;
+    }
+
+    public void setUpdateTokenCallback(Callback<CustomerEntity> callback) {
+        this.updateTokenCallback = callback;
+    }
+
+    /**
+     * Get heartbeat message from remote server to test connectivity
+     *
+     * @param callback Callback called when server respond
+     * @return
+     */
+    public Call<ResponseBody> asyncHeartbeat(Callback<ResponseBody> callback) {
         Call<ResponseBody> heartbeatCall = apiAccountService.heartbeat();
+        heartbeatCall.enqueue(callback);
+        return heartbeatCall;
+    }
+
+    /**
+     * Get heartbeat message from remote server to test connectivity
+     *
+     * @return
+     * @throws IOException
+     */
+    @Deprecated
+    public ResponseBody syncHeartbeat() throws IOException {
+        Call<ResponseBody> heartbeatCall = apiAccountService.heartbeat();
+        return heartbeatCall.execute().body();
+    }
+
+    /**
+     * Connection function, call remote API and try to authenticate with given credentials
+     *
+     * @param loginCustomer customer to authenticate
+     * @param callback      callback function called when requests' over
+     * @return
+     */
+    public Call<CustomerEntity> asyncConnect(CustomerEntity loginCustomer, Callback<CustomerEntity> callback) {
+        Call<CustomerEntity> connectCall = apiAccountService.connect(RequestBody.create(MediaType.parse("json"), "{ \"username\": \"" + loginCustomer.getUsername() + "\", \"password\": \"" + loginCustomer.getPassword() + "\" }"));
+        connectCall.enqueue(callback);
+        return connectCall;
+    }
+
+    /**
+     * Connection function, call remote API and try to authenticate with given credentials. Deprecated on Android > 4.0
+     *
+     * @param username
+     * @param password
+     * @return true if connection succeed
+     * @throws IOException
+     */
+    @Deprecated
+    public boolean syncConnect(String username, String password) throws IOException {
+        boolean ret;
         Call<CustomerEntity> connectCall = apiAccountService.connect(RequestBody.create(MediaType.parse("json"), "{ \"username\": \"" + username + "\", \"password\": \"" + password + "\" }"));
+        loggedCustomer = connectCall.execute().body();
+        if (loggedCustomer != null && (loggedCustomer.getUsername() != null && loggedCustomer.getUsername().equals(username) && loggedCustomer.getPassword() != null && loggedCustomer.getPassword().equals(password))) {
+            ret = true;
+        } else {
+            ret = false;
+        }
+        return ret;
+    }
 
-        // hearbeat app
-        heartbeatCall.enqueue(((new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Heartbeat response = " + response.toString());
-            }
+    /**
+     * Update the user's Firebase Cloud Messaging Token
+     *
+     * @param token    FCM unique token to store in DB using REST API
+     * @param callback Callback called when requests terminate
+     */
+    public void asyncUpdateToken(String token, Callback<CustomerEntity> callback) {
+        loggedCustomer.setToken(token);
+        Call<CustomerEntity> updateCall = apiAccountService.updateToken(loggedCustomer);
+        updateCall.enqueue(callback);
+    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Exception while network heartbeat :" + t.getMessage() + " caused by " + t.getCause());
-            }
-        })));
-
-        // connection app
-        connectCall.enqueue((new Callback<CustomerEntity>() {
-            @Override
-            public void onResponse(Call<CustomerEntity> call, Response<CustomerEntity> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        Log.i(activity.getString(R.string.TAG_ACCOUNT_HANDLER), response.message());
-                        loggedCustomer = response.body();
-                        if (loggedCustomer != null && (loggedCustomer.getUsername() != null && loginCustomer.getUsername().equals(username) && loggedCustomer.getPassword() != null && loginCustomer.getPassword().equals(password))) {
-                            firebaseInstanceTokenId();
-                        } else {
-                            Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Authentication failed : " + response.errorBody().string());
-                            Toast.makeText(activity.getApplicationContext(), "Authentication failed! Please retry later. 1", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Authentication failed : " + response.errorBody().string());
-                        Toast.makeText(activity.getApplicationContext(), "Wrong username or password! Try again.", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException ex) {
-                    Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Connection response error " + ex.getMessage());
-                    Toast.makeText(activity.getApplicationContext(), "Connection error, please retry later. 3", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CustomerEntity> call, Throwable t) {
-                Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Network failure : " + t.getMessage() + " caused by " + t.getCause());
-                Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Requested URL was : " + call.request().url());
-                Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Request body was : " + call.request().toString());
-            }
-        }));
+    /**
+     * Update the user's Firebase Cloud Messaging Token. Deprecated on Android > 4.0
+     *
+     * @param token FCM unique token to store in DB using REST API
+     * @return Updated customer entity
+     * @throws IOException
+     */
+    @Deprecated
+    public CustomerEntity syncUpdateToken(String token) throws IOException {
+        loggedCustomer.setToken(token);
+        Call<CustomerEntity> updateCall = apiAccountService.updateToken(loggedCustomer);
+        return updateCall.execute().body();
     }
 
     /**
@@ -108,31 +156,8 @@ public class AccountHandler {
                     if (!task.isSuccessful()) {
                         Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), msg);
                     } else {
-                        this.updateToken(token);
-                        Log.i(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Updated token successfully");
+                        this.asyncUpdateToken(token, updateTokenCallback);
                     }
                 });
-    }
-
-
-    /**
-     * Update the user's Firebase Cloud Messaging Token
-     * @param token FCM unique token to store in DB using REST API
-     */
-    public void updateToken(String token) {
-        loggedCustomer.setToken(token);
-        Call<CustomerEntity> updateCall = apiAccountService.updateToken(loggedCustomer);
-        updateCall.enqueue(new Callback<CustomerEntity>() {
-            @Override
-            public void onResponse(Call<CustomerEntity> call, Response<CustomerEntity> response) {
-                Log.i(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Updated token successfully, lauching MainActivity");
-                activity.startMainActivity(loggedCustomer);
-            }
-
-            @Override
-            public void onFailure(Call<CustomerEntity> call, Throwable t) {
-                Log.e(activity.getString(R.string.TAG_ACCOUNT_HANDLER), "Update token failure : " + t.getMessage() + " caused by " + t.getCause());
-            }
-        });
     }
 }

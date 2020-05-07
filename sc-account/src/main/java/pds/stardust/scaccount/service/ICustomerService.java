@@ -10,4 +10,5 @@ public interface ICustomerService {
     CustomerEntity getById(Integer id);
     CustomerEntity saveCustomer (CustomerEntity customerEntity);
     void initCustomerData();
+    String getCustomerTokenByUsername(CustomerEntity customer);
 }

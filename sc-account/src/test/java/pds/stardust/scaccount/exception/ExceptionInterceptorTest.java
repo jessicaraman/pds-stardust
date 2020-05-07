@@ -35,7 +35,7 @@ class ExceptionInterceptorTest {
     }
 
     @Test
-    public void testHandleAllExceptions() {
+    public void handleAllExceptionsTest() {
         ResponseEntity<Object> response = exceptionInterceptorSpy.handleAllExceptions(customException);
         CustomExceptionSchema expectedResponse = new CustomExceptionSchema(1, "Some message", "Some details");
         ResponseEntity<Object> expected = new ResponseEntity<>(expectedResponse, HttpStatus.INTERNAL_SERVER_ERROR);
