@@ -1,0 +1,50 @@
+version: '2'
+services:
+
+  vault_dev:
+    image: vault
+    container_name: vault_dev
+    ports:
+      - "8200:8200"
+    restart: always
+    volumes:
+      - /dockervolumes/vault/dev/config:/vault/config
+      - /dockervolumes/vault/dev/logs:/vault/logs
+      - /dockervolumes/vault/dev/file:/vault/file
+      - /dockervolumes/vault/dev/ssl:/vault/ssl
+      - /dockervolumes/vault/dev/certs:/etc/ssl/certs
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/vault.hcl
+
+  vault_staging:
+    image: vault
+    container_name: vault_staging
+    ports:
+      - "8201:8200"
+    restart: always
+    volumes:
+      - /dockervolumes/vault/staging/config:/vault/config
+      - /dockervolumes/vault/staging/logs:/vault/logs
+      - /dockervolumes/vault/staging/file:/vault/file
+      - /dockervolumes/vault/staging/ssl:/vault/ssl
+      - /dockervolumes/vault/staging/certs:/etc/ssl/certs
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/vault.hcl
+
+  vault_prod:
+    image: vault
+    container_name: vault_prod
+    ports:
+      - "8202:8200"
+    restart: always
+    volumes:
+      - /dockervolumes/vault/prod/config:/vault/config
+      - /dockervolumes/vault/prod/logs:/vault/logs
+      - /dockervolumes/vault/prod/file:/vault/file
+      - /dockervolumes/vault/prod/ssl:/vault/ssl
+      - /dockervolumes/vault/prod/certs:/etc/ssl/certs
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/vault.hcl

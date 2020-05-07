@@ -1,16 +1,14 @@
 package com.example.geolocation.entities;
 
-import java.time.LocalDateTime;
-
 public class LocationEntity {
 
     private double x;
     private double y;
-    private LocalDateTime date;
+    private String date;
 
     public LocationEntity() { }
 
-    public LocationEntity(double x, double y, LocalDateTime date) {
+    public LocationEntity(double x, double y, String date) {
         this.x = x;
         this.y = y;
         this.date = date;
@@ -31,11 +29,12 @@ public class LocationEntity {
         this.y = y;
     }
 
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(String date) {
         this.date = date;
     }
+
 }
