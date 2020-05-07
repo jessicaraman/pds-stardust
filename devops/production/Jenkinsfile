@@ -78,6 +78,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        gradle build -x test
                                     '''
 
                                     script {
@@ -215,7 +216,7 @@ pipeline {
                                     }
 
                                     sh '''
-                                        ./gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
                                 }
