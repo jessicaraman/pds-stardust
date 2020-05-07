@@ -4,6 +4,7 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -26,10 +27,13 @@ import pds.stardust.ble_beacon.entity.SensorEntity;
 import pds.stardust.ble_beacon.retrofit.RetrofitInstance;
 import pds.stardust.ble_beacon.retrofit.SensorDataService;
 import pds.stardust.ble_beacon.service.MqttService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SENSOR_ID = "ccebfa4b-ebab-4ad7-8bc0-0012ecb5bc51";
+    private static final String SENSOR_ID = "eb071777-10a9-401c-9323-d8e70e0968c1";
 
     BeaconManager beaconManager;
     BeaconConsumer beaconConsumer;
@@ -46,23 +50,41 @@ public class MainActivity extends AppCompatActivity {
 
         SensorDataService sensorDataService = RetrofitInstance.getRetrofitInstance().create(SensorDataService.class);
 
-        sensorDataService.getSensorById(SENSOR_ID);
-        SensorEntity sensor = null;
+        Call<SensorEntity> call = sensorDataService.getSensorById(SENSOR_ID);
+        call.enqueue(new Callback<SensorEntity>() {
+            @Override
+            public void onResponse(Call<SensorEntity> call, Response<SensorEntity> response) {
+                Log.d("RETROFIT CALL", "CALLBACK onResponse");
+                    if (response.isSuccessful()) {
 
-        try {
-            sensor = sensorDataService.getSensorById(SENSOR_ID).execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                        SensorEntity sensor = response.body();
 
-        this.mqttTopicLabel = sensor.getTopic().getLabel();
-        this.mqttTopicId = sensor.getTopic().getId();
-        this.mqttMessage = sensor.getMessage();
+                        MainActivity.this.mqttTopicLabel = sensor.getTopic().getLabel();
+                        MainActivity.this.mqttTopicId = sensor.getTopic().getId();
+                        MainActivity.this.mqttMessage = sensor.getMessage();
 
+                        MainActivity.this.initSensor();
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<SensorEntity> call, Throwable t) {
+                Log.d("RETROFIT CALL", "CALLBACK onFailure");
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        beaconManager.unbind(beaconConsumer);
+    }
+
+    public void initSensor() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
-       // beaconManager.getBeaconParsers().clear();
+        // beaconManager.getBeaconParsers().clear();
         BeaconParser beaconParser = new BeaconParser().setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25");
-      //  beaconManager.getBeaconParsers().add(beaconParser);
+        //  beaconManager.getBeaconParsers().add(beaconParser);
 
         Beacon beacon = new Beacon.Builder()
                 .setId1(mqttTopicId)
@@ -74,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         BeaconTransmitter beaconTransmitter = new BeaconTransmitter(getApplicationContext(), beaconParser);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
 
@@ -110,11 +131,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        beaconManager.unbind(beaconConsumer);
     }
 }
