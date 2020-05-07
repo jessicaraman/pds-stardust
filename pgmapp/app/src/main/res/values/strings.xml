@@ -6,5 +6,6 @@
     <string name="TAG_MAIN_ACTIVITY">MainActivity</string>
     <string name="TAG_ACCOUNT_HANDLER">AccountHandler</string>
     <string name="TAG_FIREBASE_HANDLER">FirebaseHandler</string>
-    <string name="CHANNEL_ID">CHANNEL_ID</string>
+    <string name="TAG_NETWORK_CALL">FirebaseHandler</string>
+    <string name="CHANNEL_ID">channel_id</string>
 </resources>
