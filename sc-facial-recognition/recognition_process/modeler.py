@@ -5,7 +5,7 @@ import os
 import logging
 
 class Modeler:
-    def __init__(self,args):
+    def __init__(self):
         # load our serialized face detector from disk
         logging.debug('Loading face detector')
         protoPath = os.path.sep.join([cfg.detector, "deploy.prototxt"])
@@ -15,7 +15,8 @@ class Modeler:
 
         # load our serialized face embedding model from disk
         logging.debug('Loading face recognizer')
-        self.embedder = cv2.dnn.readNetFromTorch(args["embedding_model"])
+        # don't know why but when i put cfg.embedding_model which contains the same string, it doesnt work
+        self.embedder = cv2.dnn.readNetFromTorch("openface_nn4.small2.v1.t7")
 
         # load the actual face recognition model along with the label encoder
         self.recognizer = pickle.loads(open(cfg.recognizer, "rb").read())

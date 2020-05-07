@@ -14,12 +14,12 @@ import cv2
 
 # construct the argument parser and parse the arguments
 logging.debug('Construct arguments')
-argument = ArgumentSettings()
-args = argument.args
+#argument = ArgumentSettings()
+#args = argument.args
 
 # load serialized face detector, embedding and recognition with label encoder
 logging.debug('Modeling detection, embedding and recognition')
-modeler = Modeler(args)
+modeler = Modeler()
 
 # initialize the video stream, then allow the camera sensor to warm up
 

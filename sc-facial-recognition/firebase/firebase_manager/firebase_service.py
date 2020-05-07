@@ -1,7 +1,8 @@
+import firebase_admin
 from firebase_admin import messaging
 from firebase_admin import credentials
 from configuration import globalconfig as cfg
-import firebase_admin
+
 
 cred = credentials.Certificate(cfg.firebasekey)
 firebase_admin.initialize_app(cred)
