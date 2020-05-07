@@ -32,8 +32,9 @@ public class SensorService implements BeaconConsumer {
     private BeaconManager beaconManager;
     private MqttService mqttService;
 
-    public SensorService(BeaconManager beaconManager) {
+    public SensorService(BeaconManager beaconManager, MqttService mqttService) {
         this.beaconManager = beaconManager;
+        this.mqttService = mqttService;
     }
 
     @Override

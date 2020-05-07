@@ -28,6 +28,7 @@ public class MqttService {
     public void messagePublish(String topic, String payload) throws MqttException {
         if (client.isConnected()) {
             MqttMessage mqttMessage = new MqttMessage(payload.getBytes());
+            mqttMessage.setRetained(true);
             this.client.publish(topic, mqttMessage);
         }
         else {

@@ -45,9 +45,8 @@ public class MainActivity extends AppCompatActivity {
         initFirebase();
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
-        sensorService = new SensorService(beaconManager);
-
         mqttService = new MqttService(getApplicationContext());
+        sensorService = new SensorService(beaconManager, mqttService);
 
         try {
             mqttService.connectToMqtt().setActionCallback(new IMqttActionListener() {

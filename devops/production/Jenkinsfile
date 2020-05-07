@@ -14,10 +14,7 @@ pipeline {
         KMS_CONTAINER='kms'
         CSPATH_CONTAINER='cspath'
         SENSOR_CONTAINER='sensor'
-<<<<<<< HEAD
-=======
         ACCOUNT_CONTAINER='account'
->>>>>>> c9fcff935f34e05235884746c0b28084343c862d
         FREQUENTATION_CONTAINER='frequentation'
         API_GTW_CONTAINER='apigtw'
     }    
@@ -81,6 +78,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
+                                        gradle build -x test
                                     '''
 
                                     script {
@@ -100,8 +98,6 @@ pipeline {
                             }
                         }
 
-<<<<<<< HEAD
-=======
                         stage('Build account') {
 
                             tools {
@@ -133,7 +129,6 @@ pipeline {
                             }
                         }
 
->>>>>>> c9fcff935f34e05235884746c0b28084343c862d
                         stage('Build frequentation') {
 
                             tools {
@@ -145,10 +140,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-<<<<<<< HEAD
-=======
                                         gradle build -x test
->>>>>>> c9fcff935f34e05235884746c0b28084343c862d
                                     '''
 
                                     script {
@@ -224,7 +216,7 @@ pipeline {
                                     }
 
                                     sh '''
-                                        ./gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
+                                        gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
                                 }
