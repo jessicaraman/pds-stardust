@@ -10,23 +10,22 @@ from configuration import globalconfig as cfg
 logging.basicConfig(level=logging.DEBUG)
 
 
-# construct the argument parser and parse the arguments
+# TrainModel : construct the argument parser and parse the arguments
 class TrainModel:
 
     def __init__(self):
         # load the face embeddings
-        logging.info("[INFO] loading face embeddings...")
+        logging.info("Loading face embeddings...")
         self.data = pickle.loads(open(cfg.embedding, "rb").read())
-
         # encode the labels
-        logging.info("[INFO] encoding labels...")
+        logging.info("Encoding labels...")
         self.le = LabelEncoder()
         self.labels = self.le.fit_transform(self.data["names"])
 
     def train(self):
         # train the model used to accept the 128-d embeddings of the face and
         # then produce the actual face recognition
-        logging.info("[INFO] training model...")
+        logging.info("Training model...")
         recognizer = SVC(C=1.0, kernel="linear", probability=True)
         recognizer.fit(self.data["embeddings"], self.labels)
 

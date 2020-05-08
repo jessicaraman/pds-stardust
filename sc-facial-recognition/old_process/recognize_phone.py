@@ -1,9 +1,8 @@
 # USAGE
-# python recognize_webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
+# python webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
 from imutils.video import VideoStream
 from recognition_process.modeler import Modeler
-from configuration import globalconfig as cfg
 from argument.argument_settings import ArgumentSettings
 from cache_manager.cache import Cache
 import numpy as np
@@ -11,27 +10,33 @@ import imutils
 import logging
 import time
 import cv2
+import requests
+import configuration.globalconfig as cfg
 
+# construct the argument parser and parse the arguments
+logging.debug('Construct arguments')
+argument = ArgumentSettings()
+args = argument.args
 
 # load serialized face detector, embedding and recognition with label encoder
 logging.debug('Modeling detection, embedding and recognition')
-modeler = Modeler()
+modeler = Modeler(args)
 
 # initialize the video stream, then allow the camera sensor to warm up
 
 logging.debug('Starting video stream')
-vs = cv2.VideoCapture('video/vidmax.mp4')
+url=cfg.streamurl
 time.sleep(2.0)
 
 # loop over frames from the video file stream
-while (vs.isOpened()):
+while True:
 
     # grab the frame from the threaded video stream
     logging.debug('Read stream')
-    ret, frame = vs.read()
-
-    if not ret:
-        break
+    img_resp = requests.get(url)
+    img_arr = np.array(bytearray(img_resp.content),dtype=np.uint8)
+    img = cv2.imdecode(img_arr,-1)
+    frame = img
 
     # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
     frame = imutils.resize(frame, width=600)
@@ -54,7 +59,7 @@ while (vs.isOpened()):
         confidence = detections[0, 0, i, 2]
 
         # filter out weak detections
-        if confidence > cfg.confidence:
+        if confidence > args["confidence"]:
             # compute the (x, y)-coordinates of the bounding box for
             # the face
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
@@ -79,7 +84,7 @@ while (vs.isOpened()):
             j = np.argmax(preds)
             proba = preds[j]
             name = modeler.le.classes_[j]
-
+            
             if(name!="unknown"):
                 c = Cache()
                 c.checking_cache(name, proba)
@@ -100,5 +105,6 @@ while (vs.isOpened()):
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
         break
-vs.release()
+
 cv2.destroyAllWindows()
+

@@ -1,10 +1,6 @@
-# USAGE
-# python loader.py --dataset dataset --embeddings output/embeddings.pickle --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7
-
+import logging
 import os
 import pickle
-# import the necessary packages
-from json import JSONEncoder
 
 import cv2
 import imutils
@@ -13,23 +9,26 @@ from imutils import paths
 
 from configuration import globalconfig as cfg
 
+logging.basicConfig(level=logging.DEBUG)
 
+
+# Loader :
 class Loader:
 
     def __init__(self):
         # load our serialized face detector from disk
-        print("[INFO] loading face detector...")
+        logging.info("Loading face detector...")
         self.protoPath = os.path.sep.join([cfg.detector, "deploy.prototxt"])
-        self.modelPath = os.path.sep.join([cfg.detector, "res10_300x300_ssd_iter_140000.caffemodel"])
+        self.modelPath = os.path.sep.join([cfg.detector, cfg.format_model])
         self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)
 
     def load_data(self):
         # load our serialized face embedding model from disk
-        print("[INFO] loading face recognizer...")
-        embedder = cv2.dnn.readNetFromTorch("openface_nn4.small2.v1.t7")
+        logging.info("Loading face recognizer...")
+        embedder = cv2.dnn.readNetFromTorch(cfg.embedder)
 
         # grab the paths to the input images in our dataset
-        print("[INFO] quantifying faces...")
+        logging.info("Quantifying faces...")
         imagePaths = list(paths.list_images(cfg.dataset))
 
         # initialize our lists of extracted facial embeddings and
@@ -43,7 +42,7 @@ class Loader:
         # loop over the image paths
         for (i, imagePath) in enumerate(imagePaths):
             # extract the person name from the image path
-            print("[INFO] processing image {}/{}".format(i + 1, len(imagePaths)))
+            logging.info("Processing image : {}/{}".format(i + 1, len(imagePaths)))
             name = imagePath.split(os.path.sep)[-2]
 
             # load the image, resize it to have a width of 600 pixels (while
@@ -102,7 +101,7 @@ class Loader:
                     total += 1
 
         # dump the facial embeddings + names to disk
-        print("[INFO] serializing {} encodings...".format(total))
+        logging.info("Complete process serializing {} encodings...".format(total))
         data = {"embeddings": knownEmbeddings, "names": knownNames}
         f = open(cfg.embedding, "wb")
         f.write(pickle.dumps(data))
