@@ -1,31 +1,32 @@
-# USAGE
-# python trainModel.py --embeddings output/embeddings.pickle \
-#	--recognizer output/recognizer.pickle --le output/le.pickle
+import logging
+import pickle
 
 # import the necessary packages
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
+
 from configuration import globalconfig as cfg
-import argparse
-import pickle
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 # construct the argument parser and parse the arguments
 class TrainModel:
 
     def __init__(self):
         # load the face embeddings
-        print("[INFO] loading face embeddings...")
+        logging.info("[INFO] loading face embeddings...")
         self.data = pickle.loads(open(cfg.embedding, "rb").read())
 
         # encode the labels
-        print("[INFO] encoding labels...")
+        logging.info("[INFO] encoding labels...")
         self.le = LabelEncoder()
         self.labels = self.le.fit_transform(self.data["names"])
 
     def train(self):
         # train the model used to accept the 128-d embeddings of the face and
         # then produce the actual face recognition
-        print("[INFO] training model...")
+        logging.info("[INFO] training model...")
         recognizer = SVC(C=1.0, kernel="linear", probability=True)
         recognizer.fit(self.data["embeddings"], self.labels)
 
