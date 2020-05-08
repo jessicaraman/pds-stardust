@@ -6,7 +6,7 @@ dataset = "dataset"
 embedding = "output/embeddings.pickle"
 detector = "face_detection_model"
 embedding_model = "openface_nn4.small2.v2.t7"
-confidence = 0.5
+confidence = 0.65
 
 recognizer = "output/recognizer.pickle"
 le = "output/le.pickle"
