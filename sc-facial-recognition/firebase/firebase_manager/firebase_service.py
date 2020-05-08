@@ -3,13 +3,14 @@ from firebase_admin import credentials
 from firebase_admin import messaging
 
 from configuration import globalconfig as cfg
-
+import logging
 cred = credentials.Certificate(cfg.firebasekey)
 firebase_admin.initialize_app(cred)
 
+logging.basicConfig(level=logging.DEBUG)
 
 def sendnotificationto(token):
-  print("token = " + token)
+  logging.info("User's Token = " + token)
 
   message = messaging.Message(
     notification=messaging.Notification(
@@ -23,4 +24,4 @@ def sendnotificationto(token):
     token=token,
   )
   response = messaging.send(message)
-  print('Successfully sent message:', response)
+  logging.info('Successfully sent message:', response)
