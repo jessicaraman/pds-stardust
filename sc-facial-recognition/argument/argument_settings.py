@@ -17,9 +17,9 @@ class ArgumentSettings:
                        help="minimum probability to filter weak detections")
        self.args = vars(self.arg.parse_args())
        """
-        #N'arrive pas ouvrir le fichier avec la constante de config
-        #cannot open in mode r in function 'TH::THDisk'
-        #donc on laisse avec l'argument
+        # N'arrive pas ouvrir le fichier avec la constante de config
+        # cannot open in mode r in function 'TH::THDisk'
+        # donc on laisse avec l'argument
         self.arg = argparse.ArgumentParser()
         self.arg.add_argument("-m", "--embedding-model", required=True,
                               help="path to OpenCV's deep learning face embedding model")

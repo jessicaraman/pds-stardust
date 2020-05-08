@@ -1,33 +1,35 @@
 # USAGE
 # python recognize_webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
-from imutils.video import VideoStream
-from configuration import globalconfig as cfg
-from recognition_process.modeler import Modeler
-from argument.argument_settings import ArgumentSettings
-from cache_manager.cache import Cache
-from firebase.firebase_manager.firebase_service import sendnotificationto
-from web.request import getToken
-import numpy as np
-import imutils
 import logging
 import time
+
 import cv2
+import imutils
+import numpy as np
+from imutils.video import VideoStream
+
+from configuration import globalconfig as cfg
+from firebase.firebase_manager.firebase_service import sendnotificationto
+from recognition_process.modeler import Modeler
+from web.request import getToken
+
 
 class Webcam:
     def __init__(self, trainModel):
         # construct the argument parser and parse the arguments
         logging.debug('Construct arguments')
-        #argument = ArgumentSettings()
-        #args = argument.args
+        # argument = ArgumentSettings()
+        # args = argument.args
 
         # load serialized face detector, embedding and recognition with label encoder
         logging.debug('Modeling detection, embedding and recognition')
         self.modeler = Modeler()
         self.trainModel = trainModel
         le = self.trainModel.getLabelEncoder()
+        self.active = "true"
 
-    def recognize(self):
+    def run(self):
         # initialize the video stream, then allow the camera sensor to warm up
 
         logging.debug('Starting video stream')
@@ -35,9 +37,9 @@ class Webcam:
         time.sleep(2.0)
 
         # Firebase service
-        arr = [{"name": "suriya", "notified" : "false"}]
+        arr = []
         # loop over frames from the video file stream
-        while True:
+        while self.active == "true":
 
             # grab the frame from the threaded video stream
             logging.debug('Read stream')
@@ -90,15 +92,18 @@ class Webcam:
                     proba = preds[j]
                     name = self.modeler.le.classes_[j]
 
-                    if(name!="unknown"):
+                    if (name != "unknown"):
                         print('Detected name ' + name)
-                        c = Cache()
-                        c.checking_cache(name,proba)
-                        for n in arr:
-                            if(n['name']==name and n['notified']=="false"):
-                                token = getToken(n['name'])
-                                n['notified'] = "true"
+                        tmp = {"name": name, "notified": "true"}
+                        if (tmp in arr):
+                            print("User " + name + " already notified")
+                        else:
+                            token = getToken(name)
+                            if (token != 'none' and token != name):
                                 sendnotificationto(token)
+                                arr.append(tmp)
+                            else:
+                                print("No token found for " + name + " cannot send notification")
 
                     # draw the bounding box of the face along with the
                     # associated probability

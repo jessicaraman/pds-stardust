@@ -12,5 +12,4 @@ RUN pip install -r requirement.txt
 COPY src /app
 
 EXPOSE 8080
-
 CMD ["flask","run"]

@@ -1,8 +1,11 @@
-from configuration import globalconfig as cfg
-import pickle
-import cv2
-import os
 import logging
+import os
+import pickle
+
+import cv2
+
+from configuration import globalconfig as cfg
+
 
 class Modeler:
     def __init__(self):

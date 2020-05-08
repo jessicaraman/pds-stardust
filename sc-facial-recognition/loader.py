@@ -1,15 +1,17 @@
 # USAGE
 # python loader.py --dataset dataset --embeddings output/embeddings.pickle --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7
 
-# import the necessary packages
-from configuration import globalconfig as cfg
-from imutils import paths
-import numpy as np
-import argparse
-import imutils
-import pickle
-import cv2
 import os
+import pickle
+# import the necessary packages
+from json import JSONEncoder
+
+import cv2
+import imutils
+import numpy as np
+from imutils import paths
+
+from configuration import globalconfig as cfg
 
 
 class Loader:
