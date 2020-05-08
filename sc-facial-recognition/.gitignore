@@ -3,12 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#Output dir
-output/
-
-# notification cache (deprecated)
-cache_manager/users_notified.txt
-
 # C extensions
 *.so
 
