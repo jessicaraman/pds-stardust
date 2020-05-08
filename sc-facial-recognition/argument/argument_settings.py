@@ -1,6 +1,6 @@
 import argparse
 
-
+# ArgumentSetting
 class ArgumentSettings:
     def __init__(self):
         """
