@@ -4,9 +4,9 @@ FROM python:3.8
 WORKDIR /app
 
 # Install app dependencies
-COPY requirement.txt ./
+COPY requirements.txt ./
 
-RUN pip install -r requirement.txt
+RUN pip install -r requirements.txt
 
 # Bundle app source
 COPY src /app
