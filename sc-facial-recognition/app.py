@@ -66,4 +66,4 @@ def clean():
 
 if __name__ == '__main__':
     # certificate and key files
-    app.run(debug=True, ssl_context=(cfg.ssl_certificate, cfg.ssl_certificate_key))
+    app.run(debug=True, host="0.0.0.0", ssl_context=(cfg.ssl_certificate, cfg.ssl_certificate_key))
