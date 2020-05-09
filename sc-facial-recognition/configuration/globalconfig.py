@@ -30,3 +30,4 @@ urlscaccountapi = "https://account:8085/token"
 # SSL configuration
 ssl_certificate = "ssl/certificate.crt"
 ssl_certificate_key = "ssl/certificatekey.key"
+ssl_ca_pem = "stardustCA.pem"

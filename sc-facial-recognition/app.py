@@ -1,12 +1,13 @@
 import logging
+import ssl
 
 from flask import Flask
 
 from cache_manager.cache import Cache
 from configuration import globalconfig as cfg
 from recognition_process.loader import Loader
-from recognition_process.webcam import Webcam
 from recognition_process.train_model import TrainModel
+from recognition_process.webcam import Webcam
 
 app = Flask(__name__)
 loader = ""
@@ -65,5 +66,8 @@ def clean():
 
 
 if __name__ == '__main__':
-    # certificate and key files
+    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    context.verify_mode = ssl.CERT_REQUIRED
+    context.load_verify_locations(cfg.ssl_ca_pem)
+    context.load_verify_locations(cfg.ssl_certificate, cfg.ssl_certificate_key)
     app.run(debug=True, host="0.0.0.0", ssl_context=(cfg.ssl_certificate, cfg.ssl_certificate_key))
