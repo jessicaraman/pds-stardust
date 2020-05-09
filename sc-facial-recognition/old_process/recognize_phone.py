@@ -1,9 +1,8 @@
 # USAGE
 # python webcam.py --detector face_detection_model --embedding-model openface_nn4.small2.v1.t7 --recognizer output/recognizer.pickle --le output/le.pickle
 
-from imutils.video import VideoStream
 from recognition_process.modeler import Modeler
-from argument.argument_settings import ArgumentSettings
+from old_process.argument_settings import ArgumentSettings
 from cache_manager.cache import Cache
 import numpy as np
 import imutils

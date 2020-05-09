@@ -23,6 +23,9 @@ le = "output/le.pickle"
 # firebase cloud messaging key
 firebasekey = "firebase/firebase_private_key/pds-facial-recognition-firebase-adminsdk-s9pux-948e530c8c.json"
 
+# sc-account getToken by username identified
+urlscaccountapi = "https://172.31.249.114:9980/api/account/token"
+
 # SSL configuration
 ssl_certificate = "ssl/certificate.crt"
-ssl_certificate_key = "ssl/keyrsa.key"
+ssl_certificate_key = "ssl/certificatekey.key"
