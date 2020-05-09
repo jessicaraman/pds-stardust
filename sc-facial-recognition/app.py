@@ -4,9 +4,9 @@ from flask import Flask
 
 from cache_manager.cache import Cache
 from configuration import globalconfig as cfg
-from loader import Loader
-from webcam import Webcam
-from train_model import TrainModel
+from recognition_process.loader import Loader
+from recognition_process.webcam import Webcam
+from recognition_process.train_model import TrainModel
 
 app = Flask(__name__)
 loader = ""
