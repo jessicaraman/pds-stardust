@@ -5,14 +5,14 @@ import cv2
 import imutils
 import numpy as np
 from imutils.video import VideoStream
-
+import requests
 from configuration import globalconfig as cfg
 from firebase.firebase_manager.firebase_service import sendnotificationto
 from recognition_process.modeler import Modeler
 from web.request import get_token
 
 
-# Webcam
+# Webcam&Phone
 class Webcam:
 
     ### Construct the argument parser and parse the arguments
@@ -26,26 +26,37 @@ class Webcam:
         self.active = "true"
 
     ### Run process webcam
-    def run(self):
+    def run(self,type):
         # Firebase service user tab already notified
         arr = []
         # initialize the video stream, then allow the camera sensor to warm up
         logging.info('Starting video stream')
-        vs = VideoStream(src=0).start()
-        time.sleep(2.0)
-        # start process
-        self.process_analyze_cam(vs, arr)
+        if type=="webcam":
+            vs = VideoStream(src=0).start()
+            time.sleep(2.0)
+            self.process_analyze_cam(vs, arr, type)
+            cv2.destroyAllWindows()
+            vs.stop()
+        elif type=="phone":
+            url=cfg.streamurl
+            time.sleep(2.0)
+            self.process_analyze_cam(url, arr, type)
+            cv2.destroyAllWindows()
 
-        cv2.destroyAllWindows()
-        vs.stop()
 
     ### Launching process analyze cam with VideoStream
-    def process_analyze_cam(self, vs, arr):
+    def process_analyze_cam(self, vs, arr,type):
         # loop over frames from the video file stream
         while self.active == "true":
             # grab the frame from the threaded video stream
             logging.info('Read stream')
-            frame = vs.read()
+            if type=="webcam":
+                frame = vs.read()
+            elif type=="phone":
+                img_resp = requests.get(vs)
+                img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
+                img = cv2.imdecode(img_arr, -1)
+                frame = img
             # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
             frame = imutils.resize(frame, width=600)
             (h, w) = frame.shape[:2]

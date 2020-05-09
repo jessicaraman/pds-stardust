@@ -50,10 +50,21 @@ def webcam_start():
     train_model = TrainModel()
     train_model.train()
     webcam = Webcam(train_model)
-    webcam.run()
+    webcam.run("webcam")
     logging.info("/webcam_start Starting webcam...")
     return 'started'
 
+
+# /phone_start : starting process facial recognition
+@app.route('/phone_start')
+def phone_start():
+    logging.info("/phone_start Launching phone...")
+    train_model = TrainModel()
+    train_model.train()
+    webcam = Webcam(train_model)
+    webcam.run("phone")
+    logging.info("/phone_start Starting phone...")
+    return 'started'
 
 # /clean :
 @app.route('/clean')
