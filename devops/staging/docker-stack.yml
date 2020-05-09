@@ -103,7 +103,7 @@ services:
   facialrecognition:
     image: "pds.stardust:5005/facialrecognition:latest-staging"
     ports:
-      - "8086:5000"
+      - "5000:5000"
     networks:
       - pds
     deploy:
