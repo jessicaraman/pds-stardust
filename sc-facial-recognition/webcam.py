@@ -91,18 +91,8 @@ class Webcam:
                     proba = preds[j]
                     name = self.modeler.le.classes_[j]
 
-                    if (name != "unknown"):
-                        logging.info('Detected name : ' + name)
-                        tmp = {"name": name, "notified": "true"}
-                        if (tmp in arr):
-                            logging.info("User " + name + " already notified")
-                        else:
-                            token = getToken(name)
-                            if (token != 'none' and token != name):
-                                sendnotificationto(token)
-                                arr.append(tmp)
-                            else:
-                                logging.info("No token found for " + name + ", cannot send notification")
+                    # Verify token
+                    self.verifytokennotified(name, arr)
 
                     # draw the bounding box of the face along with the
                     # associated probability
@@ -123,3 +113,18 @@ class Webcam:
 
         cv2.destroyAllWindows()
         vs.stop()
+
+    # Verify if the token is already sent to the customer identified
+    def verifytokennotified(self, name, arr):
+        if name != "unknown":
+            logging.info('Detected name : ' + name)
+            tmp = {"name": name, "notified": "true"}
+            if tmp in arr:
+                logging.info("User " + name + " already notified")
+            else:
+                token = getToken(name)
+                if token != 'none' and token != name:
+                    sendnotificationto(token)
+                    arr.append(tmp)
+                else:
+                    logging.info("No token found for " + name + ", cannot send notification")
