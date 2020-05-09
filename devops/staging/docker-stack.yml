@@ -99,6 +99,18 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
+        
+  facialrecognition:
+    image: "pds.stardust:5005/facialrecognition:latest-staging"
+    ports:
+      - "8086:8080"
+    networks:
+      - pds
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3     
 
   apigtw:
     image: "pds.stardust:5005/apigtw:latest-staging"
