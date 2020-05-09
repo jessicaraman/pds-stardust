@@ -3,13 +3,12 @@ FROM python:3.8
 # Create app directory
 WORKDIR /app
 
-# Install app dependencies
-COPY requirements.txt ./
-
-RUN pip install -r requirements.txt
-
-# Bundle app source
+# Copy app sources
 COPY . .
+
+# Install app dependencies
+RUN pip3 install setuptools==45 firebase-admin opencv-python imutils sklearn && \
+    pip3 install -r requirements.txt
 
 EXPOSE 8080
 CMD ["flask","run"]
