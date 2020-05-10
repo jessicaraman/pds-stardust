@@ -7,6 +7,7 @@ import cryptolib.core.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,8 +26,11 @@ public class DemoService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String GET_DEK_URL = "https://kms:8082/keys/dek";
-    private final String ROTATE_KEY_URL = "https://kms:8082/keys/rotate";
+    @Value("${kms.base-url}")
+    private String KMS_BASE_URL;
+
+    private final String DEK_RETRIEVAL_ENDPOINT = "keys/dek";
+    private final String KEK_ROTATION_ENDPOINT = "keys/rotate";
     private final String MESSAGE = "PDS DEMO FOR ENCRYPTION AND DECRYPTION";
     private final String AES_ALGORITHM = "AES";
 
@@ -38,7 +42,7 @@ public class DemoService {
         final HttpEntity<Object> requestEntity = new HttpEntity<>(new HttpHeaders());
 
         logger.info("Send DEK retrieval request to KMS");
-        ResponseEntity<DekResponse> getDekResponse = restTemplate.exchange(GET_DEK_URL, HttpMethod.GET, requestEntity, DekResponse.class);
+        ResponseEntity<DekResponse> getDekResponse = restTemplate.exchange(KMS_BASE_URL + DEK_RETRIEVAL_ENDPOINT, HttpMethod.GET, requestEntity, DekResponse.class);
 
         logger.info("Get status [{}] from KMS", getDekResponse.getStatusCode().toString());
 
@@ -57,7 +61,7 @@ public class DemoService {
         logger.info("Build encryption key using DEK");
         SecretKey secretKey = new SecretKeySpec(key, AES_ALGORITHM);
 
-        logger.info("Message to encrypt : {}", MESSAGE);
+        logger.info("Message to encrypt : [{}]", MESSAGE);
         logger.info("Encrypt message using DEK");
 
         final byte[] ciphertext = CryptoUtils.encryptAesGcm(MESSAGE.getBytes(StandardCharsets.UTF_8), secretKey, randomNonce);
@@ -74,13 +78,13 @@ public class DemoService {
 
         logger.info("Rotating keys");
 
-        restTemplate.exchange(ROTATE_KEY_URL, HttpMethod.POST, requestEntity, String.class);
+        restTemplate.exchange(KMS_BASE_URL + KEK_ROTATION_ENDPOINT, HttpMethod.POST, requestEntity, String.class);
 
         logger.info("Go check the KEK and DEK version on vault !");
         Thread.sleep(60000);
 
         logger.info("Re send DEK retrieval request to KMS");
-        getDekResponse = restTemplate.exchange(GET_DEK_URL, HttpMethod.GET, requestEntity, DekResponse.class);
+        getDekResponse = restTemplate.exchange(KMS_BASE_URL + DEK_RETRIEVAL_ENDPOINT, HttpMethod.GET, requestEntity, DekResponse.class);
 
         logger.info("Get status [{}] from KMS", getDekResponse.getStatusCode().toString());
 
