@@ -7,7 +7,7 @@ import cv2
 from configuration import globalconfig as cfg
 
 
-# Modeler
+### Modeler : init param with output / embedding faces
 class Modeler:
     def __init__(self):
         # load our serialized face detector from disk

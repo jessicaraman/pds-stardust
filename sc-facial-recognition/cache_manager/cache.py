@@ -1,6 +1,7 @@
-from firebase.firebase_manager.firebase_service import sendnotificationto
+from firebase.firebase_manager.firebase_service import FirebaseService
 from configuration import globalconfig as cfg
 
+### Cache : Fill cache with the users already notified / Clean cache
 class Cache:
     def __init__(self):
         self.file = open(cfg.usercachefile, "r+")
@@ -32,5 +33,5 @@ class Cache:
 
         if ((name in lines) is False) and ((name + '\n' in lines) is False) and proba > 0.5:
             self.write_user(name)
-            sendnotificationto(name)
-
+            f = FirebaseService()
+            f.sendnotificationto(name)

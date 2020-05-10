@@ -12,9 +12,10 @@ from configuration import globalconfig as cfg
 logging.basicConfig(level=logging.DEBUG)
 
 
-# Loader :
+### Loader : process 128-d faces embeddings from dataset and extract them in output
 class Loader:
 
+    # Constructor
     def __init__(self):
         # load our serialized face detector from disk
         logging.info("Loading face detector...")
@@ -22,6 +23,7 @@ class Loader:
         self.modelPath = os.path.sep.join([cfg.detector, cfg.format_model])
         self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)
 
+    # Use model of open face to construct the 128-d faces
     def load_data(self):
         # load our serialized face embedding model from disk
         logging.info("Loading face recognizer...")

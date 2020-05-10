@@ -24,7 +24,7 @@ def heartbeat():
     return 'API facial recognition'
 
 
-# /load_data
+# /load_data : create 128-d faces of dataset
 @app.route('/load_data')
 def load_data():
     logging.info("Load_data /load_data")
@@ -33,7 +33,7 @@ def load_data():
     return 'loaded'
 
 
-# /train_model : update files
+# /train_model : train recognition with the embeddings
 @app.route('/train_model')
 def train_model():
     logging.info("/train_model Launching train model...")
@@ -50,12 +50,22 @@ def webcam_start():
     train_model = TrainModel()
     train_model.train()
     webcam = Webcam(train_model)
-    webcam.run()
+    webcam.run("webcam")
     logging.info("/webcam_start Starting webcam...")
     return 'started'
 
+# /phone_start : starting process facial recognition
+@app.route('/phone_start')
+def phone_start():
+    logging.info("/phone_start Launching phone...")
+    train_model = TrainModel()
+    train_model.train()
+    webcam = Webcam(train_model)
+    webcam.run("phone")
+    logging.info("/phone_start Starting phone...")
+    return 'started'
 
-# /clean :
+# /clean : clean cache
 @app.route('/clean')
 def clean():
     logging.info("/clean Delete cache")
@@ -64,7 +74,7 @@ def clean():
     logging.info("/clean Cache deleted")
     return 'cleaned'
 
-
+# main
 if __name__ == '__main__':
     context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     context.verify_mode = ssl.CERT_REQUIRED
