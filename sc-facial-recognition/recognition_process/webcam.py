@@ -12,7 +12,7 @@ from recognition_process.modeler import Modeler
 from web.request import get_token
 
 
-# Webcam&Phone
+### Webcam & Phone : run recognition from webcam or phone
 class Webcam:
 
     ### Construct the argument parser and parse the arguments
@@ -32,20 +32,22 @@ class Webcam:
         # initialize the video stream, then allow the camera sensor to warm up
         logging.info('Starting video stream')
         if type=="webcam":
+            logging.info('/webcam_start Starting video stream webcam')
             vs = VideoStream(src=0).start()
             time.sleep(2.0)
             self.process_analyze_cam(vs, arr, type)
             cv2.destroyAllWindows()
             vs.stop()
         elif type=="phone":
-            url=cfg.streamurl
+            logging.info('/phone_start Starting video stream phone')
+            vs = cv2.VideoCapture(cfg.streamurl)
+            #url=cfg.streamurl
             time.sleep(2.0)
-            self.process_analyze_cam(url, arr, type)
+            self.process_analyze_cam(vs, arr, type)
             cv2.destroyAllWindows()
 
-
     ### Launching process analyze cam with VideoStream
-    def process_analyze_cam(self, vs, arr,type):
+    def process_analyze_cam(self, vs, arr, type):
         # loop over frames from the video file stream
         while self.active == "true":
             # grab the frame from the threaded video stream
@@ -53,10 +55,14 @@ class Webcam:
             if type=="webcam":
                 frame = vs.read()
             elif type=="phone":
+                logging.info('/phone_start Phone detected')
+                """
                 img_resp = requests.get(vs)
                 img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
                 img = cv2.imdecode(img_arr, -1)
                 frame = img
+                """
+                ret,frame=vs.read()
             # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
             frame = imutils.resize(frame, width=600)
             (h, w) = frame.shape[:2]
