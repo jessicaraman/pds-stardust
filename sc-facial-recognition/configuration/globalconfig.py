@@ -2,7 +2,7 @@
 usercachefile = "cache_manager/users_notified.txt"
 
 # recognize via smartphone
-streamurl = "http://08e8afbe.ngrok.io/video"
+#streamurl = "http://96cb6000.ngrok.io/video"
 
 # file and folders used for recognition process
 dataset = "dataset"

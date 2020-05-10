@@ -26,21 +26,26 @@ class Webcam:
         self.active = "true"
 
     ### Run process webcam
-    def run(self, type):
+    def run(self, type, url=0):
         # Firebase service user tab already notified
         arr = []
         # initialize the video stream, then allow the camera sensor to warm up
         logging.info('Starting video stream')
         if type == "webcam":
-            logging.info('/webcam_start Starting video stream webcam')
-            vs = VideoStream(src=0).start()
-            time.sleep(2.0)
+            if url != None :
+                logging.info('/webcam_start Starting video stream webcam, url = ' + url)
+            else :
+                logging.info('/webcam_start default url = 0 (localwebcam)')
+                url = 0
+
+            vs = VideoStream(src=url).start()
+            time.sleep(3.0)
             self.process_analyze_cam(vs, arr, type)
             cv2.destroyAllWindows()
             vs.stop()
         elif type == "phone":
             logging.info('/phone_start Starting video stream phone')
-            vs = cv2.VideoCapture(cfg.streamurl)
+            vs = cv2.VideoCapture(url)
             # url=cfg.streamurl
             time.sleep(2.0)
             self.process_analyze_cam(vs, arr, type)
