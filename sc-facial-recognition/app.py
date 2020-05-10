@@ -50,7 +50,7 @@ def webcam_start():
     train_model = TrainModel()
     train_model.train()
     webcam = Webcam(train_model)
-    webcam.run()
+    webcam.run("webcam")
     logging.info("/webcam_start Starting webcam...")
     return 'started'
 
