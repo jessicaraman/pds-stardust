@@ -3,7 +3,6 @@ package pds.stardust.kms.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,19 +21,18 @@ import static pds.stardust.kms.utils.HttpUtils.buildHttpHeaders;
  * This class defines the common methods regarding key management.
  */
 @Service
-public class KeyManagementService implements IKeyManagementService {
+public class KeyManagementService extends AbstractRestService implements IKeyManagementService {
 
     private final ObjectMapper mapper;
     private final VaultConfig vaultConfig;
-    private final RestTemplate restTemplate;
     private final SecretManagementService secretManagementService;
 
     @Autowired
-    public KeyManagementService(VaultConfig vaultConfig, RestTemplate restTemplate, SecretManagementService secretManagementService) {
+    public KeyManagementService(VaultConfig vaultConfig, RestTemplate restTemplate, ObjectMapper mapper, SecretManagementService secretManagementService) {
+        super(restTemplate, mapper);
         this.secretManagementService = secretManagementService;
-        this.restTemplate = restTemplate;
-        this.mapper = new ObjectMapper();
         this.vaultConfig = vaultConfig;
+        this.mapper = mapper;
     }
 
     /**
@@ -76,7 +74,7 @@ public class KeyManagementService implements IKeyManagementService {
 
         String url = vaultConfig.getUrl() + KeysConstants.KEY_ENCRYPTION_KEY_DECRYPT_PATH;
 
-        ResponseEntity<DecryptDataResponse> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, DecryptDataResponse.class);
+        ResponseEntity<DecryptDataResponse> response = post(url, httpEntity, DecryptDataResponse.class);
 
         return new VaultSecretResponse(
                 Objects.requireNonNull(response.getBody()).getData().getPlaintext()
@@ -88,7 +86,7 @@ public class KeyManagementService implements IKeyManagementService {
      * Rotate the Key Encryption Key. A new version of the key will be created.
      * The Data Encryption will need to be rewrapped with this new version.
      */
-    private void rotateKeyEncryptionKey() {
+    private void rotateKeyEncryptionKey() throws Exception {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(
                 buildHttpHeaders(vaultConfig.getToken())
@@ -96,7 +94,7 @@ public class KeyManagementService implements IKeyManagementService {
 
         String url = vaultConfig.getUrl() + KeysConstants.KEY_ENCRYPTION_KEY_ROTATE_PATH;
 
-        restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        post(url, httpEntity, String.class);
 
     }
 
@@ -127,7 +125,7 @@ public class KeyManagementService implements IKeyManagementService {
 
         String url = vaultConfig.getUrl() + KeysConstants.KEY_ENCRYPTION_KEY_REWRAP_PATH;
 
-        ResponseEntity<RewrapDataResponse> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, RewrapDataResponse.class);
+        ResponseEntity<RewrapDataResponse> response = post(url, httpEntity, RewrapDataResponse.class);
 
         VaultSecret vaultSecret = new VaultSecret();
 
@@ -140,4 +138,8 @@ public class KeyManagementService implements IKeyManagementService {
 
     }
 
+    @Override
+    protected String getServiceName() {
+        return "Vault";
+    }
 }
