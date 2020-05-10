@@ -10,8 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import pds.stardust.scsensorinteraction.config.JasyptConfig;
 import pds.stardust.scsensorinteraction.entities.SensorEntity;
 import pds.stardust.scsensorinteraction.entities.TopicEntity;
-import pds.stardust.scsensorinteraction.repositories.SensorRepository;
+import pds.stardust.scsensorinteraction.repositories.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,21 +30,46 @@ class SensorServiceTest {
 
     @BeforeEach
     public void before() {
-        String uri = "/sensor";
-        SensorEntity sensor = new SensorEntity();
-        TopicEntity topic = new TopicEntity();
-        topic.setId("id");
-        topic.setLabel("test label topic");
-        sensor.setId("id");
-        sensor.setMessage(" test message");
-        sensor.setTopic(topic);
+        SensorEntity sensorEntity = new SensorEntity();
+        TopicEntity topicEntity = new TopicEntity();
+        topicEntity.setLabel("test label topic");
+        sensorEntity.setId("id");
+        sensorEntity.setMessage(" test message");
+        sensorEntity.setTopic(topicEntity);
 
-        doReturn(Optional.of(sensor)).when(sensorRepository).findById(anyString());
-        doReturn(sensor).when(sensorRepository).save(Mockito.any(SensorEntity.class));
+        doReturn(Optional.of(sensorEntity)).when(sensorRepository).findById(anyString());
+        doReturn(sensorEntity).when(sensorRepository).save(Mockito.any(SensorEntity.class));
     }
 
     @Test
-    void save() {
+    void update_existing_sensor() {
+        SensorEntity sensorEntity = new SensorEntity();
+        sensorEntity.setId("id");
+        TopicEntity topicEntity= new TopicEntity();
+        topicEntity.setLabel("new_label");
+        sensorEntity.setTopic(topicEntity);
+
+
+        SensorEntity savedSensorEntity = sensorService.save(sensorEntity);
+        assertNotNull(savedSensorEntity);
+        assertEquals("id", savedSensorEntity.getId());
+        assertEquals("new_label", sensorEntity.getTopic().getLabel());
+    }
+
+    @Test
+    void create_sensor() {
+        doReturn(Optional.empty()).when(sensorRepository).findById(anyString());
+        SensorEntity sensorEntity = new SensorEntity();
+        sensorEntity.setId("id");
+        TopicEntity topicEntity= new TopicEntity();
+        topicEntity.setLabel("new_label");
+        sensorEntity.setTopic(topicEntity);
+
+
+        SensorEntity savedSensorEntity = sensorService.save(sensorEntity);
+        assertNotNull(savedSensorEntity);
+        assertEquals("id", savedSensorEntity.getId());
+        assertEquals("new_label", sensorEntity.getTopic().getLabel());
     }
 
     @Test
