@@ -47,7 +47,7 @@ class SecretManagementServiceTest {
     }
 
     @Test
-    void getDataEncryptionKey_OK() {
+    void getDataEncryptionKey_OK() throws Exception {
 
         final VaultSecret vaultSecret = new VaultSecret();
 
