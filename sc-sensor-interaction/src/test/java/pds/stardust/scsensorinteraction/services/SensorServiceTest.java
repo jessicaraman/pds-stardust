@@ -14,6 +14,7 @@ import pds.stardust.scsensorinteraction.repositories.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,15 +61,13 @@ class SensorServiceTest {
     void create_sensor() {
         doReturn(Optional.empty()).when(sensorRepository).findById(anyString());
         SensorEntity sensorEntity = new SensorEntity();
-        sensorEntity.setId("id");
         TopicEntity topicEntity= new TopicEntity();
+        sensorEntity.setMessage("new sensor");
         topicEntity.setLabel("new_label");
         sensorEntity.setTopic(topicEntity);
-
-
         SensorEntity savedSensorEntity = sensorService.save(sensorEntity);
         assertNotNull(savedSensorEntity);
-        assertEquals("id", savedSensorEntity.getId());
+        assertEquals("new sensor", sensorEntity.getMessage());
         assertEquals("new_label", sensorEntity.getTopic().getLabel());
     }
 
