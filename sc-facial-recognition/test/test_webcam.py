@@ -6,7 +6,7 @@ import os
 from cache_manager.cache import Cache
 from configuration import globalconfig as cfg
 
-class TestCache(unittest.TestCase):
+class TestWebcam(unittest.TestCase):
 
     def test_verif_token_in_array(self):
         train_model = TrainModel()
