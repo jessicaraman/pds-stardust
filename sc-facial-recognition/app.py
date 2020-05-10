@@ -66,7 +66,7 @@ def phone_start():
     logging.info("/phone_start Starting phone...")
     return 'started'
 
-# /clean :
+# /clean : clean cache
 @app.route('/clean')
 def clean():
     logging.info("/clean Delete cache")

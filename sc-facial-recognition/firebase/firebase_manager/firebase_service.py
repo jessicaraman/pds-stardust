@@ -6,7 +6,7 @@ from firebase_admin import messaging
 
 from configuration import globalconfig as cfg
 
-cred = credentials.Certificate(cfg.firebasekey)
+cred = credentials.Certificate(cfg.firebase_key)
 firebase_admin.initialize_app(cred)
 
 logging.basicConfig(level=logging.DEBUG)
