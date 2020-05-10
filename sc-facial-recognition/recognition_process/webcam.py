@@ -7,7 +7,7 @@ import numpy as np
 from imutils.video import VideoStream
 import requests
 from configuration import globalconfig as cfg
-from firebase.firebase_manager.firebase_service import sendnotificationto
+from firebase.firebase_manager.firebase_service import FirebaseService
 from recognition_process.modeler import Modeler
 from web.request import get_token
 
@@ -119,12 +119,17 @@ class Webcam:
             tmp = {"name": name, "notified": "true"}
             if tmp in arr:
                 logging.info("The user " + name + " is already notified")
+                return 'in array'
             else:
                 token = get_token(name)
                 if token != 'none' and token != name:
-                    sendnotificationto(token)
+                    f = FirebaseService()
+                    f.sendnotificationto(token)
                     arr.append(tmp)
+                    return str(token)
                 else:
                     logging.info("No token found for " + name + ", cannot send notification")
+                    return 'no token'
         else:
             logging.info("No token for unknown")
+            return 'no token'

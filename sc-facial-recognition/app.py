@@ -24,7 +24,7 @@ def heartbeat():
     return 'API facial recognition'
 
 
-# /load_data
+# /load_data : create 128-d faces of dataset
 @app.route('/load_data')
 def load_data():
     logging.info("Load_data /load_data")
@@ -33,7 +33,7 @@ def load_data():
     return 'loaded'
 
 
-# /train_model : update files
+# /train_model : train recognition with the embeddings
 @app.route('/train_model')
 def train_model():
     logging.info("/train_model Launching train model...")

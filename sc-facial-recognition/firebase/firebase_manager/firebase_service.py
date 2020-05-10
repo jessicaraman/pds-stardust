@@ -11,20 +11,20 @@ firebase_admin.initialize_app(cred)
 
 logging.basicConfig(level=logging.DEBUG)
 
-
-# sendnotificationto : send notification to user
-def sendnotificationto(token):
-  logging.info("User's Token = " + token)
-  message = messaging.Message(
-    notification=messaging.Notification(
-      title='EPISEN',
-      body='PDS facial recognition notification!',
-    ),
-    data={
-      'subject': 'IT',
-      'place': '40',
-    },
-    token=token,
-  )
-  response = messaging.send(message)
-  logging.info('Successfully sent message:', response)
+class FirebaseService:
+  # sendnotificationto : send notification to user
+  def sendnotificationto(self,token):
+    logging.info("User's Token = " + token)
+    self.message = messaging.Message(
+      notification=messaging.Notification(
+        title='EPISEN',
+        body='PDS facial recognition notification!',
+      ),
+      data={
+        'subject': 'IT',
+        'place': '40',
+      },
+      token=token,
+    )
+    self.response = messaging.send(self.message)
+    logging.info('Response message:', self.response)

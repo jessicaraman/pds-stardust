@@ -24,10 +24,12 @@ le = "output/le.pickle"
 firebasekey = "firebase/firebase_private_key/pds-facial-recognition-firebase-adminsdk-s9pux-948e530c8c.json"
 
 # sc-account getToken by username identified
-#urlscaccountapi = "https://172.31.249.114:9980/api/account/token"
-urlscaccountapi = "https://account:8085/token"
+urlscaccountapi = "https://172.31.249.114:9980/api/account/token"
+#urlscaccountapi = "https://account:8085/token"
 
 # SSL configuration
 ssl_certificate = "ssl/certificate.crt"
 ssl_certificate_key = "ssl/certificatekey.key"
 ssl_ca_pem = "stardustCA.pem"
+rep=""
+tokentest="dNi4ALm_Qw-rMYVfhHrEez:APA91bEL-7eFpR1aed5uT6I7wU_ReW8T6ofZdb_tNvrJMCqmtjMjdDF5JD3vMjgd3I4r4SdfPQ3YNz6T_K9FBvYss3w0KVZY4Pj5cy7gLBjfq7jYigqkwQgui2OiwcEaNpF1FCYI_Vut"
