@@ -1,5 +1,8 @@
 package pds.stardust.scsensorinteraction.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import java.util.Optional;
 @RestController
 public class SensorController {
 
+    private final Logger logger = LoggerFactory.getLogger(SensorController.class);
     private final SensorService sensorService;
 
     @Autowired
@@ -22,13 +26,15 @@ public class SensorController {
     }
 
     @PostMapping("/sensor")
-    public SensorEntity create(@RequestBody SensorEntity sensorEntity) {
+    public SensorEntity create(@RequestBody SensorEntity sensorEntity) throws JsonProcessingException {
+        logger.info("Enter sensor creation");
         return sensorService.save(sensorEntity);
     }
 
     @GetMapping("/sensor/{id}")
     public ResponseEntity<?> getSensorById(@PathVariable String id) {
 
+        logger.info("Enter sensor research");
         Optional<SensorEntity> optSensor = sensorService.findById(id);
 
         return optSensor.map(sensorEntity -> new ResponseEntity<>(sensorEntity, HttpStatus.OK))
@@ -39,6 +45,7 @@ public class SensorController {
     @GetMapping("/sensor/topic/{id}/label")
     public ResponseEntity<?> getTopicLabelById(@PathVariable String id) {
 
+        logger.info("Enter topic label research");
         Optional<String> optTopicLabel = sensorService.findLabelByTopicId(id);
 
         return optTopicLabel.map(label -> new ResponseEntity<>(new CommonResponse(label), HttpStatus.OK))
