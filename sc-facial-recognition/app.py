@@ -2,8 +2,6 @@ import logging
 import ssl
 
 from flask import Flask, request
-
-from cache_manager.cache import Cache
 from configuration import globalconfig as cfg
 from recognition_process.loader import Loader
 from recognition_process.train_model import TrainModel
@@ -67,14 +65,6 @@ def phone_start():
     logging.info("/phone_start Starting phone...")
     return 'started'
 
-# /clean : clean cache
-@app.route('/clean')
-def clean():
-    logging.info("/clean Delete cache")
-    c = Cache()
-    c.clean()
-    logging.info("/clean Cache deleted")
-    return 'cleaned'
 
 # main
 if __name__ == '__main__':
