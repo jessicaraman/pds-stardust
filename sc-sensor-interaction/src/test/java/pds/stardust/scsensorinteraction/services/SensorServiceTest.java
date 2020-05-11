@@ -12,6 +12,7 @@ import pds.stardust.scsensorinteraction.entities.SensorEntity;
 import pds.stardust.scsensorinteraction.entities.TopicEntity;
 import pds.stardust.scsensorinteraction.repositories.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +71,35 @@ class SensorServiceTest {
 
     @Test
     void all_sensors() {
+        List<SensorEntity> datas = new ArrayList<>();
 
+        TopicEntity topic1 =new TopicEntity();
+        topic1.setLabel("label");
+        SensorEntity sensor1 = new SensorEntity();
+        sensor1.setTopic(topic1);
+        sensor1.setMessage("message");
+
+        TopicEntity topic2 =new TopicEntity();
+        topic2.setLabel("label");
+        SensorEntity sensor2 = new SensorEntity();
+        sensor2.setTopic(topic2);
+        sensor2.setMessage("message");
+
+        TopicEntity topic3 =new TopicEntity();
+        topic3.setLabel("label");
+        SensorEntity sensor3 = new SensorEntity();
+        sensor3.setTopic(topic3);
+        sensor3.setMessage("message");
+
+        datas.add(sensor1);
+        datas.add(sensor2);
+        datas.add(sensor3);
+
+        given(sensorRepository.findAll()).willReturn(datas);
+
+        List<SensorEntity> expected = sensorRepository.findAll();
+
+        assertEquals(expected, datas);
     }
 
     @Test
