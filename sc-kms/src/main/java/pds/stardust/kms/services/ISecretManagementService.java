@@ -14,7 +14,7 @@ public interface ISecretManagementService {
      *
      * @return The Data Encryption Key encoded in base 64
      */
-    VaultSecretResponse getDataEncryptionKey();
+    VaultSecretResponse getDataEncryptionKey() throws Exception;
 
     /**
      * Update the Data Encryption Key (DEK) secret. Will be called during the key
