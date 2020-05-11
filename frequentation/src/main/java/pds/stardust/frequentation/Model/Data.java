@@ -3,7 +3,7 @@ import org.springframework.data.annotation.Id;
 
 
 public class Data {
-
+    @Id
     private int idclient ;
     private String idbeacon ;
     private String date ;
