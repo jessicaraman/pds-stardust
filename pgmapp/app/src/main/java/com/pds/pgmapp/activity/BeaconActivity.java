@@ -18,6 +18,7 @@ import com.pds.pgmapp.R;
 import com.pds.pgmapp.geolocation.LocationHistoryEntity;
 import com.pds.pgmapp.model.CustomerEntity;
 import com.pds.pgmapp.model.PassageEntity;
+import com.pds.pgmapp.model.RecentlyVisitedBeacons;
 import com.pds.pgmapp.retrofit.FrequentationService;
 import com.pds.pgmapp.retrofit.RetrofitInstance;
 
