@@ -32,14 +32,14 @@ class FrequentationApplicationTests {
 
 
 	@Test
-	public void saveUserTest() {
+	public void saveDataTest() {
 		Data k = new Data(5, "JJA", "10/10/2020");
 		when(repository.save(k)).thenReturn(k);
 		Assertions.assertEquals(k ,service.addData(k));
 	}
 
 	@Test
-	public void deleteUserTest() {
+	public void deleteDataTest() {
 		Data k = new Data(376, "JJA", "10/10/2020");
 		service.deletedata(k);
 		verify(repository,times(1)).delete(k);
