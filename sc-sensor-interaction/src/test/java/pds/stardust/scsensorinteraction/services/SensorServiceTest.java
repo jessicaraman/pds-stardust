@@ -35,6 +35,19 @@ class SensorServiceTest {
 
     @Test
     void update_existing_sensor() {
+        TopicEntity topic =new TopicEntity();
+        topic.setLabel("label");
+        SensorEntity sensor = new SensorEntity();
+        sensor.setTopic(topic);
+        sensor.setMessage("message");
+
+        given(sensorRepository.save(sensor)).willReturn(sensor);
+
+        final SensorEntity expected = sensorService.save(sensor);
+
+        assertNotNull(expected);
+
+        verify(sensorRepository).save(any(SensorEntity.class));
     }
 
     @Test
