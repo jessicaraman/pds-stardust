@@ -3069,7 +3069,7 @@
 											"top": 940,
 											"width": 147,
 											"height": 13,
-											"text": "sc-facial-recognition.py"
+											"text": "app.py"
 										},
 										{
 											"_type": "LabelView",
@@ -12446,7 +12446,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFxPzJNh5dj344="
 					},
-					"name": "sc-facial-recognition.py",
+					"name": "app.py",
 					"ownedElements": [
 						{
 							"_type": "UMLDependency",
