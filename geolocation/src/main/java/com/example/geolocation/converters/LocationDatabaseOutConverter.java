@@ -22,11 +22,13 @@ public class LocationDatabaseOutConverter implements Converter<String, LocationE
 
     private final EncryptUtils encryptUtils;
     private final ObjectMapper objectMapper;
+    private final Logger logger;
 
     @Autowired
     public LocationDatabaseOutConverter(EncryptUtils encryptUtils, ObjectMapper objectMapper) {
         this.encryptUtils = encryptUtils;
         this.objectMapper = objectMapper;
+        this.logger = LoggerFactory.getLogger(LocationDatabaseOutConverter.class);
     }
 
     @SneakyThrows
@@ -39,7 +41,11 @@ public class LocationDatabaseOutConverter implements Converter<String, LocationE
                 StringUtils.decodeBase64String(source), secretKey
         );
 
-        return objectMapper.readValue(new String(decrypted, StandardCharsets.UTF_8), LocationEntity.class);
+        final String decryptedSource = new String(decrypted, StandardCharsets.UTF_8);
+
+        logger.info("Converted [{}] to [{}]", source, decryptedSource);
+
+        return objectMapper.readValue(decryptedSource, LocationEntity.class);
 
     }
 }

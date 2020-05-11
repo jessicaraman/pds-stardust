@@ -35,4 +35,3 @@ class Cache:
             self.write_user(name)
             f = FirebaseService()
             f.sendnotificationto(name)
-

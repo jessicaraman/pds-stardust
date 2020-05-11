@@ -1,0 +1,1 @@
+@hourly curl https://pds.stardust:9990/api/kms/keys/rotate -d {} -s --insecure

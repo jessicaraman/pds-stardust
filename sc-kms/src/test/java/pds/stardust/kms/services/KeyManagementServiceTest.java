@@ -43,7 +43,7 @@ class KeyManagementServiceTest {
 
 
     @BeforeEach
-    public void before() {
+    public void before() throws Exception {
 
         Mockito.doReturn(VAULT_URL).when(vaultConfig).getUrl();
         Mockito.doReturn(VAULT_TOKEN).when(vaultConfig).getToken();

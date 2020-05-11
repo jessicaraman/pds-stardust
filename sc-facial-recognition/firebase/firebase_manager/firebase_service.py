@@ -12,8 +12,11 @@ firebase_admin.initialize_app(cred)
 logging.basicConfig(level=logging.DEBUG)
 
 class FirebaseService:
+### FirebaseService : Handle notification fcm
+class FirebaseService:
+
   # sendnotificationto : send notification to user
-  def sendnotificationto(self,token):
+  def sendnotificationto(self, token):
     logging.info("User's Token = " + token)
     self.message = messaging.Message(
       notification=messaging.Notification(

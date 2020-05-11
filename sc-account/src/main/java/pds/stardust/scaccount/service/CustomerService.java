@@ -117,7 +117,7 @@ public class CustomerService implements ICustomerService {
         customerRepository.save(new CustomerEntity(6, "Faddaoui", "Ilies", "none", "ilies", "pds", "none"));
         customerRepository.save(new CustomerEntity(7, "Baraton", "Damien", "none", "damien", "pds", "none"));
         customerRepository.save(new CustomerEntity(8, "Lobiyed", "Karim", "none", "karim", "pds", "none"));
-        customerRepository.save(new CustomerEntity(9, "pds_tu", "pds_tu", "none", "pds", "pds", "dNi4ALm_Qw-rMYVfhHrEez:APA91bEL-7eFpR1aed5uT6I7wU_ReW8T6ofZdb_tNvrJMCqmtjMjdDF5JD3vMjgd3I4r4SdfPQ3YNz6T_K9FBvYss3w0KVZY4Pj5cy7gLBjfq7jYigqkwQgui2OiwcEaNpF1FCYI_Vut"));
+        customerRepository.save(new CustomerEntity(9, "pdstu", "pdstu", "none", "pdstu", "pdstu", "dNi4ALm_Qw-rMYVfhHrEez:APA91bEL-7eFpR1aed5uT6I7wU_ReW8T6ofZdb_tNvrJMCqmtjMjdDF5JD3vMjgd3I4r4SdfPQ3YNz6T_K9FBvYss3w0KVZY4Pj5cy7gLBjfq7jYigqkwQgui2OiwcEaNpF1FCYI_Vut"));
         logger.trace("Save some customers successfully");
     }
 

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cryptolib.core.CryptoUtils;
 import cryptolib.core.StringUtils;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
@@ -20,11 +22,13 @@ public class LocationDatabaseInConverter implements Converter<LocationEntity, St
 
     private final EncryptUtils encryptUtils;
     private final ObjectMapper objectMapper;
+    private final Logger logger;
 
     @Autowired
     public LocationDatabaseInConverter(EncryptUtils encryptUtils, ObjectMapper objectMapper) {
         this.encryptUtils = encryptUtils;
         this.objectMapper = objectMapper;
+        this.logger = LoggerFactory.getLogger(LocationDatabaseInConverter.class);
     }
 
     @SneakyThrows
@@ -36,13 +40,17 @@ public class LocationDatabaseInConverter implements Converter<LocationEntity, St
         final SecretKey secretKey = encryptUtils.getDek();
         final byte[] randomNonce = CryptoUtils.getRandomNonce();
 
-        return StringUtils.toBase64String(
+        final String encryptedSource = StringUtils.toBase64String(
                 CryptoUtils.encryptAesGcm(
                         json.getBytes(StandardCharsets.UTF_8),
                         secretKey,
                         randomNonce
                 )
         );
+
+        logger.info("Converted [{}] to [{}]", objectMapper.writeValueAsString(source), encryptedSource);
+
+        return encryptedSource;
 
     }
 }

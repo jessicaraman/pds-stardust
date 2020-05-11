@@ -5,7 +5,7 @@ import cv2
 import imutils
 import numpy as np
 from imutils.video import VideoStream
-import requests
+
 from configuration import globalconfig as cfg
 from firebase.firebase_manager.firebase_service import FirebaseService
 from recognition_process.modeler import Modeler
@@ -26,22 +26,26 @@ class Webcam:
         self.active = "true"
 
     ### Run process webcam
-    def run(self,type):
+    def run(self, type, url=0):
         # Firebase service user tab already notified
         arr = []
         # initialize the video stream, then allow the camera sensor to warm up
         logging.info('Starting video stream')
-        if type=="webcam":
-            logging.info('/webcam_start Starting video stream webcam')
-            vs = VideoStream(src=0).start()
-            time.sleep(2.0)
+        if type == "webcam":
+            if url != None :
+                logging.info('/webcam_start Starting video stream webcam, url = ' + url)
+            else :
+                logging.info('/webcam_start default url = 0 (localwebcam)')
+                url = 0
+            vs = VideoStream(src=url).start()
+            time.sleep(3.0)
             self.process_analyze_cam(vs, arr, type)
             cv2.destroyAllWindows()
             vs.stop()
-        elif type=="phone":
+        elif type == "phone":
             logging.info('/phone_start Starting video stream phone')
-            vs = cv2.VideoCapture(cfg.streamurl)
-            #url=cfg.streamurl
+            vs = cv2.VideoCapture(url)
+            # url=cfg.streamurl
             time.sleep(2.0)
             self.process_analyze_cam(vs, arr, type)
             cv2.destroyAllWindows()
@@ -52,9 +56,9 @@ class Webcam:
         while self.active == "true":
             # grab the frame from the threaded video stream
             logging.info('Read stream')
-            if type=="webcam":
+            if type == "webcam":
                 frame = vs.read()
-            elif type=="phone":
+            elif type == "phone":
                 logging.info('/phone_start Phone detected')
                 """
                 img_resp = requests.get(vs)
@@ -62,7 +66,7 @@ class Webcam:
                 img = cv2.imdecode(img_arr, -1)
                 frame = img
                 """
-                ret,frame=vs.read()
+                ret, frame = vs.read()
             # resize the frame to have a width of 600 px while, maintaining the aspect ratio and grab the image, dimensions
             frame = imutils.resize(frame, width=600)
             (h, w) = frame.shape[:2]

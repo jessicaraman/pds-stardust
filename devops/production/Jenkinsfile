@@ -17,6 +17,7 @@ pipeline {
         ACCOUNT_CONTAINER='account'
         FREQUENTATION_CONTAINER='frequentation'
         API_GTW_CONTAINER='apigtw'
+		FACIALRECOGNITION_CONTAINER='facialrecognition'
     }    
 
     stages {
@@ -47,7 +48,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION} -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
-                                        gradle build -x test -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
+                                        gradle clean build -x test -PrepoUser=$NEXUS_CREDENTIALS_USR -PrepoPassword=$NEXUS_CREDENTIALS_USR
                                     '''
 
                                     script {
@@ -78,7 +79,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        gradle build -x test
+                                        gradle clean build -x test
                                     '''
 
                                     script {
@@ -109,7 +110,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        gradle build -x test
+                                        gradle clean build -x test
                                     '''
 
                                     script {
@@ -140,7 +141,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        gradle build -x test
+                                        gradle clean build -x test
                                     '''
 
                                     script {
@@ -171,7 +172,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        gradle build -x test
+                                        gradle clean build -x test
                                     '''
 
                                     script {
@@ -203,7 +204,7 @@ pipeline {
 
                                     sh '''
                                         gradle confirmReleaseVersion -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${RELEASE_VERSION}
-                                        gradle build -x test
+                                        gradle clean build -x test
                                     '''
 
                                     script {
@@ -219,6 +220,23 @@ pipeline {
                                         gradle updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=${NEXT_SNAPSHOT}
                                     '''
 
+                                }
+                            }
+                        }
+
+                        stage('Build facialrecognition') {
+
+                            steps {
+                                dir("sc-facial-recognition") {
+
+                                    script {
+                                        docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS}") {
+                                            def img = docker.build("${FACIALRECOGNITION_CONTAINER}:latest-prod")
+                                            img.push()
+                                            img.push("${RELEASE_VERSION}")
+                                            sh "docker rmi ${img.id}"
+                                        }
+                                    }
                                 }
                             }
                         }

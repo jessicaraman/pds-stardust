@@ -1,7 +1,7 @@
 import logging
 import ssl
 
-from flask import Flask
+from flask import Flask, request
 
 from cache_manager.cache import Cache
 from configuration import globalconfig as cfg
@@ -44,18 +44,30 @@ def train_model():
 
 
 # /webcam_start : starting process facial recognition
-@app.route('/webcam_start')
+@app.route('/webcam_start', methods= ['GET'])
 def webcam_start():
+    url = request.args.get('url')
     logging.info("/webcam_start Launching webcam...")
     train_model = TrainModel()
     train_model.train()
     webcam = Webcam(train_model)
-    webcam.run("webcam")
+    webcam.run("webcam", url)
     logging.info("/webcam_start Starting webcam...")
     return 'started'
 
-
 # /phone_start : starting process facial recognition
+@app.route('/phone_start', methods= ['GET'])
+def phone_start():
+    url = request.args.get('url')
+    logging.info("/phone_start Launching phone...")
+    train_model = TrainModel()
+    train_model.train()
+    webcam = Webcam(train_model)
+    webcam.run("phone", url)
+    logging.info("/phone_start Starting phone...")
+    return 'started'
+
+# /clean : clean cache
 @app.route('/phone_start')
 def phone_start():
     logging.info("/phone_start Launching phone...")
@@ -75,7 +87,7 @@ def clean():
     logging.info("/clean Cache deleted")
     return 'cleaned'
 
-
+# main
 if __name__ == '__main__':
     context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     context.verify_mode = ssl.CERT_REQUIRED
