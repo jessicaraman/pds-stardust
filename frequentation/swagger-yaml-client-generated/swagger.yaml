@@ -36,30 +36,6 @@ paths:
       responses:
         "405":
           description: Invalid input
-    put:
-      tags:
-      - Data
-      summary: Update an existing data
-      operationId: updateData
-      consumes:
-      - application/json
-      - application/xml
-      produces:
-      - application/json
-      - application/xml
-      parameters:
-      - in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/Data'
-      responses:
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: data not found
-        "405":
-          description: Validation exception
   /findAllData:
     get:
       tags:
@@ -138,7 +114,6 @@ definitions:
         type: integer
         format: int64
       BeaconId:
-        type: integer
-        format: int64
+        type: string
       Date:
         type: string
