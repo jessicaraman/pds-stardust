@@ -68,17 +68,6 @@ def phone_start():
     return 'started'
 
 # /clean : clean cache
-@app.route('/phone_start')
-def phone_start():
-    logging.info("/phone_start Launching phone...")
-    train_model = TrainModel()
-    train_model.train()
-    webcam = Webcam(train_model)
-    webcam.run("phone")
-    logging.info("/phone_start Starting phone...")
-    return 'started'
-
-# /clean : clean cache
 @app.route('/clean')
 def clean():
     logging.info("/clean Delete cache")
