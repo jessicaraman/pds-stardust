@@ -50,7 +50,8 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     public Notification notification;
     private static final String NOTIFICATION_CHANNEL_ID = "pgmapp";
 
-    private HashMap<String, Date> recentlyVisitedBeacons = new HashMap <String, Date> ();;
+    private HashMap<String, Date> recentlyVisitedBeacons = new HashMap <String, Date> ();
+	private RecentlyVisitedBeacons recentlyVisitedBeacons = new RecentlyVisitedBeacons();
 
     private BeaconManager beaconManager;
 
@@ -110,12 +111,12 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 Date currentDate = new Date();
                 for(Beacon beacon : beacons) {
-                    if(!recentlyVisitedBeacons.containsKey(beacon.getId1().toString())) {
+                    if(!recentlyVisitedBeacons.isThisBeaconPresent(beacon.getId1().toString())) {
                         recentlyVisitedBeacons.put(beacon.getId1().toString(), currentDate);
                         PassageEntity passage = new PassageEntity(1, beacon.getId1().toString(), currentDate);
                         sendDataToMicroService(passage);
                     } else {
-                        if(recentlyVisitedBeacons.get(beacon.getId1().toString()).compareTo(new Date(currentDate.getTime() - 30 * 1000)) < 0) {
+                        if(!recentlyVisitedBeacons.thisBeaconHasBeenVisitedRecently(beacon.getId1().toString(),currentDate)) {
                             recentlyVisitedBeacons.remove(beacon.getId1().toString());
                             recentlyVisitedBeacons.put(beacon.getId1().toString(), currentDate);
                             PassageEntity passage = new PassageEntity(1, beacon.getId1().toString(), currentDate);
