@@ -104,7 +104,17 @@ class SensorServiceTest {
 
     @Test
     void findById() {
+        TopicEntity topic1 =new TopicEntity();
+        topic1.setLabel("label");
+        SensorEntity sensor1 = new SensorEntity();
+        sensor1.setTopic(topic1);
+        sensor1.setMessage("message");
 
+        given(sensorRepository.findById(topic1.getId())).willReturn(Optional.of(sensor1));
+
+        final Optional<SensorEntity> expected = sensorService.findById(topic1.getId());
+
+        assertThat(expected).isNotNull();
     }
 
     @Test
