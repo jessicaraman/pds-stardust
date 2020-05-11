@@ -621,7 +621,7 @@
 											"top": 621,
 											"width": 181,
 											"height": 13,
-											"text": "blebeacon"
+											"text": "blebeacon-mock"
 										},
 										{
 											"_type": "LabelView",
@@ -3702,7 +3702,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": -480,
+											"left": -512,
 											"top": -736,
 											"height": 13
 										},
@@ -3713,11 +3713,11 @@
 												"$ref": "AAAAAAFxQYengklcQVs="
 											},
 											"font": "Arial;13;1",
-											"left": 329,
+											"left": 313,
 											"top": 665,
-											"width": 90.30810546875,
+											"width": 128.59716796875,
 											"height": 13,
-											"text": "blebeacon.apk"
+											"text": "blebeacon-mock.apk"
 										},
 										{
 											"_type": "LabelView",
@@ -3727,7 +3727,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": -480,
+											"left": -512,
 											"top": -736,
 											"width": 80.9072265625,
 											"height": 13,
@@ -3741,16 +3741,16 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": -480,
+											"left": -512,
 											"top": -736,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 324,
+									"left": 308,
 									"top": 658,
-									"width": 100.30810546875,
+									"width": 138.59716796875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFxQYengkldHSg="
@@ -3786,7 +3786,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 217,
+											"left": 185,
 											"top": 478,
 											"width": 186.08154296875,
 											"height": 13,
@@ -3804,7 +3804,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 217,
+											"left": 185,
 											"top": 493,
 											"width": 186.08154296875,
 											"height": 13,
@@ -3813,9 +3813,9 @@
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 324,
+									"left": 308,
 									"top": 683,
-									"width": 100.30810546875,
+									"width": 138.59716796875,
 									"height": 10
 								},
 								{
@@ -3829,7 +3829,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -240,
+									"left": -256,
 									"top": -368,
 									"width": 10,
 									"height": 10
@@ -3845,7 +3845,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -240,
+									"left": -256,
 									"top": -368,
 									"width": 10,
 									"height": 10
@@ -3861,7 +3861,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -240,
+									"left": -256,
 									"top": -368,
 									"width": 10,
 									"height": 10
@@ -3869,9 +3869,9 @@
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
-							"left": 304,
+							"left": 288,
 							"top": 658,
-							"width": 120.30810546875,
+							"width": 158.59716796875,
 							"height": 45,
 							"nameCompartment": {
 								"$ref": "AAAAAAFxQYengklcQVs="
@@ -12577,7 +12577,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFxPzJNh5dj344="
 					},
-					"name": "blebeacon.apk",
+					"name": "blebeacon-mock.apk",
 					"attributes": [
 						{
 							"_type": "UMLAttribute",
@@ -13013,7 +13013,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFxPzJNh5dj344="
 					},
-					"name": "blebeacon",
+					"name": "blebeacon-mock",
 					"ownedElements": [
 						{
 							"_type": "UMLDependency",
