@@ -50,7 +50,6 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     public Notification notification;
     private static final String NOTIFICATION_CHANNEL_ID = "pgmapp";
 
-    private HashMap<String, Date> recentlyVisitedBeacons = new HashMap <String, Date> ();
 	private RecentlyVisitedBeacons recentlyVisitedBeacons = new RecentlyVisitedBeacons();
 
     private BeaconManager beaconManager;
