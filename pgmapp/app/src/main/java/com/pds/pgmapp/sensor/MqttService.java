@@ -28,6 +28,7 @@ public class MqttService {
     public void subscribeTopic(String topic, IMqttMessageListener iMqttMessageListener) throws MqttException {
         if (client.isConnected()) {
             this.client.subscribe(topic, 0, iMqttMessageListener);
+            Log.i("MQTT SUBSCRIBE", "subscribe succeed") ;
         }
         else {
             Log.i("MQTT SUBSCRIBE", "subscribe failed") ;

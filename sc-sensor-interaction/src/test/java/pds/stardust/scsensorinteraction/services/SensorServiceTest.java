@@ -1,27 +1,25 @@
 package pds.stardust.scsensorinteraction.services;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import pds.stardust.scsensorinteraction.config.JasyptConfig;
 import pds.stardust.scsensorinteraction.entities.SensorEntity;
 import pds.stardust.scsensorinteraction.entities.TopicEntity;
-import pds.stardust.scsensorinteraction.repositories.*;
+import pds.stardust.scsensorinteraction.repositories.SensorRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @ContextConfiguration(classes = {JasyptConfig.class})
@@ -35,7 +33,7 @@ class SensorServiceTest {
 
 
     @Test
-    void update_existing_sensor() {
+    void update_existing_sensor() throws JsonProcessingException {
         TopicEntity topic =new TopicEntity();
         topic.setLabel("label");
         SensorEntity sensor = new SensorEntity();
@@ -52,7 +50,7 @@ class SensorServiceTest {
     }
 
     @Test
-    void create_sensor() {
+    void create_sensor() throws JsonProcessingException {
         TopicEntity topic =new TopicEntity();
         topic.setLabel("label");
         SensorEntity sensor = new SensorEntity();
@@ -104,7 +102,17 @@ class SensorServiceTest {
 
     @Test
     void findById() {
+        TopicEntity topic1 =new TopicEntity();
+        topic1.setLabel("label");
+        SensorEntity sensor1 = new SensorEntity();
+        sensor1.setTopic(topic1);
+        sensor1.setMessage("message");
 
+        given(sensorRepository.findById(topic1.getId())).willReturn(Optional.of(sensor1));
+
+        final Optional<SensorEntity> expected = sensorService.findById(topic1.getId());
+
+        assertThat(expected).isNotNull();
     }
 
     @Test
