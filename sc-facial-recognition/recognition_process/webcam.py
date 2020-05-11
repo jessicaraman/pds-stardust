@@ -37,6 +37,7 @@ class Webcam:
             else :
                 logging.info('/webcam_start default url = 0 (localwebcam)')
                 url = 0
+
             vs = VideoStream(src=url).start()
             time.sleep(3.0)
             self.process_analyze_cam(vs, arr, type)

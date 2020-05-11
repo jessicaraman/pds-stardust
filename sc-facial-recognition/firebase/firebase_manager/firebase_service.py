@@ -11,7 +11,6 @@ firebase_admin.initialize_app(cred)
 
 logging.basicConfig(level=logging.DEBUG)
 
-class FirebaseService:
 ### FirebaseService : Handle notification fcm
 class FirebaseService:
 
