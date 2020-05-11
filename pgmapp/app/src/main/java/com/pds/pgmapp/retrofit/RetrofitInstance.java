@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitInstance {
 
     private static Retrofit retrofit;
-    private static final String BASE_URL = "https://172.31.249.114:9980/api/";
+    private static final String BASE_URL = "https://172.31.249.114:9990/api/";
     private static final String SSL_CONTEXT = "SSL";
     private static final int CALL_TIMEOUT = 2;
     private static final int CONNECT_TIMEOUT = 60;
