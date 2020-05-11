@@ -5,14 +5,12 @@ import java.util.Date;
 public class PassageEntity {
     private int idclient;
     private String idbeacon;
-    private double distance;
     private Date date;
 
-    public PassageEntity(int idClient, String idBeacon, Date date, double distance) {
+    public PassageEntity(int idClient, String idBeacon, Date date) {
         this.idclient = idClient;
         this.idbeacon = idBeacon;
         this.date = date;
-        this.distance = distance;
     }
 
     public int getIdClient() {
@@ -21,10 +19,6 @@ public class PassageEntity {
 
     public String getIdBeacon() {
         return this.idbeacon;
-    }
-
-    public double getDistance() {
-        return this.distance;
     }
 
     public Date getDate() {

@@ -29,13 +29,10 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -115,20 +112,17 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                 for(Beacon beacon : beacons) {
                     if(!recentlyVisitedBeacons.containsKey(beacon.getId1().toString())) {
                         recentlyVisitedBeacons.put(beacon.getId1().toString(), currentDate);
-                        PassageEntity passage = new PassageEntity(1, beacon.getId1().toString(), currentDate, beacon.getDistance());
+                        PassageEntity passage = new PassageEntity(1, beacon.getId1().toString(), currentDate);
                         sendDataToMicroService(passage);
                     } else {
-                        if(recentlyVisitedBeacons.get(beacon.getId1().toString()).compareTo(new Date(currentDate.getTime() - 3600 * 1000)) < 0) {
+                        if(recentlyVisitedBeacons.get(beacon.getId1().toString()).compareTo(new Date(currentDate.getTime() - 30 * 1000)) < 0) {
                             recentlyVisitedBeacons.remove(beacon.getId1().toString());
                             recentlyVisitedBeacons.put(beacon.getId1().toString(), currentDate);
-                            PassageEntity passage = new PassageEntity(1, beacon.getId1().toString(), currentDate, beacon.getDistance());
+                            PassageEntity passage = new PassageEntity(1, beacon.getId1().toString(), currentDate);
                             sendDataToMicroService(passage);
                         }
                     }
                 }
-                //for(String key : recentlyVisitedBeacons.keySet()) {
-                  //  System.out.println("Beacon : " + key + " à telle date : " + recentlyVisitedBeacons.get(key));
-                //}
 
             }
         });
@@ -149,7 +143,6 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     }
 
     private void sendDataToMicroService(PassageEntity passage) {
-        Gson gson = new Gson();
         FrequentationService frequentationService = RetrofitInstance.getRetrofitInstance().create(FrequentationService.class);
         Call<ResponseBody> postCall = frequentationService.postFrequentationData(passage);
 
@@ -177,8 +170,6 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }

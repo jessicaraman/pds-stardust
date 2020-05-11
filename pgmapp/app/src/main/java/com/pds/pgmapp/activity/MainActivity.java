@@ -18,9 +18,6 @@ import com.pds.pgmapp.sensor.SensorService;
 import com.pds.pgmapp.sensor.MqttService;
 
 import org.altbeacon.beacon.BeaconManager;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 /**
  * MainActivity : HomePage
@@ -44,25 +41,9 @@ public class MainActivity extends AppCompatActivity {
         startBeaconCapting();
         initFirebase();
 
-        beaconManager = BeaconManager.getInstanceForApplication(this);
-        mqttService = new MqttService(getApplicationContext());
-        sensorService = new SensorService(beaconManager, mqttService);
-
-        try {
-            mqttService.connectToMqtt().setActionCallback(new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                 MainActivity.this.beaconManager.bind(sensorService);
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+        //beaconManager = BeaconManager.getInstanceForApplication(this);
+        //mqttService = new MqttService(getApplicationContext());
+        //sensorService = new SensorService(beaconManager, mqttService);
     }
 
     protected void loggedCustomer() {
