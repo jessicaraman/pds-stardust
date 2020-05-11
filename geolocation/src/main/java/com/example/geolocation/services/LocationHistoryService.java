@@ -39,6 +39,10 @@ public class LocationHistoryService {
         return locationHistoryRepository.findById(id);
     }
 
+    public void clearCollection() {
+        locationHistoryRepository.deleteAll();
+    }
+
     public String sayHello() {
         return "Hello";
     }
