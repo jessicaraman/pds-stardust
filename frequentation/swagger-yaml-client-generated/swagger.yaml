@@ -34,8 +34,13 @@ paths:
         schema:
           $ref: '#/definitions/Data'
       responses:
+        "200": 
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Data'
         "405":
           description: Invalid input
+
   /findAllData:
     get:
       tags:
@@ -53,8 +58,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Data'
-        "400":
-          description: Invalid status value
+
   /findAllData/{ClientId}:
     get:
       tags:
@@ -98,6 +102,10 @@ paths:
         type: integer
         format: int64
       responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Data'
         "400":
           description: Invalid ID supplied
         "404":
