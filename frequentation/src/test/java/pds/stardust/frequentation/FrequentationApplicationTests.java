@@ -23,12 +23,7 @@ class FrequentationApplicationTests {
 	@MockBean
 	private DataRepository repository;
 
-	@Test
-	public void getDataTest() {
-	when(repository.findAll()).thenReturn(Stream
-			.of(new Data(376, "JJA", "10/10/2020"), new Data(958, "J2", "10/10/2020")).collect(Collectors.toList()));
-	 Assertions.assertEquals(2, service.getData().size());
-	}
+
 
 
 	@Test
