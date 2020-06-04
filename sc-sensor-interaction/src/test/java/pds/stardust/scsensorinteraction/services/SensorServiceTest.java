@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import pds.stardust.scsensorinteraction.config.JasyptConfig;
@@ -101,21 +102,89 @@ class SensorServiceTest {
     }
 
     @Test
-    void findById() {
-        TopicEntity topic1 =new TopicEntity();
-        topic1.setLabel("label");
-        SensorEntity sensor1 = new SensorEntity();
-        sensor1.setTopic(topic1);
-        sensor1.setMessage("message");
+    void all_sensors_EMPTY() {
+        List<SensorEntity> data = new ArrayList<>();
 
-        given(sensorRepository.findById(topic1.getId())).willReturn(Optional.of(sensor1));
+        Mockito.doReturn(data).when(sensorRepository).findAll();
 
-        final Optional<SensorEntity> expected = sensorService.findById(topic1.getId());
-
-        assertThat(expected).isNotNull();
+        assertThat(sensorService.list()).isEmpty();
     }
 
     @Test
-    void findLabelByTopicId() {
+    void findById_OK() {
+        TopicEntity topic1 = new TopicEntity();
+        topic1.setLabel("label");
+
+        SensorEntity sensor1 = new SensorEntity();
+        sensor1.setId("sensorID");
+        sensor1.setTopic(topic1);
+        sensor1.setMessage("sensorMessage");
+
+        Mockito.when(sensorRepository.findById("sensorID")).thenReturn(Optional.of(sensor1));
+
+        Optional<SensorEntity> actual = sensorService.findById(sensor1.getId());
+
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isEqualTo(sensor1);
+    }
+
+    @Test
+    void findById_KO() {
+        TopicEntity topic1 = new TopicEntity();
+        topic1.setLabel("label");
+
+        SensorEntity sensor1 = new SensorEntity();
+        sensor1.setId("sensorID");
+        sensor1.setTopic(topic1);
+        sensor1.setMessage("sensorMessage");
+
+        Mockito.when(sensorRepository.findById("sensorID")).thenReturn(Optional.of(sensor1));
+
+        Optional<SensorEntity> actual = sensorService.findById("sensorID_KO");
+
+        assertThat(actual).isNotPresent();
+    }
+
+    @Test
+    void findLabelByTopicId_OK() {
+        TopicEntity topic = new TopicEntity();
+        topic.setId("topicID");
+        topic.setLabel("topicLabel");
+
+        SensorEntity sensor = new SensorEntity();
+        sensor.setId("sensorID");
+        sensor.setMessage("sensorMessage");
+        sensor.setTopic(topic);
+
+        List<SensorEntity> sensors = new ArrayList<>();
+        sensors.add(sensor);
+
+        Mockito.when(sensorRepository.findAll()).thenReturn(sensors);
+
+        Optional<String> actual = sensorService.findLabelByTopicId("topicID");
+
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isEqualTo("topicLabel");
+    }
+
+    @Test
+    void findLabelByTopicId_KO() {
+        TopicEntity topic = new TopicEntity();
+        topic.setId("topicID");
+        topic.setLabel("topicLabel");
+
+        SensorEntity sensor = new SensorEntity();
+        sensor.setId("sensorID");
+        sensor.setMessage("sensorMessage");
+        sensor.setTopic(topic);
+
+        List<SensorEntity> sensors = new ArrayList<>();
+        sensors.add(sensor);
+
+        Mockito.when(sensorRepository.findAll()).thenReturn(sensors);
+
+        Optional<String> actual = sensorService.findLabelByTopicId("topicID_KO");
+
+        assertThat(actual).isNotPresent();
     }
 }
