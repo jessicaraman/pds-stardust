@@ -30,6 +30,7 @@ public class DataController {
         return service.getDataById(id) ;
     }
 
+
     @DeleteMapping("/deleteData")
     public Data removeData(@RequestBody Data data) {
         service.deletedata(data);
