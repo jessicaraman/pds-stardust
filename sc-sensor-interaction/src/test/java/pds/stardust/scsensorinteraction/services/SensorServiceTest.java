@@ -31,6 +31,7 @@ class SensorServiceTest {
     @InjectMocks
     private SensorService sensorService;
 
+    /*Create sensor*/
     @Test
     void givenValidSensor_whenSave_thenSucceed() throws JsonProcessingException {
         TopicEntity topic = new TopicEntity();
@@ -58,25 +59,17 @@ class SensorServiceTest {
         });
     }
 
-
     @Test
-    void create_sensor() throws JsonProcessingException {
-        TopicEntity topic =new TopicEntity();
-        topic.setLabel("label");
+    void givenSensorWithoutLabel_thenFail(){
         SensorEntity sensor = new SensorEntity();
-        sensor.setTopic(topic);
         sensor.setMessage("message");
+        assertThrows(NullPointerException.class, () -> {
+            sensorService.save(sensor);
+        });
 
-        given(sensorRepository.findById(sensor.getId())).willReturn(Optional.empty());
-        given(sensorRepository.save(sensor)).willAnswer(invocation -> invocation.getArgument(0));
-
-        SensorEntity savedSensor =sensorService.save(sensor);
-
-        assertThat(savedSensor).isNotNull();
-
-        verify(sensorRepository).save(any(SensorEntity.class));
     }
 
+    /*Find all*/
     @Test
     void all_sensors() {
         List<SensorEntity> datas = new ArrayList<>();
