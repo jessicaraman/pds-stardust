@@ -1,6 +1,9 @@
 package pds.stardust.scsensorinteraction.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,14 +34,10 @@ class SensorServiceTest {
     @InjectMocks
     private SensorService sensorService;
 
-    /*Create sensor*/
     @Test
     void givenValidSensor_whenSave_thenSucceed() throws JsonProcessingException {
-        TopicEntity topic = new TopicEntity();
-        topic.setLabel("label");
-        SensorEntity sensor = new SensorEntity();
-        sensor.setTopic(topic);
-        sensor.setMessage("message");
+        TopicEntity topic = new TopicEntity("label");
+        SensorEntity sensor = new SensorEntity(topic,"message");
 
         given(sensorRepository.findById(sensor.getId())).willReturn(Optional.empty());
         given(sensorRepository.save(sensor)).willAnswer(invocation -> invocation.getArgument(0));
@@ -74,23 +73,14 @@ class SensorServiceTest {
     void all_sensors() {
         List<SensorEntity> datas = new ArrayList<>();
 
-        TopicEntity topic1 =new TopicEntity();
-        topic1.setLabel("label");
-        SensorEntity sensor1 = new SensorEntity();
-        sensor1.setTopic(topic1);
-        sensor1.setMessage("message");
+        TopicEntity topic1 =new TopicEntity("label");
+        SensorEntity sensor1 = new SensorEntity(topic1,"message");
 
-        TopicEntity topic2 =new TopicEntity();
-        topic2.setLabel("label");
-        SensorEntity sensor2 = new SensorEntity();
-        sensor2.setTopic(topic2);
-        sensor2.setMessage("message");
+        TopicEntity topic2 =new TopicEntity("label");
+        SensorEntity sensor2 = new SensorEntity(topic2,"message");
 
-        TopicEntity topic3 =new TopicEntity();
-        topic3.setLabel("label");
-        SensorEntity sensor3 = new SensorEntity();
-        sensor3.setTopic(topic3);
-        sensor3.setMessage("message");
+        TopicEntity topic3 =new TopicEntity("label");
+        SensorEntity sensor3 = new SensorEntity(topic3,"message");
 
         datas.add(sensor1);
         datas.add(sensor2);
@@ -114,8 +104,7 @@ class SensorServiceTest {
 
     @Test
     void findById_OK() {
-        TopicEntity topic1 = new TopicEntity();
-        topic1.setLabel("label");
+        TopicEntity topic1 = new TopicEntity("label");
 
         SensorEntity sensor1 = new SensorEntity();
         sensor1.setId("sensorID");
@@ -132,31 +121,19 @@ class SensorServiceTest {
 
     @Test
     void findById_KO() {
-        TopicEntity topic1 = new TopicEntity();
-        topic1.setLabel("label");
-
-        SensorEntity sensor1 = new SensorEntity();
-        sensor1.setId("sensorID");
-        sensor1.setTopic(topic1);
-        sensor1.setMessage("sensorMessage");
-
+        TopicEntity topic1 = new TopicEntity("label");
+        SensorEntity sensor1 = new SensorEntity("sensorID",topic1,"message");
         Mockito.when(sensorRepository.findById("sensorID")).thenReturn(Optional.of(sensor1));
-
         Optional<SensorEntity> actual = sensorService.findById("sensorID_KO");
-
         assertThat(actual).isNotPresent();
     }
 
     @Test
     void findLabelByTopicId_OK() {
-        TopicEntity topic = new TopicEntity();
+        TopicEntity topic = new TopicEntity("topicLabel");
         topic.setId("topicID");
-        topic.setLabel("topicLabel");
 
-        SensorEntity sensor = new SensorEntity();
-        sensor.setId("sensorID");
-        sensor.setMessage("sensorMessage");
-        sensor.setTopic(topic);
+        SensorEntity sensor = new SensorEntity("sensorID",topic,"sensorMessage");
 
         List<SensorEntity> sensors = new ArrayList<>();
         sensors.add(sensor);
@@ -171,14 +148,10 @@ class SensorServiceTest {
 
     @Test
     void findLabelByTopicId_KO() {
-        TopicEntity topic = new TopicEntity();
+        TopicEntity topic = new TopicEntity("topicLabel");
         topic.setId("topicID");
-        topic.setLabel("topicLabel");
 
-        SensorEntity sensor = new SensorEntity();
-        sensor.setId("sensorID");
-        sensor.setMessage("sensorMessage");
-        sensor.setTopic(topic);
+        SensorEntity sensor = new SensorEntity("sensorID",topic,"sensorMessage");
 
         List<SensorEntity> sensors = new ArrayList<>();
         sensors.add(sensor);

@@ -34,4 +34,18 @@ public class SensorEntity {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public SensorEntity(String id, TopicEntity topic, String message) {
+        this.id = id;
+        this.topic = topic;
+        this.message = message;
+    }
+
+    public SensorEntity(TopicEntity topic, String message) {
+        this.topic = topic;
+        this.message = message;
+    }
+
+    public SensorEntity() {
+    }
 }

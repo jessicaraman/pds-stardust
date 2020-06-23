@@ -20,4 +20,8 @@ public class TopicEntity {
     public void setLabel(String label) {
         this.label = label;
     }
+
+    public TopicEntity(String label) {
+        this.label = label;
+    }
 }
