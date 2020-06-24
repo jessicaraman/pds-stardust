@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pds.stardust.scsensorinteraction.entities.SensorEntity;
+import pds.stardust.scsensorinteraction.exceptions.BadRequestException;
+import pds.stardust.scsensorinteraction.exceptions.ServiceException;
 import pds.stardust.scsensorinteraction.repositories.SensorRepository;
 
 import java.util.List;
@@ -23,10 +25,20 @@ public class SensorService {
     }
 
     public SensorEntity save(SensorEntity sensorEntity) {
+        validateSensorEntity(sensorEntity);
+
         sensorEntity.setId(UUID.randomUUID().toString());
         sensorEntity.getTopic().setId(UUID.randomUUID().toString());
+
+        SensorEntity savedEntity;
+        try {
+            savedEntity = sensorRepository.save(sensorEntity);
+        } catch (Exception e) {
+            throw new ServiceException("Error when saving SensorEntity: " + e.getMessage());
+        }
+
         logger.info("Create sensor with details [{}]", sensorEntity.toString());
-        return sensorRepository.save(sensorEntity);
+        return savedEntity;
     }
 
     public List<SensorEntity> list() {
@@ -45,4 +57,20 @@ public class SensorService {
                 .map(sensorEntity -> sensorEntity.getTopic().getLabel())
                 .findFirst();
     }
+
+    private void validateSensorEntity(SensorEntity entity) throws BadRequestException {
+        if (entity == null) {
+            throw new BadRequestException("SensorEntity should not be null");
+        }
+        if (entity.getMessage() == null) {
+            throw new BadRequestException("SensorEntity should have a message");
+        }
+        if (entity.getTopic() == null) {
+            throw new BadRequestException("SensorEntity should have a topic");
+        }
+        if (entity.getTopic().getLabel() == null) {
+            throw new BadRequestException("TopicEntity should have a label");
+        }
+    }
+
 }

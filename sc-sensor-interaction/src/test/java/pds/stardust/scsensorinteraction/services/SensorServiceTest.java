@@ -1,10 +1,10 @@
 package pds.stardust.scsensorinteraction.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -13,21 +13,26 @@ import org.springframework.test.context.ContextConfiguration;
 import pds.stardust.scsensorinteraction.config.JasyptConfig;
 import pds.stardust.scsensorinteraction.entities.SensorEntity;
 import pds.stardust.scsensorinteraction.entities.TopicEntity;
+import pds.stardust.scsensorinteraction.exceptions.BadRequestException;
+import pds.stardust.scsensorinteraction.exceptions.ServiceException;
 import pds.stardust.scsensorinteraction.repositories.SensorRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-@ContextConfiguration(classes = {JasyptConfig.class})
 @SpringBootTest
+@ContextConfiguration(classes = {JasyptConfig.class})
 class SensorServiceTest {
+
     @Mock
     private SensorRepository sensorRepository;
 
@@ -35,52 +40,55 @@ class SensorServiceTest {
     private SensorService sensorService;
 
     @Test
-    void givenValidSensor_whenSave_thenSucceed() throws JsonProcessingException {
+    void givenValidSensor_whenSave_thenSucceed() {
         TopicEntity topic = new TopicEntity("label");
-        SensorEntity sensor = new SensorEntity(topic,"message");
+        SensorEntity sensor = new SensorEntity(topic, "message");
 
-        given(sensorRepository.findById(sensor.getId())).willReturn(Optional.empty());
         given(sensorRepository.save(sensor)).willAnswer(invocation -> invocation.getArgument(0));
 
         SensorEntity savedSensor = sensorService.save(sensor);
 
         assertThat(savedSensor).isNotNull();
-        assertThat(savedSensor.getId()).isNotNull();
-        assertThat(savedSensor.getTopic().getId()).isNotNull();
+        assertEquals(36, savedSensor.getId().length());
+        assertEquals(36, savedSensor.getTopic().getId().length());
+        assertEquals("message", savedSensor.getMessage());
+        assertEquals("label", savedSensor.getTopic().getLabel());
 
         verify(sensorRepository).save(any(SensorEntity.class));
     }
 
-    @Test
-    void givenNullSensor_whenSave_thenFail() {
-        assertThrows(NullPointerException.class, () -> {
-            sensorService.save(null);
-        });
+    @ParameterizedTest
+    @MethodSource("provideTestCasesForSave")
+    void givenInvalidSensor_whenSave_thenFail(String expectedErrorMessage, SensorEntity entity) {
+        BadRequestException thrown = assertThrows(BadRequestException.class, () -> sensorService.save(entity));
+        assertEquals(expectedErrorMessage, thrown.getMessage());
     }
 
     @Test
-    void givenSensorWithoutLabel_thenFail(){
-        SensorEntity sensor = new SensorEntity();
-        sensor.setMessage("message");
-        assertThrows(NullPointerException.class, () -> {
-            sensorService.save(sensor);
+    void givenRepositoryFails_whenSave_thenFail() {
+        TopicEntity topic = new TopicEntity("label");
+        SensorEntity sensor = new SensorEntity(topic, "message");
+
+        given(sensorRepository.save(sensor)).willAnswer(invocation -> {
+            throw new Exception("Database error");
         });
 
+        ServiceException thrown = assertThrows(ServiceException.class, () -> sensorService.save(sensor));
+        assertEquals("Error when saving SensorEntity: Database error", thrown.getMessage());
     }
 
-    /*Find all*/
     @Test
     void all_sensors() {
         List<SensorEntity> datas = new ArrayList<>();
 
-        TopicEntity topic1 =new TopicEntity("label");
-        SensorEntity sensor1 = new SensorEntity(topic1,"message");
+        TopicEntity topic1 = new TopicEntity("label");
+        SensorEntity sensor1 = new SensorEntity(topic1, "message");
 
-        TopicEntity topic2 =new TopicEntity("label");
-        SensorEntity sensor2 = new SensorEntity(topic2,"message");
+        TopicEntity topic2 = new TopicEntity("label");
+        SensorEntity sensor2 = new SensorEntity(topic2, "message");
 
-        TopicEntity topic3 =new TopicEntity("label");
-        SensorEntity sensor3 = new SensorEntity(topic3,"message");
+        TopicEntity topic3 = new TopicEntity("label");
+        SensorEntity sensor3 = new SensorEntity(topic3, "message");
 
         datas.add(sensor1);
         datas.add(sensor2);
@@ -122,7 +130,7 @@ class SensorServiceTest {
     @Test
     void findById_KO() {
         TopicEntity topic1 = new TopicEntity("label");
-        SensorEntity sensor1 = new SensorEntity("sensorID",topic1,"message");
+        SensorEntity sensor1 = new SensorEntity("sensorID", topic1, "message");
         Mockito.when(sensorRepository.findById("sensorID")).thenReturn(Optional.of(sensor1));
         Optional<SensorEntity> actual = sensorService.findById("sensorID_KO");
         assertThat(actual).isNotPresent();
@@ -133,7 +141,7 @@ class SensorServiceTest {
         TopicEntity topic = new TopicEntity("topicLabel");
         topic.setId("topicID");
 
-        SensorEntity sensor = new SensorEntity("sensorID",topic,"sensorMessage");
+        SensorEntity sensor = new SensorEntity("sensorID", topic, "sensorMessage");
 
         List<SensorEntity> sensors = new ArrayList<>();
         sensors.add(sensor);
@@ -151,7 +159,7 @@ class SensorServiceTest {
         TopicEntity topic = new TopicEntity("topicLabel");
         topic.setId("topicID");
 
-        SensorEntity sensor = new SensorEntity("sensorID",topic,"sensorMessage");
+        SensorEntity sensor = new SensorEntity("sensorID", topic, "sensorMessage");
 
         List<SensorEntity> sensors = new ArrayList<>();
         sensors.add(sensor);
@@ -162,4 +170,14 @@ class SensorServiceTest {
 
         assertThat(actual).isNotPresent();
     }
+
+    private static Stream<Arguments> provideTestCasesForSave() {
+        return Stream.of(
+                Arguments.of("SensorEntity should not be null", null),
+                Arguments.of("SensorEntity should have a message", new SensorEntity(new TopicEntity("label"), null)),
+                Arguments.of("SensorEntity should have a topic", new SensorEntity(null, "message")),
+                Arguments.of("TopicEntity should have a label", new SensorEntity(new TopicEntity(null), "message"))
+        );
+    }
+
 }
