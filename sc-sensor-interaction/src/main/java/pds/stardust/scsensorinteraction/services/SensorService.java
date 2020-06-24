@@ -1,7 +1,5 @@
 package pds.stardust.scsensorinteraction.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +22,10 @@ public class SensorService {
         this.sensorRepository = sensorRepository;
     }
 
-    public SensorEntity save(SensorEntity sensorEntity) throws JsonProcessingException {
+    public SensorEntity save(SensorEntity sensorEntity) {
         sensorEntity.setId(UUID.randomUUID().toString());
         sensorEntity.getTopic().setId(UUID.randomUUID().toString());
-        logger.info("Create sensor with details [{}]",  new ObjectMapper().writeValueAsString(sensorEntity));
+        logger.info("Create sensor with details [{}]", sensorEntity.toString());
         return sensorRepository.save(sensorEntity);
     }
 
@@ -36,12 +34,12 @@ public class SensorService {
     }
 
     public Optional<SensorEntity> findById(String id) {
-        logger.info("Retrieve sensor details with id [{}]", id );
+        logger.info("Retrieve sensor details with id [{}]", id);
         return sensorRepository.findById(id);
     }
 
     public Optional<String> findLabelByTopicId(String id) {
-        logger.info("Retrieve topic label with id [{}]", id );
+        logger.info("Retrieve topic label with id [{}]", id);
         return sensorRepository.findAll().stream()
                 .filter(sensor -> sensor.getTopic().getId().equals(id))
                 .map(sensorEntity -> sensorEntity.getTopic().getLabel())
