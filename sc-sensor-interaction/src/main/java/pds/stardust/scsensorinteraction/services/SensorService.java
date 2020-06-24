@@ -9,6 +9,7 @@ import pds.stardust.scsensorinteraction.exceptions.BadRequestException;
 import pds.stardust.scsensorinteraction.exceptions.ServiceException;
 import pds.stardust.scsensorinteraction.repositories.SensorRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,8 +42,14 @@ public class SensorService {
         return savedEntity;
     }
 
-    public List<SensorEntity> list() {
-        return sensorRepository.findAll();
+    public List<SensorEntity> list() throws ServiceException {
+        List<SensorEntity> sensors;
+        try {
+            sensors = sensorRepository.findAll();
+        } catch (Exception e) {
+            throw new ServiceException("Error when getting sensors: " + e.getMessage());
+        }
+        return sensors;
     }
 
     public Optional<SensorEntity> findById(String id) {

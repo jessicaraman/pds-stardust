@@ -77,37 +77,24 @@ class SensorServiceTest {
         assertEquals("Error when saving SensorEntity: Database error", thrown.getMessage());
     }
 
-    @Test
-    void all_sensors() {
-        List<SensorEntity> datas = new ArrayList<>();
+    @ParameterizedTest
+    @MethodSource("provideTestCasesForFindAll")
+    void givenSensors_whenFindAll_thenSucceed(List<SensorEntity> entities) {
+        given(sensorRepository.findAll()).willReturn(entities);
 
-        TopicEntity topic1 = new TopicEntity("label");
-        SensorEntity sensor1 = new SensorEntity(topic1, "message");
+        List<SensorEntity> results = sensorService.list();
 
-        TopicEntity topic2 = new TopicEntity("label");
-        SensorEntity sensor2 = new SensorEntity(topic2, "message");
-
-        TopicEntity topic3 = new TopicEntity("label");
-        SensorEntity sensor3 = new SensorEntity(topic3, "message");
-
-        datas.add(sensor1);
-        datas.add(sensor2);
-        datas.add(sensor3);
-
-        given(sensorRepository.findAll()).willReturn(datas);
-
-        List<SensorEntity> expected = sensorRepository.findAll();
-
-        assertEquals(expected, datas);
+        assertEquals(entities, results);
     }
 
     @Test
-    void all_sensors_EMPTY() {
-        List<SensorEntity> data = new ArrayList<>();
+    void givenRepositoryFails_whenFindAll_thenFail() {
+        given(sensorRepository.findAll()).willAnswer(invocation -> {
+            throw new Exception("Database error");
+        });
 
-        Mockito.doReturn(data).when(sensorRepository).findAll();
-
-        assertThat(sensorService.list()).isEmpty();
+        ServiceException thrown = assertThrows(ServiceException.class, () -> sensorService.list());
+        assertEquals("Error when getting sensors: Database error", thrown.getMessage());
     }
 
     @Test
@@ -177,6 +164,23 @@ class SensorServiceTest {
                 Arguments.of("SensorEntity should have a message", new SensorEntity(new TopicEntity("label"), null)),
                 Arguments.of("SensorEntity should have a topic", new SensorEntity(null, "message")),
                 Arguments.of("TopicEntity should have a label", new SensorEntity(new TopicEntity(null), "message"))
+        );
+    }
+
+    private static Stream<Arguments> provideTestCasesForFindAll() {
+        List<SensorEntity> data = new ArrayList<>();
+        TopicEntity topic1 = new TopicEntity("label");
+        SensorEntity sensor1 = new SensorEntity(topic1, "message");
+        TopicEntity topic2 = new TopicEntity("label");
+        SensorEntity sensor2 = new SensorEntity(topic2, "message");
+        TopicEntity topic3 = new TopicEntity("label");
+        SensorEntity sensor3 = new SensorEntity(topic3, "message");
+        data.add(sensor1);
+        data.add(sensor2);
+        data.add(sensor3);
+        return Stream.of(
+                Arguments.of(data),
+                Arguments.of(new ArrayList<>())
         );
     }
 
