@@ -9,7 +9,6 @@ import pds.stardust.scsensorinteraction.exceptions.BadRequestException;
 import pds.stardust.scsensorinteraction.exceptions.ServiceException;
 import pds.stardust.scsensorinteraction.repositories.SensorRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class SensorService {
         this.sensorRepository = sensorRepository;
     }
 
-    public SensorEntity save(SensorEntity sensorEntity) {
+    public SensorEntity save(SensorEntity sensorEntity) throws ServiceException {
         validateSensorEntity(sensorEntity);
 
         sensorEntity.setId(UUID.randomUUID().toString());
@@ -52,9 +51,18 @@ public class SensorService {
         return sensors;
     }
 
-    public Optional<SensorEntity> findById(String id) {
+    public Optional<SensorEntity> findById(String id) throws ServiceException {
         logger.info("Retrieve sensor details with id [{}]", id);
-        return sensorRepository.findById(id);
+        validateId(id);
+
+        Optional<SensorEntity> sensor;
+        try {
+            sensor = sensorRepository.findById(id);
+        } catch (Exception e) {
+            throw new ServiceException("Error when getting sensor " + id + ": " + e.getMessage());
+        }
+
+        return sensor;
     }
 
     public Optional<String> findLabelByTopicId(String id) {
@@ -77,6 +85,12 @@ public class SensorService {
         }
         if (entity.getTopic().getLabel() == null) {
             throw new BadRequestException("TopicEntity should have a label");
+        }
+    }
+
+    private void validateId(String id) throws BadRequestException {
+        if (id == null) {
+            throw new BadRequestException("ID cannot be null");
         }
     }
 

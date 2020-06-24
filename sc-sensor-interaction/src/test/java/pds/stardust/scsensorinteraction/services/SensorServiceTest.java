@@ -1,6 +1,5 @@
 package pds.stardust.scsensorinteraction.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -98,29 +97,39 @@ class SensorServiceTest {
     }
 
     @Test
-    void findById_OK() {
-        TopicEntity topic1 = new TopicEntity("label");
+    void givenExistingSensor_whenFindById_thenSuccess() {
+        TopicEntity topic1 = new TopicEntity("topic-1", "label");
+        SensorEntity sensor1 = new SensorEntity("sensor-1", topic1, "message");
 
-        SensorEntity sensor1 = new SensorEntity();
-        sensor1.setId("sensorID");
-        sensor1.setTopic(topic1);
-        sensor1.setMessage("sensorMessage");
-
-        Mockito.when(sensorRepository.findById("sensorID")).thenReturn(Optional.of(sensor1));
+        given(sensorRepository.findById("sensor-1")).willReturn(Optional.of(sensor1));
 
         Optional<SensorEntity> actual = sensorService.findById(sensor1.getId());
 
         assertThat(actual).isPresent();
         assertThat(actual.get()).isEqualTo(sensor1);
+        assertEquals("sensor-1", actual.get().getId());
     }
 
     @Test
-    void findById_KO() {
-        TopicEntity topic1 = new TopicEntity("label");
-        SensorEntity sensor1 = new SensorEntity("sensorID", topic1, "message");
-        Mockito.when(sensorRepository.findById("sensorID")).thenReturn(Optional.of(sensor1));
-        Optional<SensorEntity> actual = sensorService.findById("sensorID_KO");
+    void givenNonExistingSensor_whenFindById_thenReturnEmpty() {
+        TopicEntity topic1 = new TopicEntity("topic-1", "label");
+        SensorEntity sensor1 = new SensorEntity("sensor-1", topic1, "message");
+
+        given(sensorRepository.findById("sensor-1")).willReturn(Optional.of(sensor1));
+
+        Optional<SensorEntity> actual = sensorService.findById("sensor-2");
+
         assertThat(actual).isNotPresent();
+    }
+
+    @Test
+    void givenRepositoryFails_whenFindById_thenFail() {
+        given(sensorRepository.findById("sensor-1")).willAnswer(invocation -> {
+            throw new Exception("Database error");
+        });
+
+        ServiceException thrown = assertThrows(ServiceException.class, () -> sensorService.findById("sensor-1"));
+        assertEquals("Error when getting sensor sensor-1: Database error", thrown.getMessage());
     }
 
     @Test
@@ -169,12 +178,12 @@ class SensorServiceTest {
 
     private static Stream<Arguments> provideTestCasesForFindAll() {
         List<SensorEntity> data = new ArrayList<>();
-        TopicEntity topic1 = new TopicEntity("label");
-        SensorEntity sensor1 = new SensorEntity(topic1, "message");
-        TopicEntity topic2 = new TopicEntity("label");
-        SensorEntity sensor2 = new SensorEntity(topic2, "message");
-        TopicEntity topic3 = new TopicEntity("label");
-        SensorEntity sensor3 = new SensorEntity(topic3, "message");
+        TopicEntity topic1 = new TopicEntity("topic-1", "label");
+        SensorEntity sensor1 = new SensorEntity("sensor-1", topic1, "message");
+        TopicEntity topic2 = new TopicEntity("topic-2", "label");
+        SensorEntity sensor2 = new SensorEntity("sensor-2", topic2, "message");
+        TopicEntity topic3 = new TopicEntity("topic-3", "label");
+        SensorEntity sensor3 = new SensorEntity("sensor-3", topic3, "message");
         data.add(sensor1);
         data.add(sensor2);
         data.add(sensor3);

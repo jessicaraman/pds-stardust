@@ -12,6 +12,11 @@ public class TopicEntity {
         this.label = label;
     }
 
+    public TopicEntity(String id, String label) {
+        this.id = id;
+        this.label = label;
+    }
+
     public String getId() {
         return id;
     }
