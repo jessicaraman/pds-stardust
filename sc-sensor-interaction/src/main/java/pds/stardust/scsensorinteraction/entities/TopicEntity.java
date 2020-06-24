@@ -5,6 +5,13 @@ public class TopicEntity {
     private String id;
     private String label;
 
+    public TopicEntity() {
+    }
+
+    public TopicEntity(String label) {
+        this.label = label;
+    }
+
     public String getId() {
         return id;
     }
@@ -21,7 +28,12 @@ public class TopicEntity {
         this.label = label;
     }
 
-    public TopicEntity(String label) {
-        this.label = label;
+    @Override
+    public String toString() {
+        return "TopicEntity{" +
+                "id='" + id + '\'' +
+                ", label='" + label + '\'' +
+                '}';
     }
+
 }

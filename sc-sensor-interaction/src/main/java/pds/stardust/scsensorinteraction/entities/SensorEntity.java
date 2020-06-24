@@ -11,6 +11,20 @@ public class SensorEntity {
     private TopicEntity topic;
     private String message;
 
+    public SensorEntity() {
+    }
+
+    public SensorEntity(TopicEntity topic, String message) {
+        this.topic = topic;
+        this.message = message;
+    }
+
+    public SensorEntity(String id, TopicEntity topic, String message) {
+        this.id = id;
+        this.topic = topic;
+        this.message = message;
+    }
+
     public String getId() {
         return id;
     }
@@ -35,17 +49,13 @@ public class SensorEntity {
         this.message = message;
     }
 
-    public SensorEntity(String id, TopicEntity topic, String message) {
-        this.id = id;
-        this.topic = topic;
-        this.message = message;
+    @Override
+    public String toString() {
+        return "SensorEntity{" +
+                "id='" + id + '\'' +
+                ", topic=" + topic.toString() +
+                ", message='" + message + '\'' +
+                '}';
     }
 
-    public SensorEntity(TopicEntity topic, String message) {
-        this.topic = topic;
-        this.message = message;
-    }
-
-    public SensorEntity() {
-    }
 }
