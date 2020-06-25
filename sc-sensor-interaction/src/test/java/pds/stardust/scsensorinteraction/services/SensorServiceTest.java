@@ -123,6 +123,12 @@ class SensorServiceTest {
     }
 
     @Test
+    void givenNullId_whenFindById_thenFail() {
+        BadRequestException thrown = assertThrows(BadRequestException.class, () -> sensorService.findById(null));
+        assertEquals("ID cannot be null", thrown.getMessage());
+    }
+
+    @Test
     void givenRepositoryFails_whenFindById_thenFail() {
         given(sensorRepository.findById("sensor-1")).willAnswer(invocation -> {
             throw new Exception("Database error");
