@@ -1,6 +1,5 @@
 package pds.stardust.scsensorinteraction.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class SensorController {
     }
 
     @PostMapping("/sensor")
-    public SensorEntity create(@RequestBody SensorEntity sensorEntity) throws JsonProcessingException {
+    public SensorEntity create(@RequestBody SensorEntity sensorEntity) {
         logger.info("Enter sensor creation");
         return sensorService.save(sensorEntity);
     }
