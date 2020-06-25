@@ -67,10 +67,19 @@ public class SensorService {
 
     public Optional<String> findLabelByTopicId(String id) {
         logger.info("Retrieve topic label with id [{}]", id);
-        return sensorRepository.findAll().stream()
-                .filter(sensor -> sensor.getTopic().getId().equals(id))
-                .map(sensorEntity -> sensorEntity.getTopic().getLabel())
-                .findFirst();
+        validateId(id);
+
+        Optional<String> label = Optional.empty();
+        try {
+            Optional<SensorEntity> sensorByTopicId = sensorRepository.findFirstByTopicId(id);
+            if (sensorByTopicId.isPresent()) {
+                label = Optional.of(sensorByTopicId.get().getTopic().getLabel());
+            }
+        } catch (Exception e) {
+            throw new ServiceException("Error when getting topic label from id " + id + ": " + e.getMessage());
+        }
+
+        return label;
     }
 
     private void validateSensorEntity(SensorEntity entity) throws BadRequestException {

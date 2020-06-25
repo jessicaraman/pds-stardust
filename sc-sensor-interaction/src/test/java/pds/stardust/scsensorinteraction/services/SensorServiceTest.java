@@ -22,9 +22,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -139,38 +139,35 @@ class SensorServiceTest {
     }
 
     @Test
-    void findLabelByTopicId_OK() {
-        TopicEntity topic = new TopicEntity("topicLabel");
-        topic.setId("topicID");
+    void givenExistingTopic_whenFindLabelByTopicId_thenSucceed() {
+        TopicEntity topic = new TopicEntity("topic-1", "topic-label-1");
+        SensorEntity sensor = new SensorEntity("sensor-1", topic, "sensor-message-1");
 
-        SensorEntity sensor = new SensorEntity("sensorID", topic, "sensorMessage");
+        given(sensorRepository.findFirstByTopicId("topic-1")).willReturn(Optional.of(sensor));
 
-        List<SensorEntity> sensors = new ArrayList<>();
-        sensors.add(sensor);
-
-        Mockito.when(sensorRepository.findAll()).thenReturn(sensors);
-
-        Optional<String> actual = sensorService.findLabelByTopicId("topicID");
+        Optional<String> actual = sensorService.findLabelByTopicId("topic-1");
 
         assertThat(actual).isPresent();
-        assertThat(actual.get()).isEqualTo("topicLabel");
+        assertEquals("topic-label-1", actual.get());
     }
 
     @Test
-    void findLabelByTopicId_KO() {
-        TopicEntity topic = new TopicEntity("topicLabel");
-        topic.setId("topicID");
+    void givenNonExistingTopic_whenFindLabelByTopicId_returnEmpty() {
+        given(sensorRepository.findFirstByTopicId(anyString())).willReturn(Optional.empty());
 
-        SensorEntity sensor = new SensorEntity("sensorID", topic, "sensorMessage");
+        Optional<String> actual = sensorService.findLabelByTopicId("topic-2");
 
-        List<SensorEntity> sensors = new ArrayList<>();
-        sensors.add(sensor);
+        assertTrue(actual.isEmpty());
+    }
 
-        Mockito.when(sensorRepository.findAll()).thenReturn(sensors);
+    @Test
+    void givenRepositoryFail_whenFindLabelByTopicId_thenFail() {
+        given(sensorRepository.findFirstByTopicId(anyString())).willAnswer(invocation -> {
+            throw new Exception("Database error");
+        });
 
-        Optional<String> actual = sensorService.findLabelByTopicId("topicID_KO");
-
-        assertThat(actual).isNotPresent();
+        ServiceException thrown = assertThrows(ServiceException.class, () -> sensorService.findLabelByTopicId("topic-id"));
+        assertEquals("Error when getting topic label from id topic-id: Database error", thrown.getMessage());
     }
 
     private static Stream<Arguments> provideTestCasesForSave() {
