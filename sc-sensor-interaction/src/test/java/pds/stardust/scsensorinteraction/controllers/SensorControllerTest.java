@@ -112,6 +112,37 @@ class SensorControllerTest {
         assertEquals("ID is null", thrown.getMessage());
     }
 
+    @Test
+    void givenExistingTopic_whenGetTopicLabelById_thenSucceed() {
+        when(sensorService.findLabelByTopicId("topic-1")).thenReturn(Optional.of("label-1"));
+
+        ResponseEntity<?> actual = sensorController.getTopicLabelById("topic-1");
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertNotNull(actual.getBody());
+        assertThat(actual.getBody()).isInstanceOf(CommonResponse.class);
+        CommonResponse response = (CommonResponse) actual.getBody();
+        assertEquals("label-1", response.getData());
+    }
+
+    @Test
+    void givenNonExistingTopic_whenGetTopicLabelById_thenFail() {
+        when(sensorService.findLabelByTopicId("topic-2")).thenReturn(Optional.empty());
+
+        ResponseEntity<?> actual = sensorController.getTopicLabelById("topic-2");
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+        assertNull(actual.getBody());
+    }
+
+    @Test
+    void givenServiceException_whenGetTopicLabelById_thenFail() {
+        when(sensorService.findLabelByTopicId(null)).thenThrow(new BadRequestException("Topic ID is null"));
+
+        BadRequestException thrown = assertThrows(BadRequestException.class, () -> sensorController.getTopicLabelById(null));
+        assertEquals("Topic ID is null", thrown.getMessage());
+    }
+
     private static Stream<Arguments> provideTestCasesForGetSensors() {
         List<SensorEntity> data = new ArrayList<>();
         TopicEntity topic1 = new TopicEntity("topic-1", "label");
