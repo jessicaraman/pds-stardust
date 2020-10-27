@@ -13,7 +13,7 @@ Click==7.0
 colorama==0.4.1
 constantly==15.1.0
 crayons==0.3.0
-cryptography==2.8
+cryptography==3.2
 cssselect==1.1.0
 docker==3.7.3
 docker-compose==1.24.1
